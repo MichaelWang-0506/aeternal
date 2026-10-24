@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48684741d3f20674fb0731f745997a0f, type: 3}
+  m_Name: Extraction
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Cards.CardData
+  id: zeus_extraction
+  description: Draw 2 cards and gain 1 Divine Focus.
+  artwork: {fileID: -1522683365619553712, guid: 8edaa743b8dc5b046b30a35c7cfe3248, type: 3}
+  costAP: 2
+  effects:
+  - effectType: 5
+    magnitude: 2
+    durationRounds: 0
+    target: 0
+    damageType: 0
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0
+  - effectType: 4
+    magnitude: 1
+    durationRounds: 0
+    target: 0
+    damageType: 0
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0

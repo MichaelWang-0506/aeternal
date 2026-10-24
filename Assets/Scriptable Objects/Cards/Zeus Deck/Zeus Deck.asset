@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9859ce49cdfde9c4abbc1bc7701a1830, type: 3}
+  m_Name: Zeus Deck
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Decks.DeckData
+  deckId: Zeus
+  description: 'Thunder deck: fast, aggressive lightning strikes.'
+  artwork: {fileID: 0}
+  defaultCards:
+  - card: {fileID: 11400000, guid: faa7952342eae4950802b0c412cf40f7, type: 2}
+    count: 2
+  - card: {fileID: 11400000, guid: 158c35f1f8d9d4df38ef5e7a5262ec91, type: 2}
+    count: 2
+  - card: {fileID: 11400000, guid: 154d8a1c911564cb8b1e3ca6ed063b0d, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: f82a372e84a04464caf34c8a9283bbaf, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 41defe8de1ffb47aaa16304337531c5b, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 2a54893a1f46c45f3be8f9df97130cfc, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 36e19c5f7f3e341dfa261ce9ab5eb00f, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 1068e2d6e439d421b80f8955b7c32b34, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: eb204eb382f384b6ea0bb2ba51862eef, type: 2}
+    count: 1
+  onShiftIn:
+  - effectType: 0
+    magnitude: 3
+    durationRounds: 0
+    target: 1
+    damageType: 3
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0
+  onShiftOut: []

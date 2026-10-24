@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48684741d3f20674fb0731f745997a0f, type: 3}
+  m_Name: Punch
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Cards.CardData
+  id: zeus_punch
+  description: Deal 2 lightning damage.
+  artwork: {fileID: 4505764762537584597, guid: e4d33aee6f782ae4eb5dbdc02d7f5f8d, type: 3}
+  costAP: 1
+  effects:
+  - effectType: 0
+    magnitude: 2
+    durationRounds: 0
+    target: 1
+    damageType: 3
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0

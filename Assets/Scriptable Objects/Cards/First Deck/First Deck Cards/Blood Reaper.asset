@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48684741d3f20674fb0731f745997a0f, type: 3}
+  m_Name: Blood Reaper
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Cards.CardData
+  id: bloodreaper
+  description: 'Apply 1 Bleed for 5 rounds
+
+    (1 dmg at each round end).'
+  artwork: {fileID: -5952828507731898142, guid: e960dee70632de243a6b32abae4f05f3, type: 3}
+  costAP: 1
+  effects:
+  - effectType: 8
+    magnitude: 1
+    durationRounds: 5
+    target: 1
+    damageType: 0
+    statusEffectData:
+      statusId: Bleeding
+      behavior: 1
+      behaviorValue: 1

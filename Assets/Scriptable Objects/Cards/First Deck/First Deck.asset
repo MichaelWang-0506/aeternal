@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9859ce49cdfde9c4abbc1bc7701a1830, type: 3}
+  m_Name: First Deck
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Decks.DeckData
+  deckId: Steampunk
+  description: First Deck
+  artwork: {fileID: 6286595657586805340, guid: 98dacd76a54872c49a943b80cc9b98c0, type: 3}
+  defaultCards:
+  - card: {fileID: 11400000, guid: 2c4284336c813c44f95fe2e4462dd9f8, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 14c9bac75dcda1e47a26d7ed2312a088, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 7a816a565c2ab2c40980b47487192324, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: ce202a800df70734682a767f6630fe88, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: c2d38c353c693fc44b5773e7fc168f03, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: d9476bb8eca4ec541987484e0ea1a408, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: e6ff9391df0c90141b3992ebd73de305, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 5a2a7cd14658f254b80e5763babe1b92, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 03274af91c55ea448b6a0bd63394068c, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 2ec0b8e920c2be1418f2859b8cfb4de4, type: 2}
+    count: 1
+  onShiftIn:
+  - effectType: 2
+    magnitude: 3
+    durationRounds: 0
+    target: 0
+    damageType: 0
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0
+  onShiftOut: []
