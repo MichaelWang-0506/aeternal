@@ -1,0 +1,119 @@
+using UnityEngine;
+
+namespace Aeternal.FX
+{
+    /// <summary>
+    /// Look of the combat battlefield and the HUDs on its characters. Loaded by
+    /// BattlefieldStyler from Resources/BattlefieldStyle; every value is a tuning knob.
+    /// </summary>
+    [CreateAssetMenu(menuName = "Aeternal/Battlefield Style")]
+    public class BattlefieldStyle : ScriptableObject
+    {
+        public const string ResourcePath = "BattlefieldStyle";
+
+        [Header("Background")]
+        [Tooltip("Drawn behind the battlefield, scaled to cover the camera view. Empty keeps the plain camera colour.")]
+        public Sprite backgroundSprite;
+        [Tooltip("Multiplied into the background; darker keeps the characters readable.")]
+        public Color backgroundTint = new Color(0.32f, 0.32f, 0.37f, 1f);
+        [Tooltip("Darkens the screen edges so the eye goes to the middle of the battlefield.")]
+        public Color vignetteColor = new Color(0f, 0f, 0f, 0.8f);
+
+        [Header("Characters")]
+        [Tooltip("Multiplier on the player and enemy sprite size. Tiles are 2 units apart and the " +
+                 "characters are already taller than a tile, so much above 1.1 makes them overlap.")]
+        public float characterScale = 1.1f;
+        [Tooltip("Soft shadow under each character's feet.")]
+        public Color shadowColor = new Color(0f, 0f, 0f, 0.6f);
+        [Tooltip("Shadow width relative to the character's visible width.")]
+        public float shadowWidth = 0.85f;
+        [Tooltip("Shadow height in world units.")]
+        public float shadowHeight = 0.28f;
+        [Tooltip("Soft glow behind each character so it separates from the dark background.")]
+        public Color backlightColor = new Color(1f, 0.78f, 0.5f, 0.28f);
+        [Tooltip("Glow size relative to the character's visible size.")]
+        public float backlightScale = 1.4f;
+
+        [Header("Tiles")]
+        public Color tileBorderColor = new Color(0.78f, 0.66f, 0.42f, 1f);
+        public Color tileFillColor = new Color(0.16f, 0.17f, 0.21f, 0.92f);
+        [Tooltip("Fill colour of the enemy's centre tile.")]
+        public Color centerTileFillColor = new Color(0.26f, 0.14f, 0.14f, 0.92f);
+        [Tooltip("Size of the fill relative to the tile; the rest shows as the border.")]
+        [Range(0.5f, 1f)] public float tileFillScale = 0.86f;
+        [Tooltip("Dark edge under each tile that makes it read as a raised block.")]
+        public Color tileSideColor = new Color(0.07f, 0.06f, 0.05f, 1f);
+        [Tooltip("Height of that edge, in world units.")]
+        public float tileThickness = 0.14f;
+
+        [Header("Attack telegraph")]
+        public Color attackBorderColor = new Color(1f, 0.32f, 0.25f, 1f);
+        public Color attackFillColor = new Color(0.34f, 0.07f, 0.07f, 0.95f);
+        public Color attackGlowColor = new Color(1f, 0.2f, 0.12f, 0.65f);
+        [Tooltip("Glow size relative to the tile.")]
+        public float attackGlowScale = 1.35f;
+        [Tooltip("Pulses per second of the glow on attacked tiles.")]
+        public float attackPulseSpeed = 1.5f;
+
+        [Header("Character HUD")]
+        [Tooltip("Width of the HUD under each character, in world units. Tiles are 2 units apart.")]
+        public float hudWidth = 1.5f;
+        [Tooltip("Size of the HUD's text and bars; width stays hudWidth.")]
+        public float hudScale = 1.5f;
+        [Tooltip("Dark outline around HUD text so it reads over any background (0 = none).")]
+        [Range(0f, 0.5f)] public float hudTextOutline = 0.25f;
+        [Tooltip("Gap between the sprite and its HUD / intent marker, in world units.")]
+        public float hudGap = 0.05f;
+        public int hudSortingOrder = 10;
+        public string playerLabel = "YOU";
+        public Color playerBarColor = new Color(0.36f, 0.82f, 0.4f, 1f);
+        public Color enemyBarColor = new Color(0.9f, 0.3f, 0.26f, 1f);
+        public Color shieldBarColor = new Color(0.42f, 0.7f, 1f, 1f);
+        public Color barBackColor = new Color(0f, 0f, 0f, 0.75f);
+        public Color intentColor = new Color(1f, 0.55f, 0.35f, 1f);
+        [Tooltip("Colour of the ELITE tag before an elite enemy's name.")]
+        public Color eliteLabelColor = new Color(1f, 0.8f, 0.3f, 1f);
+
+        [Header("Resources (bottom-left panel)")]
+        [Tooltip("Action Point icon. Empty uses a generated copper gear.")]
+        public Sprite apIcon;
+        public Color apColor = new Color(1f, 0.72f, 0.36f, 1f);
+        public Color apEmptyColor = new Color(0.3f, 0.25f, 0.2f, 0.75f);
+        [Tooltip("Divine Focus icon. Empty uses a generated crystal.")]
+        public Sprite dfIcon;
+        public Color dfColor = new Color(0.55f, 0.85f, 1f, 1f);
+        public Color dfEmptyColor = new Color(0.2f, 0.25f, 0.35f, 0.75f);
+        [Tooltip("Icon size in UI units; shrinks automatically if the maximum doesn't fit.")]
+        public float resourceIconSize = 40f;
+
+        [Header("Layout (keeps the scene UI from overlapping the battlefield)")]
+        [Tooltip("Show the enemy's intent above its head. Off: it is shown under the enemy's name " +
+                 "in the top-right corner instead (tall enemies leave no room above their head).")]
+        public bool intentAboveHead = false;
+        [Tooltip("Where the intent line sits relative to the enemy name in the top-right corner.")]
+        public Vector2 intentOffsetFromName = new Vector2(0f, -70f);
+        [Tooltip("Active-deck label, relative to the centre of the bottom-left resource panel.")]
+        public Vector2 deckLabelPosition = new Vector2(0f, 160f);
+        [Tooltip("Shift button, relative to the centre of the bottom-left resource panel.")]
+        public Vector2 shiftButtonPosition = new Vector2(0f, 105f);
+        [Tooltip("Offset between the stacked cards of the draw pile; small, so only their edges show.")]
+        public Vector2 drawPileOffset = new Vector2(5f, 5f);
+
+        [Header("Enraged boss")]
+        [Tooltip("Aura, badge and banner colour of an enemy that can no longer be stopped.")]
+        public Color rageColor = new Color(0.9f, 0.12f, 0.1f, 1f);
+
+        [Header("Status labels")]
+        public Color bleedColor = new Color(1f, 0.4f, 0.4f, 1f);
+        public Color stunColor = new Color(1f, 0.85f, 0.3f, 1f);
+        public Color dodgeColor = new Color(0.45f, 0.9f, 1f, 1f);
+        public Color otherStatusColor = new Color(0.85f, 0.85f, 0.85f, 1f);
+
+        /// <summary>The project's style asset, or built-in defaults when it is missing.</summary>
+        public static BattlefieldStyle Load()
+        {
+            var style = UnityEngine.Resources.Load<BattlefieldStyle>(ResourcePath);
+            return style != null ? style : CreateInstance<BattlefieldStyle>();
+        }
+    }
+}

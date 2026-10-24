@@ -18,8 +18,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: fea607aaf5a5445a2ab9dd422e3bd384, type: 2}
   encounters:
   - {fileID: 11400000, guid: bcc58742fcc784d20bd2327e9bf23c18, type: 2}
-  - {fileID: 11400000, guid: 065ae83e7019f44e98418c31078d1e6b, type: 2}
-  - {fileID: 11400000, guid: bcc58742fcc784d20bd2327e9bf23c18, type: 2}
+  - {fileID: 11400000, guid: 232f559034e04969b5d42cc6edbf0845, type: 2}
   - {fileID: 11400000, guid: e16651c1373c1416f9045f1dfaafd598, type: 2}
   cardRewardPool:
   - {fileID: 11400000, guid: 59d90ea06de5bb040981b51003d74a25, type: 2}
@@ -29,3 +28,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5a2a7cd14658f254b80e5763babe1b92, type: 2}
   - {fileID: 11400000, guid: 14c9bac75dcda1e47a26d7ed2312a088, type: 2}
   onRegionClearedScene: MainMenu
+  showMap: 0
+  openingNarrative:
+  - speaker: ""
+    text: "Before memory, before motion, there was silence. Then, from the silence, Chronus opened his eyes, and Time began to flow."
+  - speaker: ""
+    text: "But where Time walked, a shadow followed: Thanatos, his brother. For every heartbeat Chronus granted, Thanatos took one away."
+  - speaker: ""
+    text: "Ages passed. Among the mortals rose a single man, his name lost to history, his legend carved into every age thereafter."
+  - speaker: ""
+    text: "His will caught the eye of Chronus, who blessed him with a spark of Time: the power to glimpse what would happen before it did."
+  - speaker: ""
+    text: "With it, he found a path through every enemy, and united the scattered lands beneath one ruler: himself."

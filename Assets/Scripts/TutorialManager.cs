@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using TMPro;
 using Aeternal.Combat;
 using Aeternal.Decks;
+using Aeternal.Map;
 using Aeternal.UI;
 
 /// <summary>
@@ -548,11 +549,16 @@ public class TutorialManager : MonoBehaviour
         Show(from + 1);
     }
 
-    /// <summary>Leave the tutorial and return to the main menu.</summary>
+    /// <summary>
+    /// Leave the tutorial (finished or skipped). If it was opened by New Game, the run starts;
+    /// otherwise return to the main menu.
+    /// </summary>
     public void Finish()
     {
         if (finished) return;
         finished = true;
+        RunStarter.TutorialSeen = true;
+        if (RunStarter.StartPendingRun()) return;
         if (sceneController != null) sceneController.LoadScene(mainMenuSceneName);
         else SceneManager.LoadScene(mainMenuSceneName);
     }

@@ -37,5 +37,12 @@ namespace Aeternal.Encounters
         [Header("Flow")]
         [Tooltip("Scene to load when this region's boss is defeated (e.g. 'MainMenu' or the next region's map). Leave blank to return to MainMenu.")]
         public string onRegionClearedScene = "MainMenu";
+        [Tooltip("Show the map scene between fights. Off: the run goes straight from one encounter " +
+                 "to the next (after the card reward), in order.")]
+        public bool showMap = true;
+
+        [Header("Story")]
+        [Tooltip("Full-screen narration before the region's first fight.")]
+        public List<DialogueLine> openingNarrative = new List<DialogueLine>();
     }
 }

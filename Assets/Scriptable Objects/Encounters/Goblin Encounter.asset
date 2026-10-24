@@ -21,3 +21,8 @@ MonoBehaviour:
   canAOE: 0
   turnsBetweenAttacks: 1
   sprite: {fileID: 2572365745140355499, guid: b69b5a191df0427458484039d25d04eb, type: 3}
+  introDialogue:
+  - speaker: ""
+    text: "The empire celebrates its tenth year of unity. Wine spills over in the gutters, and the night burns as bright as day."
+  - speaker: ""
+    text: "As every year, the ruler's challengers line up to face him."

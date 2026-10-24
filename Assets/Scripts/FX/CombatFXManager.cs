@@ -234,6 +234,9 @@ namespace Aeternal.FX
         // ------------------------------------------------------------------
         // Effects
         // ------------------------------------------------------------------
+        /// <summary>Floating text rising from a world position (e.g. "IMMUNE" over an enemy).</summary>
+        public void FloatAt(Vector3 worldPos, string text, Color color) => SpawnFloatAtWorld(worldPos, text, color, 32);
+
         private Vector3 PlayerPos() => playerVisual != null ? playerVisual.position : Vector3.zero;
         private Vector3 EnemyPos() => enemyController != null ? enemyController.transform.position : Vector3.zero;
 
@@ -307,10 +310,29 @@ namespace Aeternal.FX
             shakeRoutine = null;
         }
 
+        // Squares around the enemy, by EnemyController direction index (0=Up, 1=Right, 2=Down, 3=Left).
+        private static readonly Vector3[] AttackDirections = { Vector3.up, Vector3.right, Vector3.down, Vector3.left };
+        private const float SquareSpacing = 2f;
+
+        /// <summary>
+        /// The enemy lunges toward the square(s) it telegraphed, not toward wherever the player
+        /// moved to: a dodged attack visibly swings at the empty square. A multi-square attack
+        /// lunges toward the middle of its squares; if they cancel out (e.g. up and down), it hops.
+        /// </summary>
         private void Lunge()
         {
-            if (enemyController == null || playerVisual == null) return;
-            StartCoroutine(LungeRoutine(enemyController.transform, playerVisual.position));
+            if (enemyController == null) return;
+            var enemy = enemyController.transform;
+
+            Vector3 direction = Vector3.zero;
+            foreach (int d in enemyController.GetAttackDirections())
+            {
+                if (d >= 0 && d < AttackDirections.Length) direction += AttackDirections[d];
+            }
+            Vector3 target = direction.sqrMagnitude > 0.01f
+                ? enemy.position + direction.normalized * SquareSpacing
+                : enemy.position + Vector3.up * (SquareSpacing * 0.5f);
+            StartCoroutine(LungeRoutine(enemy, target));
         }
 
         private IEnumerator LungeRoutine(Transform enemy, Vector3 target)

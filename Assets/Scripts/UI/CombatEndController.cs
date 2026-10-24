@@ -80,6 +80,9 @@ namespace Aeternal.UI
 
         private void HandleCombatEnded(bool playerWon)
         {
+            // Losing a story fight isn't a defeat: EncounterStoryDirector plays the epilogue instead.
+            if (!playerWon && EncounterStoryDirector.IsScriptedDeathFight) return;
+
             if (playerWon) ShowVictory();
             else ShowDefeat();
         }

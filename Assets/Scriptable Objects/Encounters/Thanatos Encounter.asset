@@ -21,3 +21,33 @@ MonoBehaviour:
   canAOE: 1
   turnsBetweenAttacks: 1
   sprite: {fileID: -4004968108392325946, guid: cf25d3c229b753147b22eab40f855bd9, type: 3}
+  introDialogue:
+  - speaker: ""
+    text: "On the final night of the feast, the ruler raised a golden chalice: \"Even Death, it seems, has forgotten my name.\""
+  - speaker: ""
+    text: "That night he awoke in a field of ruin where his empire once stood."
+  - speaker: "Thanatos"
+    text: "You dare mock me, mortal? You find it funny, but you are merely ignorant. I will make you realize that."
+  - speaker: "The Ruler"
+    text: "I doubt you understand the extent of my power, Thanatos. I have mastered Chronus's blessing. I can see everything you are going to do."
+  scriptedDeath: 1
+  scriptedDeathRound: 3
+  scriptedDeathHealthFraction: 0.5
+  scriptedDeathDamage: 999
+  scriptedDeathDialogue:
+  - speaker: "Thanatos"
+    text: "You see every move I make. Yet you have never seen this one."
+  - speaker: "The Ruler"
+    text: "Then I will slow your time, as I have slowed every blade before yours."
+  - speaker: "Thanatos"
+    text: "I am Chronus's brother, little king. Your hold on Time does not reach me. Death's Reach spares no square."
+  epilogue:
+  - speaker: ""
+    text: "When dawn came, the great ruler was found lifeless upon his throne, eyes wide open as though staring into infinity."
+  - speaker: ""
+    text: "The gods watched. Thanatos laughed. Chronus seethed."
+  - speaker: ""
+    text: "Death had broken the law of balance. And so Time bound the ruler's soul within a loop: to rise, to fight, and to fall again and again, until the day he defeats Death."
+  - speaker: ""
+    text: "Thus began the cycle."
+  endingTitle: To be continued

@@ -101,6 +101,22 @@ namespace Aeternal.Core
             SelectEncounter(ClearedCount);
         }
 
+        /// <summary>
+        /// Enter the region after StartRun: the map, or, for a region without one, its first fight.
+        /// </summary>
+        public void EnterRegion()
+        {
+            if (CurrentMap != null && !CurrentMap.showMap)
+            {
+                SelectNextEncounter();
+                LoadCombat();
+            }
+            else
+            {
+                SceneManager.LoadScene(mapSceneName);
+            }
+        }
+
         /// <summary>Load the combat scene for the currently selected encounter.</summary>
         public void LoadCombat()
         {
@@ -137,7 +153,8 @@ namespace Aeternal.Core
 
         /// <summary>
         /// Advance past the just-cleared encounter. If it was the boss, the region is complete
-        /// and we load onRegionClearedScene; otherwise we return to the map for the next node.
+        /// and we load onRegionClearedScene; otherwise we return to the map for the next node,
+        /// or straight into the next fight when the region has no map.
         /// </summary>
         public void AdvanceAfterVictory()
         {
@@ -157,7 +174,7 @@ namespace Aeternal.Core
             }
             else
             {
-                SceneManager.LoadScene(mapSceneName);
+                EnterRegion();
             }
         }
 
