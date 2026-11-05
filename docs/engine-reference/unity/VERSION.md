@@ -3,7 +3,7 @@
 | Field | Value |
 |-------|-------|
 | **Engine Version** | Unity 6.3 LTS |
-| **Installed at pin time** | NOT DETERMINED — `/setup-engine` §3 probes the installed editor and records the result here. |
+| **Installed at pin time** | 6000.2.6f2 (Unity 6.2) — probed 2026-10-29 via the Hub editor's `-version`; matches `ProjectSettings/ProjectVersion.txt`. The project pins 6000.2.6f2 (`project.yaml` `engine.version`), one release **behind** this reference — see the note below. |
 | **Release Date** | December 2025 |
 | **Latest editor on the pinned line** | 6000.3.26f1 (Oct 8, 2026) |
 | **Project Pinned** | 2026-02-13 |
@@ -25,6 +25,13 @@ this pin. The reverse gap is real and `/setup-engine` §3 creates it deliberatel
 installed editor**, and an agent citing it correctly then emits APIs that do not
 compile locally. **Check `Installed at pin time` above before trusting a
 version-qualified claim** — `NOT DETERMINED` means the gap is unknown, not absent.
+
+> **This project is in that gap (recorded 2026-10-29).** The reference above is
+> curated for 6.3 LTS; the project and its installed editor are 6000.2.6f2
+> (6.2). The user chose to keep the 6.3 content rather than re-pin it. Treat any
+> API, setting or package version this directory marks as 6.3 or later as
+> **unconfirmed** on this project until checked against the 6000.2 docs
+> (`https://docs.unity3d.com/6000.2/Documentation/Manual/`).
 
 ## Post-Cutoff Version Timeline
 

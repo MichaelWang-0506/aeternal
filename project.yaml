@@ -25,3 +25,36 @@ framework:
 # here. `/settings --local <key>=<value>` writes there; `/settings <key>=<value>`
 # edits this file. See `.claude/docs/config-resolution.md` for the full
 # precedence order.
+
+engine:
+  name: "Unity"
+  version: "6000.2.6f2"
+  language: "C#"
+  rendering: "URP"
+  physics: "Physics 2D (Box2D)"
+  path: "/Applications/Unity/Hub/Editor/6000.2.6f2/Unity.app/Contents/MacOS/Unity"
+
+specialists:
+  code: "unity-specialist"
+  shader: "unity-shader-specialist"
+  ui: "unity-ui-specialist"
+  additional: ["unity-dots-specialist", "unity-addressables-specialist"]
+
+naming:
+  classes: PascalCase
+  variables: camelCase
+  constants: SCREAMING_SNAKE   # UNVERIFIED — not sourceable from
+                               # docs/engine-reference/unity/; confirm before relying on it
+  signals: PascalCase On<Event>
+  files: PascalCase
+  scenes: PascalCase
+
+commands:
+  # Flags from https://docs.unity3d.com/6000.2/Documentation/Manual/EditorCommandLineArguments.html
+  build: '"/Applications/Unity/Hub/Editor/6000.2.6f2/Unity.app/Contents/MacOS/Unity" -batchmode -quit -projectPath . -buildTarget osxuniversal -buildOSXUniversalPlayer Builds/macOS/CardGame.app'
+  # Windows: Windows Build Support is not installed for 6000.2.6f2. Install it in
+  # Unity Hub, then use (or chain after the macOS build with &&):
+  # '"/Applications/Unity/Hub/Editor/6000.2.6f2/Unity.app/Contents/MacOS/Unity" -batchmode -quit -projectPath . -buildTarget win64 -buildWindows64Player Builds/Win64/CardGame.exe'
+  test: '"/Applications/Unity/Hub/Editor/6000.2.6f2/Unity.app/Contents/MacOS/Unity" -batchmode -runTests -projectPath . -testPlatform EditMode -testResults test-results/editmode.xml'
+  run: "open -n Builds/macOS/CardGame.app --args -screen-width 1280 -screen-height 720 -screen-fullscreen 0"
+  smoke: '"/Applications/Unity/Hub/Editor/6000.2.6f2/Unity.app/Contents/MacOS/Unity" -batchmode -quit -projectPath . -logFile -'
