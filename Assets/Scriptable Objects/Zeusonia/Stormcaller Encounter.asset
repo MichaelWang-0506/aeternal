@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18f6374be14b4ccd9db12d67257ed96, type: 3}
+  m_Name: Stormcaller Encounter
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Encounters.EncounterData
+  encounterId: stormcaller
+  displayName: Stormcaller
+  isBoss: 0
+  isElite: 1
+  stats: {fileID: 11400000, guid: 86e0435dadaf4391b1ff5466a8bfc2ab, type: 2}
+  baseDamage: 4
+  damageType: 3
+  canAOE: 1
+  turnsBetweenAttacks: 1
+  sprite: {fileID: 2572365745140355499, guid: b69b5a191df0427458484039d25d04eb, type: 3}
+  introDialogue:
+  - speaker: ""
+    text: "A goblin shaman stands in the pass, the storm answering its every gesture."
+  - speaker: "Stormcaller"
+    text: "The Thunderer sees you, little king. Turn back, or burn."

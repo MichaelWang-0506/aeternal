@@ -25,6 +25,7 @@ public class SceneController : MonoBehaviour
 
     void Update()
     {
+        if (Aeternal.UI.PauseMenu.IsPaused) return;
         // Reset scene on R key press
         if (enableReset && Input.GetKeyDown(resetKey))
         {

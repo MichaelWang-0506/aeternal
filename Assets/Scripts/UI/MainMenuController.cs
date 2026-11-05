@@ -10,18 +10,16 @@ using Aeternal.Map;
 namespace Aeternal.UI
 {
     /// <summary>
-    /// The title-screen menu: New Game, Continue (disabled until there is a save system),
+    /// The title-screen menu: New Game, Continue (the saved run; disabled when there is none),
     /// Settings, Credits and Quit. Replaces the scene's old dev buttons, credits box and key
     /// hints (only the title is kept) and drives the scene's RunStarter. Attaches itself to
     /// any scene with a RunStarter; needs no scene wiring. Settings are saved on this machine.
     /// </summary>
     public class MainMenuController : MonoBehaviour
     {
-        const string VolumeKey = "Aeternal.MasterVolume";
         const string OldMenuPanelName = "Panel";
         const string KeptTitleName = "Title";
         const string OldRunButtonCanvasName = "RunStarterCanvas";
-        const float VolumeStep = 0.1f;
         const float TitleFloat = 8f;        // canvas units
         const float EntryStagger = 0.08f;   // seconds between menu entries fading in
         const float EntryFade = 0.35f;
@@ -43,15 +41,9 @@ namespace Aeternal.UI
         GameObject menu;
         GameObject settingsPanel;
         GameObject creditsPanel;
+        GameObject tutorialPanel;
         TMP_Text volumeLabel;
         TMP_Text fullscreenLabel;
-        TMP_Text tutorialLabel;
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void ApplySavedSettings()
-        {
-            AudioListener.volume = PlayerPrefs.GetFloat(VolumeKey, 1f);
-        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap()
@@ -150,16 +142,20 @@ namespace Aeternal.UI
             // Main column, under the title.
             menu = Column("Menu", root, new Vector2(0f, -60f), 18f);
             MakeButton(menu.transform, "New Game", NewGame, primary: true);
-            MakeButton(menu.transform, "Continue", null).interactable = false; // no save system yet
+            var continueButton = MakeButton(menu.transform, "Continue", null);
+            continueButton.interactable = RunStarter.CanContinue && runStarter != null;
+            continueButton.onClick.AddListener(() =>
+            {
+                if (!runStarter.ContinueRun()) continueButton.interactable = false;
+            });
             MakeButton(menu.transform, "Settings", () => ShowPanel(settingsPanel));
             MakeButton(menu.transform, "Credits", () => ShowPanel(creditsPanel));
             MakeButton(menu.transform, "Quit", Quit);
 
             settingsPanel = Modal("Settings", root, "SETTINGS");
             var settings = Column("Rows", settingsPanel.transform, new Vector2(0f, -30f), 14f);
-            volumeLabel = Stepper(settings.transform, () => ChangeVolume(-VolumeStep), () => ChangeVolume(VolumeStep));
+            volumeLabel = Stepper(settings.transform, () => ChangeVolume(-GameSettings.VolumeStep), () => ChangeVolume(GameSettings.VolumeStep));
             fullscreenLabel = MakeButton(settings.transform, "", ToggleFullscreen).GetComponentInChildren<TMP_Text>();
-            tutorialLabel = MakeButton(settings.transform, "", ToggleTutorial).GetComponentInChildren<TMP_Text>();
             MakeButton(settings.transform, "Back", ShowMenu);
             RefreshSettings();
 
@@ -172,13 +168,30 @@ namespace Aeternal.UI
             }
             MakeButton(credits.transform, "Back", ShowMenu);
 
+            // New Game: where to start. Nothing is forced; each choice says what it skips.
+            tutorialPanel = Modal("New Game", root, "NEW GAME");
+            var prompt = Column("Rows", tutorialPanel.transform, new Vector2(0f, -40f), 14f);
+            MakeButton(prompt.transform, "Play Tutorial\n<size=55%><color=#DDDDDD>a guided fight, then the prologue</color></size>",
+                () => StartAt(RunStarter.StartPoint.Tutorial), primary: true, height: 96f);
+            MakeButton(prompt.transform, "Prologue\n<size=55%><color=#DDDDDD>the ruler's fall: the story from the start</color></size>",
+                () => StartAt(RunStarter.StartPoint.Prologue), height: 96f);
+            MakeButton(prompt.transform, "Skip Prologue\n<size=55%><color=#DDDDDD>begin in Zeusonia</color></size>",
+                () => StartAt(RunStarter.StartPoint.FirstRegion), height: 96f);
+            MakeButton(prompt.transform, "Back", ShowMenu);
+
             menu.SetActive(false); // so ShowMenu fades the entries in
             ShowMenu();
         }
 
         void NewGame()
         {
-            if (runStarter != null) runStarter.StartRun();
+            if (runStarter != null) ShowPanel(tutorialPanel);
+        }
+
+        void StartAt(RunStarter.StartPoint start)
+        {
+            if (start == RunStarter.StartPoint.Tutorial) RunStarter.TutorialSeen = true;
+            runStarter.StartRun(start);
         }
 
         static void Quit()
@@ -197,6 +210,7 @@ namespace Aeternal.UI
             menu.SetActive(true);
             settingsPanel.SetActive(false);
             creditsPanel.SetActive(false);
+            tutorialPanel.SetActive(false);
             if (appearing) StartCoroutine(FadeInEntries(menu));
         }
 
@@ -205,6 +219,7 @@ namespace Aeternal.UI
             menu.SetActive(false);
             settingsPanel.SetActive(panel == settingsPanel);
             creditsPanel.SetActive(panel == creditsPanel);
+            tutorialPanel.SetActive(panel == tutorialPanel);
             foreach (Transform child in panel.transform)
             {
                 if (child.name == "Rows") StartCoroutine(FadeInEntries(child.gameObject));
@@ -213,31 +228,19 @@ namespace Aeternal.UI
 
         void ChangeVolume(float delta)
         {
-            float volume = Mathf.Clamp01(Mathf.Round((AudioListener.volume + delta) * 10f) / 10f);
-            AudioListener.volume = volume;
-            PlayerPrefs.SetFloat(VolumeKey, volume);
-            PlayerPrefs.Save();
+            GameSettings.ChangeVolume(delta);
             RefreshSettings();
         }
 
         void ToggleFullscreen()
         {
-            Screen.fullScreen = !Screen.fullScreen;
-            // Screen.fullScreen applies at the end of the frame; show the requested state.
-            fullscreenLabel.text = $"Fullscreen: {(!Screen.fullScreen ? "On" : "Off")}";
-        }
-
-        void ToggleTutorial()
-        {
-            RunStarter.TutorialSeen = !RunStarter.TutorialSeen;
-            RefreshSettings();
+            fullscreenLabel.text = GameSettings.FullscreenLabel(GameSettings.ToggleFullscreen());
         }
 
         void RefreshSettings()
         {
-            volumeLabel.text = $"Volume: {Mathf.RoundToInt(AudioListener.volume * 100f)}%";
-            fullscreenLabel.text = $"Fullscreen: {(Screen.fullScreen ? "On" : "Off")}";
-            tutorialLabel.text = $"Tutorial on New Game: {(RunStarter.TutorialSeen ? "No" : "Yes")}";
+            volumeLabel.text = GameSettings.VolumeLabel;
+            fullscreenLabel.text = GameSettings.FullscreenLabel(Screen.fullScreen);
         }
 
         // ------------------------------------------------------------------
@@ -309,7 +312,8 @@ namespace Aeternal.UI
             return label;
         }
 
-        static Button MakeButton(Transform parent, string label, Action onClick, bool primary = false, float width = 480f)
+        static Button MakeButton(Transform parent, string label, Action onClick, bool primary = false, float width = 480f,
+            float height = 76f)
         {
             var go = new GameObject(label, typeof(RectTransform), typeof(Image), typeof(Button), typeof(Outline));
             go.transform.SetParent(parent, false);
@@ -317,7 +321,7 @@ namespace Aeternal.UI
             var edge = go.GetComponent<Outline>();
             edge.effectColor = new Color(Gold.r, Gold.g, Gold.b, primary ? 0.9f : 0.45f);
             edge.effectDistance = new Vector2(2f, -2f);
-            AddSize(go, width, 76f);
+            AddSize(go, width, height);
 
             var button = go.GetComponent<Button>();
             // Tints multiply the image colour (and clamp at 1), so rest slightly dark and

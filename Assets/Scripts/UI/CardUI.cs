@@ -35,6 +35,12 @@ namespace Aeternal.UI
         [Tooltip("CombatManager to check game state. If null, will try to find it.")]
         public CombatManager combatManager;
 
+        /// <summary>
+        /// Set for cards shown outside combat (rewards, merchant, deck view): they never play,
+        /// and their clickability is left to whoever shows them.
+        /// </summary>
+        [HideInInspector] public bool displayOnly;
+
         private Button button;
         private CanvasGroup canvasGroup;
 
@@ -89,6 +95,7 @@ namespace Aeternal.UI
 
         private void UpdateInteractability()
         {
+            if (displayOnly) return;
             bool canInteract = true;
 
             // Check if game is over
@@ -138,7 +145,7 @@ namespace Aeternal.UI
 
         public async void OnClickPlayCard()
         {
-            if (card == null || resolver == null) return;
+            if (displayOnly || card == null || resolver == null) return;
             if (PlayInterceptor != null && PlayInterceptor(this)) return;
 
             // Check if game is over

@@ -9,7 +9,7 @@ namespace Aeternal.Map
     /// Hook for a main-menu "New Game" button. Starts a fresh run on the given map and enters
     /// it (the map scene, or straight into the first fight for a region without a map).
     /// The first time, it plays the tutorial first and the run starts when the tutorial ends.
-    /// Ensures a RunManager exists (creates one if the scene has none).
+    /// Continue resumes the saved run. Ensures a RunManager exists (creates one if the scene has none).
     /// Wire StartRun() to the button's OnClick.
     /// </summary>
     public class RunStarter : MonoBehaviour
@@ -40,7 +40,21 @@ namespace Aeternal.Map
             }
         }
 
-        public void StartRun()
+        /// <summary>Where a new game begins.</summary>
+        public enum StartPoint
+        {
+            Tutorial,       // the tutorial scene, then the starting map
+            Prologue,       // the starting map (the story from the beginning)
+            FirstRegion,    // the starting map's nextMap, skipping the prologue
+        }
+
+        /// <summary>Whether this starter can play a tutorial before the run.</summary>
+        public bool HasTutorial => !string.IsNullOrEmpty(tutorialSceneName);
+
+        /// <summary>Starts the run, playing the tutorial first if the player hasn't seen it.</summary>
+        public void StartRun() => StartRun(!TutorialSeen && HasTutorial ? StartPoint.Tutorial : StartPoint.Prologue);
+
+        public void StartRun(StartPoint start)
         {
             if (startingMap == null)
             {
@@ -48,7 +62,7 @@ namespace Aeternal.Map
                 return;
             }
 
-            if (!TutorialSeen && !string.IsNullOrEmpty(tutorialSceneName))
+            if (start == StartPoint.Tutorial && HasTutorial)
             {
                 pendingMap = startingMap;
                 pendingMapScene = mapSceneName;
@@ -56,7 +70,8 @@ namespace Aeternal.Map
                 return;
             }
 
-            Begin(startingMap, mapSceneName);
+            var map = start == StartPoint.FirstRegion && startingMap.nextMap != null ? startingMap.nextMap : startingMap;
+            Begin(map, mapSceneName);
         }
 
         /// <summary>
@@ -72,7 +87,38 @@ namespace Aeternal.Map
             return true;
         }
 
+        /// <summary>Whether there is a saved run for Continue.</summary>
+        public static bool CanContinue => RunSave.Exists;
+
+        /// <summary>
+        /// Loads the saved run and resumes it: on the map, or at the start of the fight it was
+        /// saved in. Returns false (and deletes the save) if it can't be loaded.
+        /// </summary>
+        public bool ContinueRun()
+        {
+            var data = RunSave.Read();
+            var run = EnsureRunManager();
+            if (data == null || startingMap == null || !run.Restore(data, RunCatalog.Build(startingMap)))
+            {
+                Debug.LogWarning("[RunStarter] The saved run couldn't be loaded; it has been discarded.");
+                run.ResetRun();
+                return false;
+            }
+
+            if (data.inCombat && run.CurrentEncounter != null) run.LoadCombat();
+            else SceneManager.LoadScene(run.mapSceneName);
+            return true;
+        }
+
         static void Begin(MapData map, string mapScene)
+        {
+            var run = EnsureRunManager();
+            run.mapSceneName = mapScene;
+            run.StartRun(map);
+            run.EnterRegion();
+        }
+
+        static RunManager EnsureRunManager()
         {
             var run = RunManager.Instance;
             if (run == null)
@@ -80,10 +126,7 @@ namespace Aeternal.Map
                 var go = new GameObject("RunManager");
                 run = go.AddComponent<RunManager>();
             }
-
-            run.mapSceneName = mapScene;
-            run.StartRun(map);
-            run.EnterRegion();
+            return run;
         }
     }
 }

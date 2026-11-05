@@ -8,7 +8,7 @@ using TMPro;
 namespace Aeternal.UI
 {
     /// <summary>
-    /// Button component that ends the player's turn when clicked
+    /// The discard pile button: shows how many cards are in it and opens or closes its list.
     /// </summary>
     [RequireComponent(typeof(Button))]
     public class DiscardPileButton : MonoBehaviour
@@ -36,7 +36,13 @@ namespace Aeternal.UI
             {
                 deckManager.OnCardAddedToHand += OnCardAddedToHand;
                 deckManager.OnCardRemovedFromHand += OnCardRemovedFromHand;
+                deckManager.OnDrawPileChanged += UpdateCount; // the reshuffle empties the discard pile
             }
+        }
+
+        private void UpdateCount()
+        {
+            if (text != null && deckManager != null) text.text = "" + deckManager.discardPile.Count;
         }
 
         private void Start()
@@ -72,6 +78,12 @@ namespace Aeternal.UI
             if (button != null)
             {
                 button.onClick.RemoveListener(OnButtonClicked);
+            }
+            if (deckManager != null)
+            {
+                deckManager.OnCardAddedToHand -= OnCardAddedToHand;
+                deckManager.OnCardRemovedFromHand -= OnCardRemovedFromHand;
+                deckManager.OnDrawPileChanged -= UpdateCount;
             }
         }
     }

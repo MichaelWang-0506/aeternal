@@ -51,6 +51,15 @@ full body, slight three-quarter view, consistent with a gritty roguelike card ga
 | Thanatos（Boss） | `thanatos.png` | Idle / Attack（挥镰）/ Hit / Death，Attack 可做 8 帧 | `hooded grim reaper with glowing red eyes, giant scythe, wisps of pale blue souls swirling around` |
 | Zeus（Shift 神祇） | `zeus.png` | 仅 Cast（Shift 时闪现）4–6 帧 | `stern god of thunder with a lightning bolt, crackling electricity` |
 
+**第一关 Zeusonia 新角色**（目前复用 Goblin / Bandit 的图，见 `level1-zeusonia.md`）
+
+| 角色 | 需要的动作 | 提示词要点 |
+|---|---|---|
+| Storm-touched Goblin | Idle / Attack / Hit / Death | `scrawny goblin scavenger, rusty blade crackling with small lightning sparks` |
+| Peak Raider | Idle / Attack / Hit / Death | `mountain bandit in fur and leather, storm-blue scarf, curved axe` |
+| Stormcaller（精英） | Idle / Attack（召雷）/ Hit / Death | `goblin shaman with a staff topped by a glowing storm crystal, lightning arcing around` |
+| Zeus（Boss） | 已有静态图 `zeus.png`；需要 Idle / Charge（蓄力）/ Thunderbolt / Hit / Death | `stern god of thunder on a throne of lightning, gathering a storm in raised hand` |
+
 **示例提示词（Goblin 攻击）**
 
 ```
@@ -91,6 +100,7 @@ attack animation: wind-up, lunge forward, stab, recover, same character and scal
 | 中心格（敌人站位） | 同上 | 稍暗、带符文圈 |
 | 战斗背景 Steampunk City | 1920×1080（16:9），可非像素或低分辨率像素 | 当前用的是主菜单的 `steampunkcity.png`（1024×1024，会被裁切）。需要一张专门的战斗背景：中部留空、四周是管道/齿轮/烟雾，整体偏暗以突出角色 |
 | 每个新区域一张背景 | 同上 | 随地图扩展 |
+| Zeusonia 战斗背景 | 1920×1080 | 风暴群峰：雷云、闪电、碎石山道，GDD 指定雷电区域为黄色主调 |
 
 **示例提示词（背景）**
 

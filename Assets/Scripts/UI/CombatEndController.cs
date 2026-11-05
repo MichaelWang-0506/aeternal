@@ -91,6 +91,9 @@ namespace Aeternal.UI
         {
             var run = RunManager.Instance;
 
+            // Beating a god: EncounterStoryDirector plays the blessing, then advances the run.
+            if (EncounterStoryDirector.HandlesVictory) return;
+
             // Beating the region boss completes the run — celebrate instead of offering a
             // card reward the player can never use.
             if (run != null && run.HasActiveRun && run.IsCurrentEncounterBoss && regionClearPanel != null)
@@ -102,6 +105,20 @@ namespace Aeternal.UI
             var pool = (run != null && run.HasActiveRun && run.CurrentMap != null)
                 ? run.CurrentMap.cardRewardPool
                 : null;
+
+            // In a run: gold, a short victory beat, then the cards to choose from as card faces.
+            if (pool != null)
+            {
+                var map = run.CurrentMap;
+                var range = run.IsCurrentEncounterElite ? map.eliteGoldReward : map.goldReward;
+                int gold = Random.Range(range.x, range.y + 1);
+                run.AddGold(gold);
+                var choices = BuildChoices(pool, rewardChoiceCount)
+                    .Select(c => new RewardScreen.Choice { card = c.card, isShard = c.isShard }).ToList();
+                string shardDeck = map.blessingDeck != null ? map.blessingDeck.deckId : "";
+                RewardScreen.Show(gold, run.LastAetherEarned, choices, shardDeck, c => ChooseReward(c.card, c.isShard), Advance);
+                return;
+            }
 
             bool canReward = rewardPanel != null && rewardButtons != null && rewardButtons.Length > 0
                              && pool != null && pool.Count > 0;
@@ -127,31 +144,48 @@ namespace Aeternal.UI
             if (defeatPanel != null) defeatPanel.SetActive(true);
         }
 
+        /// <summary>
+        /// The reward choices. While a god's deck is sealed, the last choice is a Storm Shard
+        /// for it: power now (a card for the run deck) or power later (a card for the god's
+        /// deck). An elite, worth the risk, offers two.
+        /// </summary>
+        private static List<(CardData card, bool isShard)> BuildChoices(List<CardData> pool, int slots)
+        {
+            var run = RunManager.Instance;
+            var shards = new List<CardData>();
+            if (run != null && run.CollectsStormShards)
+            {
+                int shardCount = run.IsCurrentEncounterElite ? 2 : 1;
+                shards = run.CurrentMap.stormShardPool.Where(c => c != null).Distinct()
+                    .OrderBy(_ => Random.value).Take(Mathf.Min(shardCount, slots)).ToList();
+            }
+
+            var choices = pool.Where(c => c != null).Distinct().OrderBy(_ => Random.value)
+                .Take(Mathf.Max(0, slots - shards.Count))
+                .Select(c => (card: c, isShard: false)).ToList();
+            foreach (var shard in shards) choices.Add((shard, true));
+            return choices;
+        }
+
         private void PopulateReward(List<CardData> pool)
         {
-            // Pick distinct random cards from the pool.
-            var choices = pool.Where(c => c != null).Distinct().OrderBy(_ => Random.value).ToList();
-            int count = Mathf.Min(rewardChoiceCount, rewardButtons.Length, choices.Count);
+            var run = RunManager.Instance;
+            var choices = BuildChoices(pool, Mathf.Min(rewardChoiceCount, rewardButtons.Length));
 
             for (int i = 0; i < rewardButtons.Length; i++)
             {
                 var btn = rewardButtons[i];
                 if (btn == null) continue;
 
-                if (i < count)
+                if (i < choices.Count)
                 {
-                    var card = choices[i];
+                    var (card, isShard) = choices[i];
                     btn.gameObject.SetActive(true);
                     btn.onClick.RemoveAllListeners();
-                    btn.onClick.AddListener(() => ChooseReward(card));
+                    btn.onClick.AddListener(() => ChooseReward(card, isShard));
 
                     if (rewardLabels != null && i < rewardLabels.Length && rewardLabels[i] != null)
-                    {
-                        string label = string.IsNullOrEmpty(card.id) ? card.name : card.id;
-                        rewardLabels[i].text = string.IsNullOrEmpty(card.description)
-                            ? label
-                            : $"{label}\n<size=70%>{card.description}</size>";
-                    }
+                        rewardLabels[i].text = RewardLabel(card, isShard, run);
                 }
                 else
                 {
@@ -160,9 +194,21 @@ namespace Aeternal.UI
             }
         }
 
-        private void ChooseReward(CardData card)
+        private static string RewardLabel(CardData card, bool isShard, RunManager run)
         {
-            RunManager.Instance?.AddCardToDeck(card);
+            string label = string.IsNullOrEmpty(card.id) ? card.name : card.id;
+            string text = string.IsNullOrEmpty(card.description) ? label : $"{label}\n<size=70%>{card.description}</size>";
+            if (!isShard) return text;
+            string deck = run != null && run.CurrentMap.blessingDeck != null ? run.CurrentMap.blessingDeck.deckId : "god's";
+            return $"<color=#FFD24D><size=60%>STORM SHARD</size></color>\n{text}\n" +
+                   $"<size=55%><color=#FFD24D>Sealed in the {deck} deck until its blessing</color></size>";
+        }
+
+        private void ChooseReward(CardData card, bool isShard)
+        {
+            var run = RunManager.Instance;
+            if (isShard) run?.AddStormShard(card);
+            else run?.AddCardToDeck(card);
             Advance();
         }
 
@@ -170,10 +216,25 @@ namespace Aeternal.UI
         {
             var run = RunManager.Instance;
             if (run != null && run.HasActiveRun)
+            {
+                // GDD: a special event after every two enemies, before moving on.
+                if (run.RegionEventDue && !eventShown)
+                {
+                    eventShown = true;
+                    if (rewardPanel != null) rewardPanel.SetActive(false);
+                    if (victoryPanel != null) victoryPanel.SetActive(false);
+                    int maxHealth = combatManager != null && combatManager.playerHealth != null
+                        ? combatManager.playerHealth.GetMaxHealth() : 0;
+                    RegionEventPanel.Show(run, maxHealth, run.AdvanceAfterVictory);
+                    return;
+                }
                 run.AdvanceAfterVictory();
+            }
             else
                 UnityEngine.SceneManagement.SceneManager.LoadScene(fallbackSceneName);
         }
+
+        private bool eventShown;
 
         private void OnDefeatContinue()
         {

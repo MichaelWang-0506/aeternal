@@ -443,10 +443,14 @@ namespace Aeternal.FX
                 }
                 if (ui.dfText != null)
                 {
-                    ResourcePips.Create(ui.dfText.rectTransform, "DF",
+                    var df = ResourcePips.Create(ui.dfText.rectTransform, "DF",
                         style.dfIcon != null ? style.dfIcon : ProceduralSprites.Crystal(),
                         style.dfColor, style.dfEmptyColor, style.resourceIconSize,
                         () => new Vector2Int(resources.currentDF, resources.maxDF));
+                    // In a run with nothing to Shift to (a god's deck still sealed), DF is unusable.
+                    var run = RunManager.Instance;
+                    var combat = FindFirstObjectByType<CombatManager>();
+                    if (run != null && run.HasActiveRun && combat != null && !combat.CanShift) df.SetSealed("SEALED");
                 }
             }
         }

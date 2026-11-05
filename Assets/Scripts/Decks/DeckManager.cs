@@ -6,6 +6,12 @@ using Aeternal.Cards;
 
 namespace Aeternal.Decks
 {
+    /// <summary>
+    /// The combat piles: draw, hand and discard. As in Slay the Spire, played cards wait in the
+    /// discard pile until the draw pile runs out; then the whole discard pile is shuffled into a
+    /// new draw pile at once, so the next draw always has cards. (Cards like Recycle bring some
+    /// back sooner.)
+    /// </summary>
     public class DeckManager : MonoBehaviour
     {
         [Header("Runtime")]
@@ -16,13 +22,12 @@ namespace Aeternal.Decks
 
         [Header("Config")]
         public int handSize = 5;
-        [Tooltip("Number of cards to recover from discard pile at the start of each round")]
-        public int cardsRecoveredPerRound = 2;
 
         // Events
         public event Action OnDrawPileChanged; // Fired when draw pile changes (card drawn, shuffled, etc.)
         public event Action<CardData> OnCardAddedToHand; // Fired when a card is added to hand
         public event Action<CardData> OnCardRemovedFromHand; // Fired when a card is removed from hand
+        public event Action<int> OnDiscardReshuffled; // Fired when the discard pile becomes the draw pile (card count)
 
         public void InitializeDeck(DeckData deck, bool shuffle = true)
         {
@@ -82,14 +87,13 @@ namespace Aeternal.Decks
             if (drawPile.Count == 0)
             {
                 if (discardPile.Count == 0) return null;
-                // If draw pile is empty during a round, recover the configured amount
-                // (This is a fallback - main recovery happens at round start)
-                RecoverCardsAtRoundStart();
+                ReshuffleDiscardIntoDrawPile();
             }
 
             var card = drawPile[0];
             drawPile.RemoveAt(0);
             OnDrawPileChanged?.Invoke();
+            RefillDrawPileIfEmpty();
             return card;
         }
 
@@ -128,6 +132,7 @@ namespace Aeternal.Decks
             {
                 discardPile.Add(card);
                 OnCardRemovedFromHand?.Invoke(card);
+                RefillDrawPileIfEmpty();
             }
         }
 
@@ -209,34 +214,30 @@ namespace Aeternal.Decks
         }
 
         /// <summary>
-        /// Recovers cards from discard pile to draw pile at the start of a round
-        /// Uses the configured cardsRecoveredPerRound value
+        /// Shuffles the discard pile into the draw pile as soon as the draw pile is empty:
+        /// after its last card is drawn, or when a card is discarded while it is empty.
         /// </summary>
-        /// <returns>Number of cards actually recovered</returns>
-        public int RecoverCardsAtRoundStart()
+        private void RefillDrawPileIfEmpty()
         {
-            if (discardPile.Count == 0)
-            {
-                Debug.Log("[DeckManager] No cards in discard pile to recover");
-                return 0;
-            }
+            if (drawPile.Count == 0 && discardPile.Count > 0)
+                ReshuffleDiscardIntoDrawPile();
+        }
 
-            int recovered = Mathf.Min(cardsRecoveredPerRound, discardPile.Count);
-            
-            // Randomly select cards from discard pile to recover
-            for (int i = 0; i < recovered; i++)
-            {
-                int chosenIndex = UnityEngine.Random.Range(0, discardPile.Count);
-                CardData card = discardPile[chosenIndex];
-                discardPile.RemoveAt(chosenIndex);
-                drawPile.Add(card); // Add to end of draw pile
-            }
-
-            // Shuffle the draw pile after recovery
-            ShuffleDrawPile();
-            
-            Debug.Log($"[DeckManager] Recovered {recovered} card{(recovered > 1 ? "s" : "")} from discard pile at round start");
-            return recovered;
+        /// <summary>
+        /// Shuffles the whole discard pile into the draw pile. Called whenever the draw pile
+        /// runs out (see RefillDrawPileIfEmpty).
+        /// </summary>
+        /// <returns>Number of cards shuffled in</returns>
+        public int ReshuffleDiscardIntoDrawPile()
+        {
+            int count = discardPile.Count;
+            if (count == 0) return 0;
+            drawPile.AddRange(discardPile);
+            discardPile.Clear();
+            ShuffleDrawPile(); // fires OnDrawPileChanged
+            Debug.Log($"[DeckManager] Shuffled {count} discarded card{(count > 1 ? "s" : "")} into the draw pile");
+            OnDiscardReshuffled?.Invoke(count);
+            return count;
         }
 
         public int GetDrawCount() => drawPile.Count;

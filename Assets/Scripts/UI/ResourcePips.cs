@@ -86,6 +86,21 @@ namespace Aeternal.UI
             valueText = MakeText(transform, "", 28f, fullColor, valueWidth);
         }
 
+        /// <summary>
+        /// Marks the resource as unusable for now: the row dims and shows the note instead of
+        /// the count (null clears it).
+        /// </summary>
+        public void SetSealed(string note)
+        {
+            sealedNote = note;
+            var group = GetComponent<CanvasGroup>();
+            if (group == null) group = gameObject.AddComponent<CanvasGroup>();
+            group.alpha = string.IsNullOrEmpty(note) ? 1f : 0.4f;
+            lastCurrent = -1; // refresh the text
+        }
+
+        string sealedNote;
+
         void Update()
         {
             var value = read();
@@ -102,7 +117,7 @@ namespace Aeternal.UI
                     lit[i] = on;
                     icons[i].color = on ? fullColor : emptyColor;
                 }
-                valueText.text = $"{current}/{max}";
+                valueText.text = string.IsNullOrEmpty(sealedNote) ? $"{current}/{max}" : sealedNote;
                 lastCurrent = current;
                 lastMax = max;
             }

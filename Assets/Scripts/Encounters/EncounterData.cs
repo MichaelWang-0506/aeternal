@@ -45,6 +45,18 @@ namespace Aeternal.Encounters
         [Tooltip("Sprite to swap onto the enemy's SpriteRenderer, if assigned.")]
         public Sprite sprite;
 
+        [Header("Charged attack (boss mechanic)")]
+        [Tooltip("Every Nth round the enemy unleashes a charged attack (0 = never). It is announced " +
+                 "the round before, then hits every square but one safe square, for extra damage.")]
+        public int chargedAttackEvery = 0;
+        [Tooltip("Damage of the charged attack, as a multiple of baseDamage.")]
+        public float chargedAttackMultiplier = 2f;
+        public string chargedAttackName = "THUNDERBOLT";
+        [Tooltip("Banner the round before the charged attack.")]
+        public string chargeWarning = "The storm gathers. Next round: find the safe square!";
+        [Tooltip("Banner when the charged attack is telegraphed.")]
+        public string chargeRelease = "Only one square is safe.";
+
         [Header("Story (optional)")]
         [Tooltip("Shown before the first turn.")]
         public List<DialogueLine> introDialogue = new List<DialogueLine>();

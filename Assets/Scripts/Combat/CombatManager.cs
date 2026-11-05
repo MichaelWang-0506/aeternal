@@ -26,6 +26,16 @@ namespace Aeternal.Combat
         [Tooltip("Hotkey to shift to the next deck.")]
         public KeyCode shiftKey = KeyCode.Z;
 
+        [Header("Guard (GDD: spend an action point to create a shield)")]
+        [Tooltip("Action Points a Guard costs.")]
+        public int guardAPCost = 1;
+        [Tooltip("Shield a Guard gives.")]
+        public int guardShield = 2;
+        [Tooltip("Rounds the Guard shield lasts (1: through the enemy's next attack).")]
+        public int guardRounds = 1;
+        [Tooltip("Hotkey to Guard.")]
+        public KeyCode guardKey = KeyCode.X;
+
         /// <summary>One swappable element deck available during combat.</summary>
         [System.Serializable]
         public class DeckSlot
@@ -34,6 +44,8 @@ namespace Aeternal.Combat
             public List<CardData> cards;
             public List<EffectPayload> onShiftIn;
             public List<EffectPayload> onShiftOut;
+            /// <summary>Shift upgrade bonus added to damage, shield and heal Shift effects.</summary>
+            public int shiftBonus;
         }
 
         private readonly List<DeckSlot> shiftSlots = new List<DeckSlot>();
@@ -105,6 +117,7 @@ namespace Aeternal.Combat
             turnManager.OnPlayerPhaseStart += HandlePlayerPhase;
             turnManager.OnEnemyPhaseStart += HandleEnemyPhase;
             turnManager.OnRoundEnd += HandleRoundEnd;
+            if (deckManager != null) deckManager.OnDiscardReshuffled += HandleDiscardReshuffled;
 
             // If a run is active, RunManager drives the enemy, deck, and carried-over health.
             // Otherwise fall back to the scene's serialized enemy/deck so PlayGameScene stays
@@ -123,6 +136,8 @@ namespace Aeternal.Combat
                 {
                     playerHealth.SetCurrentHealth(run.CarriedHealth);
                 }
+                // So between-fight healing (rest, events) knows the cap.
+                run.PlayerMaxHealth = playerHealth.GetMaxHealth();
 
                 BuildShiftSlots(run);
             }
@@ -162,16 +177,6 @@ namespace Aeternal.Combat
             if (enemy != null && enemy.IsAlive && playerHealth != null)
             {
                 enemy.DecideNextIntent(playerHealth.gameObject);
-            }
-
-            // Recover cards from discard pile at round start
-            if (deckManager != null)
-            {
-                int recovered = deckManager.RecoverCardsAtRoundStart();
-                if (recovered > 0)
-                {
-                    Aeternal.UI.ActionLog.Instance?.AddMessage($"Recovered {recovered} card{(recovered > 1 ? "s" : "")} from discard pile");
-                }
             }
 
             playerResources.RefillAP();
@@ -224,8 +229,39 @@ namespace Aeternal.Combat
         // ------------------------------------------------------------------
         private void Update()
         {
-            if (Input.GetKeyDown(shiftKey))
+            if (!PauseMenu.IsPaused && Input.GetKeyDown(shiftKey))
                 ShiftNext();
+            if (!PauseMenu.IsPaused && Input.GetKeyDown(guardKey))
+                Guard();
+        }
+
+        // ------------------------------------------------------------------
+        // Guarding: any turn, spare Action Points can become a small shield
+        // ------------------------------------------------------------------
+
+        /// <summary>Whether Guard can be used now: the player's turn, with enough AP.</summary>
+        public bool CanGuard =>
+            !isGameOver && playerResources != null && playerHealth != null
+            && (turnManager == null || turnManager.currentState == TurnState.PlayerPhase)
+            && playerResources.currentAP >= guardAPCost;
+
+        /// <summary>
+        /// Spends guardAPCost AP for guardShield shield lasting guardRounds rounds. Weaker than a
+        /// shield card on purpose: it turns leftover AP into some protection.
+        /// </summary>
+        public bool Guard()
+        {
+            if (!CanGuard)
+            {
+                if (!isGameOver) Aeternal.UI.ActionLog.Instance?.AddMessage($"Guard needs {guardAPCost} AP on your turn");
+                return false;
+            }
+            if (!playerResources.TryConsumeAP(guardAPCost)) return false;
+            playerHealth.AddShield(guardShield, guardRounds, "guard");
+            string msg = $"Guard: +{guardShield} shield";
+            EventBus.RaiseLog(msg);
+            Aeternal.UI.ActionLog.Instance?.AddMessage(msg);
+            return true;
         }
 
         private void BuildShiftSlots(RunManager run)
@@ -240,6 +276,7 @@ namespace Aeternal.Combat
                 cards = new List<CardData>(run.RunDeck),
                 onShiftIn = startDeck != null ? startDeck.onShiftIn : null,
                 onShiftOut = startDeck != null ? startDeck.onShiftOut : null,
+                shiftBonus = run.ShiftBonus(startDeck),
             });
 
             if (run.ShiftDecks != null)
@@ -253,6 +290,7 @@ namespace Aeternal.Combat
                         cards = ExpandDeck(d),
                         onShiftIn = d.onShiftIn,
                         onShiftOut = d.onShiftOut,
+                        shiftBonus = run.ShiftBonus(d),
                     });
                 }
             }
@@ -320,11 +358,11 @@ namespace Aeternal.Combat
             }
 
             // Shift-out of the current deck, swap piles, shift-in to the new deck.
-            ApplyShiftEffects(shiftSlots[activeShiftIndex].onShiftOut, "shift-out");
+            ApplyShiftEffects(shiftSlots[activeShiftIndex].onShiftOut, "shift-out", shiftSlots[activeShiftIndex].shiftBonus);
             activeShiftIndex = index;
             var slot = shiftSlots[index];
             deckManager.InitializeDeckFromCards(slot.cards);
-            ApplyShiftEffects(slot.onShiftIn, "shift-in");
+            ApplyShiftEffects(slot.onShiftIn, "shift-in", slot.shiftBonus);
             if (handDisplay != null) handDisplay.RefreshHand();
 
             string msg = $"Shifted to {slot.name} deck";
@@ -334,7 +372,7 @@ namespace Aeternal.Combat
             return true;
         }
 
-        private void ApplyShiftEffects(List<EffectPayload> effects, string tag)
+        private void ApplyShiftEffects(List<EffectPayload> effects, string tag, int bonus)
         {
             if (effects == null || effects.Count == 0) return;
             var ctx = new CardContext
@@ -345,11 +383,33 @@ namespace Aeternal.Combat
             };
             foreach (var eff in effects)
             {
-                string desc = cardResolver.ResolveEffect(eff, ctx, deckManager);
+                string desc = cardResolver.ResolveEffect(WithShiftBonus(eff, bonus), ctx, deckManager);
                 if (!string.IsNullOrEmpty(desc))
                     Aeternal.UI.ActionLog.Instance?.AddMessage($"({tag}) {desc}");
             }
         }
+
+        /// <summary>
+        /// The effect with the Shift upgrade bonus added, if it has an amount to raise (damage,
+        /// shield, heal). The deck's own asset is never changed.
+        /// </summary>
+        public static EffectPayload WithShiftBonus(EffectPayload eff, int bonus)
+        {
+            if (eff == null || bonus == 0 || !IsShiftUpgradable(eff.effectType)) return eff;
+            return new EffectPayload
+            {
+                effectType = eff.effectType,
+                magnitude = eff.magnitude + bonus,
+                durationRounds = eff.durationRounds,
+                target = eff.target,
+                damageType = eff.damageType,
+                statusEffectData = eff.statusEffectData,
+            };
+        }
+
+        /// <summary>Whether Shift upgrades raise this kind of effect.</summary>
+        public static bool IsShiftUpgradable(EffectType type) =>
+            type == EffectType.Damage || type == EffectType.AddShield || type == EffectType.Heal;
 
         private void OnPlayerDied()
         {
@@ -425,6 +485,12 @@ namespace Aeternal.Combat
                 turnManager.OnEnemyPhaseStart -= HandleEnemyPhase;
                 turnManager.OnRoundEnd -= HandleRoundEnd;
             }
+            if (deckManager != null) deckManager.OnDiscardReshuffled -= HandleDiscardReshuffled;
+        }
+
+        private void HandleDiscardReshuffled(int count)
+        {
+            Aeternal.UI.ActionLog.Instance?.AddMessage($"Draw pile empty: shuffled {count} discarded card{(count > 1 ? "s" : "")} back in");
         }
     }
 }

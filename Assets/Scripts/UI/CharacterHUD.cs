@@ -32,6 +32,8 @@ namespace Aeternal.UI
         const float TrailSpeed = 1.2f;      // bar widths per second it then drains
         const float IntentBob = 3f;         // canvas units
         const float IntentPopDuration = 0.3f;
+        const float BottomHeight = 28f;     // canvas units: name row + health bar, below the pivot
+        const float HandMargin = 6f;        // canvas units kept clear above the card hand
 
         RectTransform bottom;
         RectTransform hpTrail;
@@ -51,6 +53,12 @@ namespace Aeternal.UI
 
         // Canvas units per world unit (smaller when hudScale enlarges the HUD).
         float unitsToCanvas = PixelsPerUnit;
+
+        // The card hand along the bottom of the screen: the HUD stays above it.
+        RectTransform handArea;
+        Canvas handCanvas;
+        bool handSearched;
+        readonly Vector3[] handCorners = new Vector3[4];
 
         // Opaque extent of the current sprite, in its local space.
         Sprite cachedSprite;
@@ -167,7 +175,13 @@ namespace Aeternal.UI
 
             var bounds = VisibleBounds();
             transform.position = new Vector3(bounds.center.x, bounds.center.y, 0f);
-            bottom.anchoredPosition = new Vector2(0f, (bounds.min.y - bounds.center.y - style.hudGap) * unitsToCanvas);
+            // Under the feet, unless that is behind the card hand (the bottom tile): then just
+            // above the hand, over the character's feet.
+            float under = (bounds.min.y - bounds.center.y - style.hudGap) * unitsToCanvas;
+            float handTop = HandTopY();
+            float aboveHand = (handTop - bounds.center.y) * unitsToCanvas + BottomHeight + HandMargin;
+            // Only ever nudged up as far as the sprite's middle (guards a hand rect that isn't the panel).
+            bottom.anchoredPosition = new Vector2(0f, handTop < bounds.center.y ? Mathf.Max(under, aboveHand) : under);
 
             RefreshHealth();
             DrainTrail();
@@ -183,6 +197,28 @@ namespace Aeternal.UI
                 float pop = 1f + 0.25f * intentPop * intentPop;
                 intent.localScale = new Vector3(pop, pop, 1f);
             }
+        }
+
+        /// <summary>World height of the card hand's top edge, or -infinity if there is no hand.</summary>
+        float HandTopY()
+        {
+            if (handArea == null && !handSearched)
+            {
+                handSearched = true;
+                var hand = FindFirstObjectByType<CardHandDisplay>();
+                if (hand != null)
+                {
+                    handArea = hand.transform as RectTransform;
+                    handCanvas = hand.GetComponentInParent<Canvas>();
+                }
+            }
+            var cam = Camera.main;
+            if (handArea == null || cam == null) return float.NegativeInfinity;
+
+            handArea.GetWorldCorners(handCorners); // [1] = top left
+            var uiCamera = handCanvas != null && handCanvas.renderMode != RenderMode.ScreenSpaceOverlay ? handCanvas.worldCamera : null;
+            Vector2 screen = RectTransformUtility.WorldToScreenPoint(uiCamera, handCorners[1]);
+            return cam.ScreenToWorldPoint(new Vector3(screen.x, screen.y, -cam.transform.position.z)).y;
         }
 
         void DrainTrail()

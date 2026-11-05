@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18f6374be14b4ccd9db12d67257ed96, type: 3}
+  m_Name: Zeus Trial Encounter
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Encounters.EncounterData
+  encounterId: zeus_trial
+  displayName: Zeus
+  isBoss: 1
+  isElite: 0
+  stats: {fileID: 11400000, guid: 7cc99df8657349bba5bb2da22c8acb4b, type: 2}
+  baseDamage: 2
+  damageType: 3
+  canAOE: 0
+  turnsBetweenAttacks: 1
+  sprite: {fileID: -6298424602537201719, guid: 3e8c58dc4a6b035438709475cf943a25, type: 3}
+  introDialogue:
+  - speaker: "Zeus"
+    text: "A blessing unused is a blessing wasted. Show me what my thunder does in your hands."
+  - speaker: "Zeus"
+    text: "During your turn, press Z, or the Shift button in the lower left. It costs one Divine Focus, and swaps your whole hand for my deck."
+  - speaker: "Zeus"
+    text: "Shift in and I strike for you. Shift back when you need your own tricks again. Now, begin."

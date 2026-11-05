@@ -39,7 +39,7 @@ namespace Aeternal.UI
             var go = new GameObject("Card Hover Preview", typeof(RectTransform), typeof(Canvas));
             var canvas = go.GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 200;
+            canvas.sortingOrder = 500; // above every panel that shows cards (shop, deck view, rewards)
             return go.AddComponent<CardHoverPreview>();
         }
 
@@ -59,6 +59,9 @@ namespace Aeternal.UI
 
             preview = Instantiate(card.gameObject, holder);
             DestroyImmediate(preview.GetComponent<CardUI>());
+            // Off-combat card faces carry a HoverScale, which would pull the copy back to scale 1.
+            var hover = preview.GetComponent<HoverScale>();
+            if (hover != null) DestroyImmediate(hover);
             var group = preview.GetComponent<CanvasGroup>();
             if (group == null) group = preview.AddComponent<CanvasGroup>();
             group.blocksRaycasts = false;

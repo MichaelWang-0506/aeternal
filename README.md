@@ -18,8 +18,9 @@ step out of the way with movement cards, then strike back.
 - **Divine Focus (DF)** — the blue crystals; spent to **Shift**: swap your active deck for
   another (for example the Zeus deck). Shifting can trigger shift-in / shift-out effects. DF
   does not refill on its own.
-- **Draw, discard and recover** — played cards go to the discard pile; a few return to your
-  deck each round, and cards like *Recycle* bring back more.
+- **Draw and discard** — played cards go to the discard pile, which is shuffled back into the
+  draw pile only when the draw pile runs out (as in Slay the Spire); cards like *Recycle*
+  bring some back sooner. The draw pile shows card backs; click it to see what's left.
 - **Status effects** — Bleed (damage at round end, stacks), Stun / Blackout (skip the next
   action), Dodge (cancel the next attack). Shown as badges under each character, with the
   number of stacks or rounds, and on the character itself (blood drips, circling stars).

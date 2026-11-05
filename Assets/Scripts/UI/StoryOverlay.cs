@@ -203,6 +203,7 @@ namespace Aeternal.UI
 
         static bool AdvancePressed()
         {
+            if (PauseMenu.IsPaused) return false;
             return Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return);
         }
 

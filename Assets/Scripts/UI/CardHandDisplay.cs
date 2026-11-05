@@ -34,6 +34,8 @@ namespace Aeternal.UI
             {
                 deckManager.OnCardAddedToHand += OnCardAddedToHand;
                 deckManager.OnCardRemovedFromHand += OnCardRemovedFromHand;
+                // The discard list also empties when it is shuffled into the draw pile.
+                if (isDiscardPileDisplay) deckManager.OnDrawPileChanged += SyncHandDisplay;
             }
             if (turnManager != null)
             {
@@ -56,6 +58,7 @@ namespace Aeternal.UI
             {
                 deckManager.OnCardAddedToHand -= OnCardAddedToHand;
                 deckManager.OnCardRemovedFromHand -= OnCardRemovedFromHand;
+                deckManager.OnDrawPileChanged -= SyncHandDisplay;
             }
             
             ClearAllCards();

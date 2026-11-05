@@ -52,6 +52,7 @@ namespace Aeternal.DevTools
 
         private void Update()
         {
+            if (Aeternal.UI.PauseMenu.IsPaused) return;
             if (Input.GetKeyDown(KeyCode.F1)) ForceWin();
             if (Input.GetKeyDown(KeyCode.F2)) ForceLose();
         }

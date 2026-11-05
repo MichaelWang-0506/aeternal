@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18f6374be14b4ccd9db12d67257ed96, type: 3}
+  m_Name: Zeus Encounter
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Encounters.EncounterData
+  encounterId: zeus
+  displayName: Zeus
+  isBoss: 1
+  isElite: 0
+  stats: {fileID: 11400000, guid: cb71016ce4054d65a01d44a14f415e37, type: 2}
+  baseDamage: 4
+  damageType: 3
+  canAOE: 1
+  turnsBetweenAttacks: 1
+  sprite: {fileID: -6298424602537201719, guid: 3e8c58dc4a6b035438709475cf943a25, type: 3}
+  chargedAttackEvery: 3
+  chargedAttackMultiplier: 2
+  chargedAttackName: THUNDERBOLT
+  chargeWarning: "Zeus gathers the storm. Next round, every square but one is struck!"
+  chargeRelease: "Only one square is safe. Move!"
+  introDialogue:
+  - speaker: ""
+    text: "At the summit, the clouds part. The king of the gods waits on a throne of lightning."
+  - speaker: "Zeus"
+    text: "So. The mortal who mocked Death, crawling back through my lands with half a deck and no blessing."
+  - speaker: "The Ruler"
+    text: "I mastered Chronus's gift once. I will master yours."
+  - speaker: "Zeus"
+    text: "Then prove it. Weather the storm."

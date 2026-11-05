@@ -462,6 +462,7 @@ public class TutorialManager : MonoBehaviour
 
         PulseNext();
 
+        if (Aeternal.UI.PauseMenu.IsPaused) return;
         foreach (var key in nextKeys)
         {
             if (Input.GetKeyDown(key)) { Next(); break; }

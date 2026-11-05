@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f922e1bb0064b03ae880384cb54fef, type: 3}
+  m_Name: Zeusonia
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Encounters.MapData
+  regionName: Zeusonia
+  startingDeck: {fileID: 11400000, guid: 21085a2bfd26475c801f12e228e9cb98, type: 2}
+  shiftDecks: []
+  encounters:
+  - {fileID: 11400000, guid: b8817c41ee7e4830a7ac16dd5639c758, type: 2}
+  - {fileID: 11400000, guid: 49d516ffb1784e3aa9418784a2e935f5, type: 2}
+  - {fileID: 11400000, guid: f705310a45a143d98b0a281c320aee44, type: 2}
+  - {fileID: 11400000, guid: 8cef6a08760848088151aa58a8020c57, type: 2}
+  cardRewardPool:
+  - {fileID: 11400000, guid: 59d90ea06de5bb040981b51003d74a25, type: 2}
+  - {fileID: 11400000, guid: b71232fb3638acb4e9d1749186eb1d8f, type: 2}
+  - {fileID: 11400000, guid: 03274af91c55ea448b6a0bd63394068c, type: 2}
+  - {fileID: 11400000, guid: 7a816a565c2ab2c40980b47487192324, type: 2}
+  - {fileID: 11400000, guid: 5a2a7cd14658f254b80e5763babe1b92, type: 2}
+  - {fileID: 11400000, guid: 2c4284336c813c44f95fe2e4462dd9f8, type: 2}
+  - {fileID: 11400000, guid: 2ec0b8e920c2be1418f2859b8cfb4de4, type: 2}
+  onRegionClearedScene: MainMenu
+  showMap: 1
+  nextMap: {fileID: 11400000, guid: 429725eec0bd4258961bbc012021873b, type: 2}
+  openingNarrative:
+  - speaker: ""
+    text: "Darkness. Then dusty air, heavy and familiar. The ruler awoke in a ruined temple, alive again, decades after his death."
+  - speaker: ""
+    text: "His empire had fallen. His strength was gone. Of everything he once commanded, only a battered handful of cards remained."
+  - speaker: ""
+    text: "Above the ruins rose the storm-torn peaks of Zeusonia. The god of thunder had claimed the ruler's old lands as his own."
+  - speaker: ""
+    text: "To break the loop, he must climb, and take back the power of the gods one blessing at a time."
+  blessingDeck: {fileID: 11400000, guid: 8975974613b6493283f7b0cb14e8068b, type: 2}
+  stormShardPool:
+  - {fileID: 11400000, guid: 41defe8de1ffb47aaa16304337531c5b, type: 2}
+  - {fileID: 11400000, guid: 1068e2d6e439d421b80f8955b7c32b34, type: 2}
+  - {fileID: 11400000, guid: 154d8a1c911564cb8b1e3ca6ed063b0d, type: 2}
+  - {fileID: 11400000, guid: 36e19c5f7f3e341dfa261ce9ab5eb00f, type: 2}
+  - {fileID: 11400000, guid: 158c35f1f8d9d4df38ef5e7a5262ec91, type: 2}
+  blessingNarrative:
+  - speaker: "Zeus"
+    text: "Enough! You fight like a storm yourself, mortal. Chronus chose well."
+  - speaker: "Zeus"
+    text: "Take my blessing, and with it my thunder. Let us see what you make of it."
+  - speaker: ""
+    text: "The Storm Shards the ruler had gathered on the climb crackle to life."
+  blessingTitle: Blessing of Zeus
+  regionEvent:
+    enabled: 1
+    afterEncounter: 1
+    title: Storm Altar
+    text: "Halfway up the mountain stands an altar to Zeus, scorched black by a thousand lightning strikes. It still hums with power."
+    healAmount: 8
+    shardChoices: 3
+  branchingMap: 1
+  normalEncounters:
+  - {fileID: 11400000, guid: b8817c41ee7e4830a7ac16dd5639c758, type: 2}
+  - {fileID: 11400000, guid: 49d516ffb1784e3aa9418784a2e935f5, type: 2}
+  eliteEncounters:
+  - {fileID: 11400000, guid: f705310a45a143d98b0a281c320aee44, type: 2}
+  bossEncounter: {fileID: 11400000, guid: 8cef6a08760848088151aa58a8020c57, type: 2}
+  restHeal: 10

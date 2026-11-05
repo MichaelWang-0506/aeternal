@@ -46,6 +46,11 @@ namespace Aeternal.Combat
         int round = 1;
         bool deathArmed;
         bool deathShown;
+        bool ending;
+
+        // Charged attack: the enemy's normal damage, restored after the charged blow.
+        int normalDamage;
+        bool chargeReleased;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap()
@@ -63,9 +68,24 @@ namespace Aeternal.Combat
             if (FindFirstObjectByType<EncounterStoryDirector>() != null) return;
             var encounter = CurrentEncounter();
             if (encounter == null) return;
-            bool hasStory = encounter.scriptedDeath || HasLines(encounter.introDialogue) || HasLines(OpeningNarrative());
+            bool hasStory = encounter.scriptedDeath || encounter.chargedAttackEvery > 0 || HandlesVictory
+                            || HasLines(encounter.introDialogue) || HasLines(OpeningNarrative());
             if (!hasStory) return;
             new GameObject("Encounter Story").AddComponent<EncounterStoryDirector>();
+        }
+
+        /// <summary>
+        /// True for a region's boss whose defeat grants the god's blessing: the director plays
+        /// it and advances the run, instead of the usual victory panel.
+        /// </summary>
+        public static bool HandlesVictory
+        {
+            get
+            {
+                var run = RunManager.Instance;
+                return run != null && run.HasActiveRun && run.IsCurrentEncounterBoss
+                       && run.CurrentMap.blessingDeck != null && !run.BlessingReceived;
+            }
         }
 
         static bool HasLines(System.Collections.Generic.List<DialogueLine> lines) => lines != null && lines.Count > 0;
@@ -74,7 +94,8 @@ namespace Aeternal.Combat
         static System.Collections.Generic.List<DialogueLine> OpeningNarrative()
         {
             var run = RunManager.Instance;
-            if (run == null || !run.HasActiveRun || run.ClearedCount > 0 || run.CurrentNodeIndex != 0) return null;
+            // On a branching map, the map screen shows it before the first choice.
+            if (run == null || !run.HasActiveRun || run.Map != null || run.ClearedCount > 0 || run.CurrentNodeIndex != 0) return null;
             return run.CurrentMap != null ? run.CurrentMap.openingNarrative : null;
         }
 
@@ -118,10 +139,14 @@ namespace Aeternal.Combat
             {
                 enemyHealth.canDie = false;
                 enemyHealth.OnHealthChanged += OnEnemyHealthChanged;
-                turnManager.OnRoundStart += OnRoundStart;
                 turnManager.OnEnemyPhaseStart += OnEnemyPhaseStart;
-                combat.OnCombatEnded += OnCombatEnded;
             }
+            if (turnManager != null && (data.scriptedDeath || data.chargedAttackEvery > 0))
+            {
+                turnManager.OnRoundStart += OnRoundStart;
+                turnManager.OnRoundEnd += OnRoundEnd;
+            }
+            combat.OnCombatEnded += OnCombatEnded;
 
             var opening = OpeningNarrative();
             if (HasLines(opening))
@@ -141,6 +166,7 @@ namespace Aeternal.Combat
             if (turnManager != null)
             {
                 turnManager.OnRoundStart -= OnRoundStart;
+                turnManager.OnRoundEnd -= OnRoundEnd;
                 turnManager.OnEnemyPhaseStart -= OnEnemyPhaseStart;
             }
             if (combat != null) combat.OnCombatEnded -= OnCombatEnded;
@@ -150,8 +176,98 @@ namespace Aeternal.Combat
         {
             round++;
             // Runs after CombatManager has rolled this round's intent, so it can replace it.
-            if (deathArmed) TelegraphDeath();
-            else if (round >= data.scriptedDeathRound) ArmDeath();
+            if (data.scriptedDeath)
+            {
+                if (deathArmed) TelegraphDeath();
+                else if (round >= data.scriptedDeathRound) ArmDeath();
+            }
+            if (data.chargedAttackEvery > 0 && !deathArmed) ChargedAttackRound();
+        }
+
+        void OnRoundEnd()
+        {
+            // The charged attack is spent; back to normal blows.
+            if (chargeReleased && enemy != null)
+            {
+                enemy.baseDamage = normalDamage;
+                chargeReleased = false;
+            }
+        }
+
+        /// <summary>
+        /// Boss mechanic: every chargedAttackEvery rounds, a blow on every square but one, for
+        /// extra damage. The round before, a warning and a CHARGING badge. The safe square is
+        /// never the one the player stands on, so they must move. A stunned boss loses the blow.
+        /// </summary>
+        void ChargedAttackRound()
+        {
+            int every = data.chargedAttackEvery;
+            var hud = CharacterHUD.For(enemyHealth);
+            var style = BattlefieldStyle.Load();
+
+            if (round % every == 0)
+            {
+                var positioning = playerHealth != null ? playerHealth.GetComponent<Aeternal.Player.PlayerPositioningComponent>() : null;
+                int standing = positioning != null ? positioning.facingIndex : 0;
+                int safe = (standing + Random.Range(1, 4)) % 4;
+                var hit = new System.Collections.Generic.List<int>();
+                for (int d = 0; d < 4; d++) if (d != safe) hit.Add(d);
+
+                normalDamage = enemy.baseDamage;
+                enemy.baseDamage = Mathf.RoundToInt(normalDamage * data.chargedAttackMultiplier);
+                enemy.SetIntentAOE(hit);
+                chargeReleased = true;
+                if (hud != null) hud.SetExtraBadge(null, Color.clear);
+                StartCoroutine(overlay.ShowWarning(data.chargedAttackName, data.chargeRelease, style.stunColor, 2.2f));
+            }
+            else if ((round + 1) % every == 0)
+            {
+                if (hud != null) hud.SetExtraBadge("CHARGING", style.stunColor);
+                StartCoroutine(overlay.ShowWarning("STORM GATHERING", data.chargeWarning, style.stunColor, 2.2f));
+            }
+        }
+
+        void OnCombatEnded(bool playerWon)
+        {
+            if (playerWon)
+            {
+                if (HandlesVictory && !ending) { ending = true; StartCoroutine(PlayBlessing()); }
+                return;
+            }
+            if (data.scriptedDeath && !deathShown)
+            {
+                deathShown = true;
+                StartCoroutine(PlayEnding());
+            }
+        }
+
+        /// <summary>
+        /// The god falls and blesses the player: its deck awakens with every Storm Shard
+        /// collected, and Shifting to it is unlocked. Then on to the next region.
+        /// </summary>
+        IEnumerator PlayBlessing()
+        {
+            var run = RunManager.Instance;
+            var map = run.CurrentMap;
+            yield return new WaitForSeconds(DeathPause);
+
+            int shards = run.StormShards.Count;
+            var deck = run.ReceiveBlessing();
+            var lines = new System.Collections.Generic.List<DialogueLine>(map.blessingNarrative);
+            if (deck != null)
+            {
+                int cards = 0;
+                foreach (var entry in deck.defaultCards) cards += Mathf.Max(1, entry.count);
+                lines.Add(new DialogueLine
+                {
+                    text = $"The {deck.deckId} deck awakens: {cards} cards, {shards} of them Storm Shards you gathered. " +
+                           "Divine Shift is unlocked: spend Divine Focus to change decks mid-battle."
+                });
+            }
+            yield return overlay.PlayNarration(lines);
+            yield return overlay.ShowTitle(map.blessingTitle,
+                map.nextMap != null ? "Click to continue" : "To be continued. Click to return to the main menu");
+            run.AdvanceAfterVictory();
         }
 
         void OnEnemyHealthChanged(int current, int max)
@@ -248,22 +364,23 @@ namespace Aeternal.Combat
             if (playerHealth != null && playerHealth.getHealth > 0) playerHealth.Kill();
         }
 
-        void OnCombatEnded(bool playerWon)
-        {
-            if (playerWon || deathShown) return;
-            deathShown = true;
-            StartCoroutine(PlayEnding());
-        }
-
+        /// <summary>
+        /// After the scripted death: the epilogue and its title, then the next region (the time
+        /// loop begins) if this one has a nextMap, otherwise back to the main menu.
+        /// </summary>
         IEnumerator PlayEnding()
         {
+            var run = RunManager.Instance;
+            bool continues = run != null && run.HasActiveRun && run.CurrentMap.nextMap != null;
+
             yield return new WaitForSeconds(DeathPause);
             yield return overlay.PlayNarration(data.epilogue);
             if (!string.IsNullOrEmpty(data.endingTitle))
-                yield return overlay.ShowTitle(data.endingTitle, "Click to return to the main menu");
+                yield return overlay.ShowTitle(data.endingTitle,
+                    continues ? "Click to continue" : "Click to return to the main menu");
 
-            var run = RunManager.Instance;
-            if (run != null && run.HasActiveRun) run.ReportDefeat();
+            if (continues) run.ContinueToNextRegion();
+            else if (run != null && run.HasActiveRun) run.ReportDefeat();
             else SceneManager.LoadScene("MainMenu");
         }
     }

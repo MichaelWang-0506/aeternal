@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9859ce49cdfde9c4abbc1bc7701a1830, type: 3}
+  m_Name: Zeus Core Deck
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Decks.DeckData
+  deckId: Zeus
+  description: "Core of Zeus's blessing; the Storm Shards gathered in Zeusonia are added when it awakens."
+  artwork: {fileID: 0}
+  defaultCards:
+  - card: {fileID: 11400000, guid: faa7952342eae4950802b0c412cf40f7, type: 2}
+    count: 2
+  - card: {fileID: 11400000, guid: 158c35f1f8d9d4df38ef5e7a5262ec91, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: f82a372e84a04464caf34c8a9283bbaf, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 2a54893a1f46c45f3be8f9df97130cfc, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: eb204eb382f384b6ea0bb2ba51862eef, type: 2}
+    count: 1
+  onShiftIn:
+  - effectType: 0
+    magnitude: 3
+    durationRounds: 0
+    target: 1
+    damageType: 3
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0
+  onShiftOut: []

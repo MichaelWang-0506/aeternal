@@ -11,6 +11,10 @@ namespace Aeternal.FX
     {
         public const string ResourcePath = "BattlefieldStyle";
 
+        [Header("Cards outside combat")]
+        [Tooltip("Card prefab used to show card faces on the map, at the merchant and in rewards.")]
+        public GameObject cardPrefab;
+
         [Header("Background")]
         [Tooltip("Drawn behind the battlefield, scaled to cover the camera view. Empty keeps the plain camera colour.")]
         public Sprite backgroundSprite;

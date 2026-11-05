@@ -16,6 +16,29 @@ namespace Aeternal.FX
         static Sprite crystal;
         static Sprite drop;
         static Sprite star;
+        static Sprite disc;
+
+        /// <summary>Crisp disc, slightly lit from the top; tint it for map nodes.</summary>
+        public static Sprite Disc()
+        {
+            if (disc != null) return disc;
+            const int size = 128;
+            const float aa = 2f / size;
+            var tex = NewTexture(size, size);
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = (x + 0.5f) / size * 2f - 1f;
+                float dy = (y + 0.5f) / size * 2f - 1f;
+                float r = Mathf.Sqrt(dx * dx + dy * dy);
+                float a = Mathf.Clamp01((0.98f - r) / aa);
+                float v = 0.82f + 0.18f * dy;
+                if (r > 0.86f) v *= 1.15f;                                   // a lighter rim
+                tex.SetPixel(x, y, new Color(Mathf.Min(1f, v), Mathf.Min(1f, v), Mathf.Min(1f, v), a));
+            }
+            tex.Apply();
+            return disc = ToSprite(tex);
+        }
 
         /// <summary>Shaded teardrop, point up; tint it red for Bleed.</summary>
         public static Sprite Drop()

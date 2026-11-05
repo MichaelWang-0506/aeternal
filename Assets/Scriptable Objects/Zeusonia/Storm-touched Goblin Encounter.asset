@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18f6374be14b4ccd9db12d67257ed96, type: 3}
+  m_Name: Storm-touched Goblin Encounter
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Encounters.EncounterData
+  encounterId: storm_goblin
+  displayName: Storm-touched Goblin
+  isBoss: 0
+  isElite: 0
+  stats: {fileID: 11400000, guid: 5d1cf61486ec4188af5621d2195503d0, type: 2}
+  baseDamage: 3
+  damageType: 3
+  canAOE: 0
+  turnsBetweenAttacks: 1
+  sprite: {fileID: 2572365745140355499, guid: b69b5a191df0427458484039d25d04eb, type: 3}
+  introDialogue:
+  - speaker: ""
+    text: "A goblin scavenges the ruins, lightning crawling over its blade. Once it would have fled at the sight of you."
+  - speaker: ""
+    text: "Now it only sees a weakened man."

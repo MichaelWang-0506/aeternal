@@ -5072,7 +5072,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Played cards go to the discard pile. The number shows how many cards are in it.\nAt the start of each round, 2 cards return from the discard pile to your deck, and cards like Recycle bring back more.\n\n<b>Click the discard pile to look inside, then click it again to close it.</b>"
+  m_text: "Played cards go to the discard pile. The number shows how many cards are in it.\nWhen your draw pile runs out, the whole discard pile is shuffled back into it. Cards like Recycle bring some back sooner.\n\n<b>Click the discard pile to look inside, then click it again to close it.</b>"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
