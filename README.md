@@ -159,17 +159,14 @@ Cards, decks, enemies, encounters and maps are ScriptableObjects under
 
 ## Editor tools
 
-The **Aeternal** menu holds idempotent setup scripts that built parts of the project and can
-be re-run safely:
+The **Aeternal** menu holds:
 
-- *Stage 2 → Run Full Setup* — run loop: encounter and map assets, end-of-combat UI, map node,
-  New Run button.
-- *Stage 3-4 → Run Full Setup* — Zeus deck and Shifting, Bandit enemy, Shift HUD.
-- *Polish → Run Full Setup* — live card text overlays, Region Cleared panel.
+- *Build Pixel Font* — rebuilds the Jersey 10 pixel font asset (`Assets/Fonts/Jersey10`) used by
+  all text.
 
-Re-running *Polish* resets the size, position and colour of the card prefab's text strips,
-undoing the later layout fix (opaque cost and description strips placed over the printed text)
-— re-apply it in `Card.prefab` afterwards.
+The one-time setup scripts that first built the scenes (Stage 2, Stage 3-4, Polish) were removed
+on 2026-11-05: re-running them overwrote later changes to the scenes and the card prefab. They
+are in the git history (`071fc37`) if ever needed.
 
 ## Built with
 
