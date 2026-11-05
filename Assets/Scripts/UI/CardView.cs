@@ -85,6 +85,28 @@ namespace Aeternal.UI
             return slotRect;
         }
 
+        /// <summary>
+        /// Darkens a spawned card (0 clears it). Use this instead of fading the card: a faded
+        /// card lets the artwork's printed text show through the description strip.
+        /// </summary>
+        public static void SetDarkness(RectTransform slot, float darkness)
+        {
+            if (slot == null || slot.childCount == 0) return;
+            var face = slot.GetChild(0);
+            var shade = face.Find("Shade");
+            if (shade == null)
+            {
+                if (darkness <= 0f) return;
+                var go = new GameObject("Shade", typeof(RectTransform), typeof(Image));
+                go.transform.SetParent(face, false);
+                Fill((RectTransform)go.transform);
+                go.GetComponent<Image>().raycastTarget = false;
+                shade = go.transform;
+            }
+            shade.SetAsLastSibling();
+            shade.GetComponent<Image>().color = new Color(0f, 0f, 0f, darkness);
+        }
+
         static TMP_Text Text(Transform parent, string content, float size, Color color)
         {
             var go = new GameObject("Text", typeof(RectTransform), typeof(TextMeshProUGUI));

@@ -158,7 +158,17 @@ namespace Aeternal.UI
             }
 
             if (enemyNameText != null)
+            {
+                // Long names shrink onto one line instead of wrapping into the intent below.
+                if (!enemyNameText.enableAutoSizing)
+                {
+                    enemyNameText.fontSizeMax = enemyNameText.fontSize;
+                    enemyNameText.fontSizeMin = Mathf.Min(18f, enemyNameText.fontSize);
+                    enemyNameText.enableAutoSizing = true;
+                    enemyNameText.textWrappingMode = TextWrappingModes.NoWrap;
+                }
                 enemyNameText.text = nameString;
+            }
 
         }
 

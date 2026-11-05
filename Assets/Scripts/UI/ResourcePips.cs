@@ -118,6 +118,7 @@ namespace Aeternal.UI
                     icons[i].color = on ? fullColor : emptyColor;
                 }
                 valueText.text = string.IsNullOrEmpty(sealedNote) ? $"{current}/{max}" : sealedNote;
+                valueText.fontSize = string.IsNullOrEmpty(sealedNote) ? 28f : 20f; // a note fits the count's room
                 lastCurrent = current;
                 lastMax = max;
             }

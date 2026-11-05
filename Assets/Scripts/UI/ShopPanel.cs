@@ -159,8 +159,8 @@ namespace Aeternal.UI
                 if (view == null) continue;
                 var group = view.GetComponent<CanvasGroup>();
                 if (group == null) group = view.gameObject.AddComponent<CanvasGroup>();
-                group.alpha = sold ? 0.25f : run.Gold >= price ? 1f : 0.5f;
                 group.interactable = !sold && run.Gold >= price;
+                CardView.SetDarkness(view, sold ? 0.75f : run.Gold >= price ? 0f : 0.5f);
                 if (sold)
                 {
                     var caption = view.GetComponentsInChildren<TMP_Text>().LastOrDefault();

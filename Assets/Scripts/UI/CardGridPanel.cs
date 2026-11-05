@@ -129,7 +129,7 @@ namespace Aeternal.UI
                     string caption = hasCaptions && i < section.captions.Count ? section.captions[i] : null;
                     Action click = onPick != null && !section.dimmed ? () => Pick(card) : (Action)null;
                     var view = CardView.Spawn(gridGo.transform, card, CardWidth, click, caption, Gold);
-                    if (section.dimmed) view.gameObject.AddComponent<CanvasGroup>().alpha = 0.55f;
+                    if (section.dimmed) CardView.SetDarkness(view, 0.45f);
                 }
             }
 

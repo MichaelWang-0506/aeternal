@@ -76,15 +76,20 @@ namespace Aeternal.Core
         }
 
         /// <summary>
-        /// Makes sure the floor holds this type, replacing a random node that isn't one of the
-        /// floor's other guaranteed types.
+        /// Makes sure the floor holds this type, replacing a random node. The first node of each
+        /// of the floor's guaranteed types is kept, but a second copy of one can be replaced
+        /// (two rolled Rests must still leave room for the guaranteed merchant).
         /// </summary>
         static void Guarantee(List<MapNodeType> types, MapNodeType type, MapFloorRule rule, System.Random rng)
         {
             if (type == MapNodeType.None || types.Contains(type)) return;
             var free = new List<int>();
             for (int i = 0; i < types.Count; i++)
-                if (types[i] != rule.guaranteed && types[i] != rule.alsoGuaranteed) free.Add(i);
+            {
+                bool keep = (types[i] == rule.guaranteed || types[i] == rule.alsoGuaranteed)
+                            && types.IndexOf(types[i]) == i;
+                if (!keep) free.Add(i);
+            }
             if (free.Count > 0) types[free[rng.Next(free.Count)]] = type;
         }
 
