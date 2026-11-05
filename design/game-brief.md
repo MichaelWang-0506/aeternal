@@ -42,7 +42,7 @@
 7. Art without printed card text; 8-bit music and sound
 
 ## Amendments to the GDD (decided since it was written)
-- Shop: GDD "open the shop anytime" → merchant Hermus is a map node (one guaranteed before each boss).
+- Shop: GDD "open the shop anytime" → merchant Hermus is a map node. Every path converges on one merchant on the floor right before each boss; the rest stop moves to the elite floor below it.
 - Regions: GDD "3 enemies & 1 boss, an event after every two" → a 5-floor branching map with an event floor midway (docs/level1-zeusonia.md).
 - Shift upgrade "materials" → **Aether**: 1 per fight, 2 per elite, 3 per boss, 30 gold at the merchant; each Shift level adds +2 to the deck's damage, shield and heal Shift effects (costs 2 / 3 / 4). Kept per deck, so a sealed god deck can be upgraded in advance.
 - GDD §9 "use an action point to create a shield" → **Guard**: 1 AP for 2 shield until the end of the round (X).

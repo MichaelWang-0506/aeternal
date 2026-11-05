@@ -205,7 +205,12 @@ namespace Aeternal.Map
             float x = (node.order - (count - 1) * 0.5f) * NodeSpacing;
             // A little sideways wobble per node, fixed by its id, so floors don't look ruled.
             x += ((node.id * 37) % 7 - 3) * 9f;
-            float y = -MapHeight * 0.5f + 40f + node.floor * ((MapHeight - 80f) / Mathf.Max(1, run.Map.FloorCount - 1));
+            // The boss sits an extra half step up: its portrait is bigger and its label hangs below it.
+            const float BossGap = 0.5f;
+            int top = run.Map.FloorCount - 1;
+            float step = (MapHeight - 80f) / Mathf.Max(1f, top + BossGap);
+            float units = node.floor + (node.floor >= top && top > 0 ? BossGap : 0f);
+            float y = -MapHeight * 0.5f + 40f + units * step;
             return new Vector2(x, y);
         }
 

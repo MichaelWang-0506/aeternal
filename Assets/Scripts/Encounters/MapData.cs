@@ -44,18 +44,23 @@ namespace Aeternal.Encounters
                                treasureWeight = treasure, shopWeight = shop, guaranteed = guaranteed,
                                alsoGuaranteed = alsoGuaranteed };
 
+        /// <summary>A floor of exactly one node of this type: every path passes through it.</summary>
+        static MapFloorRule Single(MapNodeType type) =>
+            new MapFloorRule { minNodes = 1, maxNodes = 1, guaranteed = type };
+
         /// <summary>
         /// Five floors before the boss: fights to start, an event midway (GDD: after every two
-        /// enemies), an elite floor, then a rest and a merchant before the boss, when there is
-        /// gold to spend (every run meets one). More merchants may turn up on floors 2 and 3.
+        /// enemies), a floor of elites and a rest, then every path converges on one merchant
+        /// right before the boss, when there is gold to spend. More merchants may turn up on
+        /// floors 2 and 3.
         /// </summary>
         public static List<MapFloorRule> DefaultPlan() => new List<MapFloorRule>
         {
             Rule(1f, 0f, 0f, 0f, 0f, 0f),
             Rule(0.45f, 0f, 0.25f, 0f, 0.15f, 0.15f),
             Rule(0.45f, 0f, 0.25f, 0.15f, 0f, 0.15f, MapNodeType.Event),
-            Rule(0.4f, 0.6f, 0f, 0f, 0f, 0f, MapNodeType.Elite),
-            Rule(0f, 0f, 0.3f, 0.6f, 0.1f, 0f, MapNodeType.Rest, MapNodeType.Shop),
+            Rule(0.3f, 0.5f, 0f, 0.2f, 0f, 0f, MapNodeType.Elite, MapNodeType.Rest),
+            Single(MapNodeType.Shop),
         };
     }
 
