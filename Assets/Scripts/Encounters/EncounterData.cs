@@ -44,6 +44,10 @@ namespace Aeternal.Encounters
         [Header("Presentation (optional)")]
         [Tooltip("Sprite to swap onto the enemy's SpriteRenderer, if assigned.")]
         public Sprite sprite;
+        [Tooltip("Multiplied into the sprite, so one piece of art can serve several enemies (white = as drawn).")]
+        public Color spriteTint = Color.white;
+        [Tooltip("Sprite size relative to the scene's enemy; elites and bosses read as bigger threats.")]
+        public float spriteScale = 1f;
 
         [Header("Charged attack (boss mechanic)")]
         [Tooltip("Every Nth round the enemy unleashes a charged attack (0 = never). It is announced " +

@@ -28,6 +28,11 @@ namespace Aeternal.UI
         [Tooltip("Maximum number of messages to keep visible")]
         public int maxMessages = 10;
 
+        [Tooltip("Font size of new entries (0 keeps the prefab's). Set by BattleUISkin.")]
+        public float entryFontSize = 0f;
+        [Tooltip("Colour of new entries (alpha 0 keeps the prefab's). Set by BattleUISkin.")]
+        public Color entryColor = new Color(1f, 1f, 1f, 0f);
+
         private List<LogEntry> activeEntries = new List<LogEntry>();
 
         private class LogEntry
@@ -95,6 +100,12 @@ namespace Aeternal.UI
             if (text != null)
             {
                 text.text = message;
+                if (entryFontSize > 0f)
+                {
+                    text.enableAutoSizing = false;
+                    text.fontSize = entryFontSize;
+                }
+                if (entryColor.a > 0f) text.color = entryColor;
             }
 
             var entry = new LogEntry(entryObj, text, canvasGroup);

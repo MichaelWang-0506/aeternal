@@ -136,7 +136,9 @@ namespace Aeternal.UI
             {
                 var c = choice;
                 string caption = c.isShard ? "STORM SHARD · SEALED" : null;
-                CardView.Spawn(row, c.card, CardWidth, () => Finish(c), caption, Gold);
+                var slot = CardView.Spawn(row, c.card, CardWidth, () => Finish(c), caption, Gold);
+                // The row's layout places the slot, so the face inside it is what rises.
+                UIIntro.Play(slot, rise: 60f, mover: slot.childCount > 0 ? slot.GetChild(0) as RectTransform : null);
                 yield return new WaitForSecondsRealtime(0.08f); // deal them one after another
             }
 

@@ -22,6 +22,8 @@ MonoBehaviour:
   canAOE: 1
   turnsBetweenAttacks: 1
   sprite: {fileID: 2572365745140355499, guid: b69b5a191df0427458484039d25d04eb, type: 3}
+  spriteTint: {r: 0.62, g: 0.78, b: 1, a: 1}
+  spriteScale: 1.2
   introDialogue:
   - speaker: ""
     text: "A goblin shaman stands in the pass, the storm answering its every gesture."

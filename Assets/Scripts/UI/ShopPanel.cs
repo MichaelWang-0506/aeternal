@@ -47,6 +47,7 @@ namespace Aeternal.UI
             shop.run = run;
             shop.onDone = onDone;
             shop.Build();
+            UIIntro.Play((RectTransform)go.transform, rise: 0f);
         }
 
         void Build()

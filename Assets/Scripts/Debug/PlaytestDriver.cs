@@ -180,7 +180,8 @@ namespace Aeternal.DevTools
 
         static RunMapNode Prefer(List<RunMapNode> options)
         {
-            MapNodeType[] order = { MapNodeType.Shop, MapNodeType.Event, MapNodeType.Enemy, MapNodeType.Elite,
+            // Elite before Event: the elite fight is the one with its own look to check.
+            MapNodeType[] order = { MapNodeType.Shop, MapNodeType.Elite, MapNodeType.Event, MapNodeType.Enemy,
                                     MapNodeType.Treasure, MapNodeType.Rest, MapNodeType.Boss };
             foreach (var type in order)
             {

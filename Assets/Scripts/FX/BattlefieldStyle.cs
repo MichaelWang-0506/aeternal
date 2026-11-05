@@ -58,6 +58,13 @@ namespace Aeternal.FX
         public float attackGlowScale = 1.35f;
         [Tooltip("Pulses per second of the glow on attacked tiles.")]
         public float attackPulseSpeed = 1.5f;
+        [Tooltip("Badge on each attacked tile with the damage it will take.")]
+        public Color damageBadgeColor = new Color(0.72f, 0.09f, 0.07f, 1f);
+        public Color damageBadgeRimColor = new Color(1f, 0.8f, 0.35f, 1f);
+        [Tooltip("Badge diameter relative to the tile width.")]
+        public float damageBadgeSize = 0.46f;
+        [Tooltip("Border of the tiles the player can step to when standing on an attacked tile.")]
+        public Color safeBorderColor = new Color(0.5f, 0.9f, 0.5f, 1f);
 
         [Header("Character HUD")]
         [Tooltip("Width of the HUD under each character, in world units. Tiles are 2 units apart.")]
@@ -77,6 +84,8 @@ namespace Aeternal.FX
         public Color intentColor = new Color(1f, 0.55f, 0.35f, 1f);
         [Tooltip("Colour of the ELITE tag before an elite enemy's name.")]
         public Color eliteLabelColor = new Color(1f, 0.8f, 0.3f, 1f);
+        [Tooltip("Pulsing aura behind elite enemies, so they read as a bigger threat at a glance.")]
+        public Color eliteAuraColor = new Color(1f, 0.75f, 0.25f, 0.5f);
 
         [Header("Resources (bottom-left panel)")]
         [Tooltip("Action Point icon. Empty uses a generated copper gear.")]
@@ -102,6 +111,20 @@ namespace Aeternal.FX
         public Vector2 shiftButtonPosition = new Vector2(0f, 105f);
         [Tooltip("Offset between the stacked cards of the draw pile; small, so only their edges show.")]
         public Vector2 drawPileOffset = new Vector2(5f, 5f);
+
+        [Header("Battle UI (matches the main menu)")]
+        public Color panelColor = new Color(0.07f, 0.06f, 0.08f, 0.96f);
+        [Tooltip("Gold edge around panels and buttons.")]
+        public Color panelEdgeColor = new Color(1f, 0.8f, 0.35f, 0.45f);
+        [Tooltip("Tray behind the cards in hand.")]
+        public Color handTrayColor = new Color(0.12f, 0.1f, 0.11f, 0.9f);
+        public Color buttonColor = new Color(0.1f, 0.09f, 0.11f, 0.92f);
+        [Tooltip("End Turn: the button the player presses most.")]
+        public Color primaryButtonColor = new Color(0.55f, 0.36f, 0.12f, 0.95f);
+        public Color buttonTextColor = new Color(1f, 0.94f, 0.82f, 1f);
+        [Tooltip("Font size of the combat log on the left; the log prefab's is too big to read past.")]
+        public float logFontSize = 22f;
+        public Color logColor = new Color(0.85f, 0.8f, 0.7f, 0.8f);
 
         [Header("Enraged boss")]
         [Tooltip("Aura, badge and banner colour of an enemy that can no longer be stopped.")]

@@ -39,7 +39,7 @@
 4. Divine Focus recharge rules (GDD §9: does not refill each round, only under certain conditions)
 5. Level 2: the next god's region, deck and blessing; then terrain-blocking enemies
 6. Chronus's bonus chart (GDD §5, "the roguelike portion"): bonuses between attempts, unlocked with currency from enemies
-7. Art without printed card text; 8-bit music and sound
+7. Art without printed card text; 8-bit music and sound (placeholder chiptune music and effects generated in code since 2026-11-04: Assets/Scripts/Audio; swap in real tracks)
 
 ## Amendments to the GDD (decided since it was written)
 - Shop: GDD "open the shop anytime" → merchant Hermus is a map node. Every path converges on one merchant on the floor right before each boss; the rest stop moves to the elite floor below it.

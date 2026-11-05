@@ -184,7 +184,7 @@ namespace Aeternal.FX
         {
             SpawnFloatAtWorld(EnemyPos(), info.isDamageOverTime ? $"-{info.amount} Bleed" : $"-{info.amount}",
                 info.isDamageOverTime ? DOT_COLOR : DAMAGE_COLOR, 38);
-            Flash(enemySprite, enemyBaseColor);
+            Flash(enemySprite, enemyController != null ? enemyController.SpriteTint : enemyBaseColor);
         }
 
         private void OnPlayerHealed(int amount) => SpawnFloatAtWorld(PlayerPos(), $"+{amount}", HEAL_COLOR, 32);

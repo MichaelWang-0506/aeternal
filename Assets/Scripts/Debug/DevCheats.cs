@@ -8,7 +8,8 @@ namespace Aeternal.DevTools
 {
     /// <summary>
     /// Developer cheats for playtesting. Spawns itself automatically on game start
-    /// (no scene wiring required) and shows a small overlay while in combat:
+    /// (no scene wiring required) and, after F3, shows a small overlay while in combat (hidden
+    /// by default so screenshots show the game as players see it; the hotkeys always work):
     ///   - WIN (F1): instantly kills the enemy, triggering the normal victory flow
     ///     (victory/reward panels, run advancement) so the whole loop can be tested fast.
     ///   - LOSE (F2): kills the player, for testing the defeat flow.
@@ -19,6 +20,7 @@ namespace Aeternal.DevTools
         private static DevCheats instance;
 
         private CombatManager combat;
+        private bool showButtons;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Bootstrap()
@@ -55,11 +57,12 @@ namespace Aeternal.DevTools
             if (Aeternal.UI.PauseMenu.IsPaused) return;
             if (Input.GetKeyDown(KeyCode.F1)) ForceWin();
             if (Input.GetKeyDown(KeyCode.F2)) ForceLose();
+            if (Input.GetKeyDown(KeyCode.F3)) showButtons = !showButtons;
         }
 
         private void OnGUI()
         {
-            if (combat == null || combat.IsGameOver) return;
+            if (!showButtons || combat == null || combat.IsGameOver) return;
 
             const float w = 130f, h = 38f, pad = 10f;
             GUI.backgroundColor = new Color(0.2f, 0.8f, 0.2f, 0.9f);

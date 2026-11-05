@@ -32,6 +32,9 @@ namespace Aeternal.Enemies
         [Header("Refs")]
         public HealthComponent health;
 
+        /// <summary>The encounter's sprite tint; hit flashes return to it.</summary>
+        public Color SpriteTint { get; private set; } = Color.white;
+
         public event Action OnIntentChanged;
         /// <summary>Fired when the enemy executes its attack. Arg is true if it hit the player.</summary>
         public event Action<bool> OnAttackExecuted;
@@ -91,6 +94,15 @@ namespace Aeternal.Enemies
                 var sr = GetComponentInChildren<SpriteRenderer>();
                 if (sr != null) sr.sprite = data.sprite;
             }
+
+            var body = GetComponentInChildren<SpriteRenderer>();
+            if (body != null)
+            {
+                SpriteTint = data.spriteTint;
+                body.color = data.spriteTint;
+            }
+            if (data.spriteScale > 0f && !Mathf.Approximately(data.spriteScale, 1f))
+                transform.localScale *= data.spriteScale;
         }
 
         public void SetIntent(int direction, int turnsDelay = 1)

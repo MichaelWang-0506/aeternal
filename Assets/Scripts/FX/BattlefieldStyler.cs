@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Aeternal.Combat;
@@ -14,7 +15,9 @@ namespace Aeternal.FX
     /// Restyles any scene with a CombatManager (combat and the tutorial) at runtime, from the
     /// BattlefieldStyle asset: a darkened, vignetted backdrop; larger characters with a ground
     /// shadow and backlight; raised, bordered tiles with a pulsing glow on the tiles the enemy
-    /// will attack; and a CharacterHUD on the player and the enemy. Health, shield, statuses
+    /// will attack, each with a badge showing the damage it takes (and, while the player stands
+    /// on one, the safe tiles outlined green); a battle UI restyled to match the main menu
+    /// (BattleUISkin); and a CharacterHUD on the player and the enemy. Health, shield, statuses
     /// and intent move onto those HUDs, so the matching lines of the old corner stats panels
     /// are hidden (the enemy name stays), and AP and DF become rows of icons (ResourcePips).
     /// Purely visual: it never changes game state, and needs no scene wiring.
@@ -32,6 +35,9 @@ namespace Aeternal.FX
         const int TileBorderOrder = -6;
         const int TileFillOrder = -5;
         const int ShadowOrder = -2;
+        // Above the characters (2) and their HUDs (hudSortingOrder), so a badge under the
+        // player is never hidden.
+        const int BadgeOrder = 20;
 
         BattlefieldStyle style;
         EnemyController enemy;
@@ -40,6 +46,9 @@ namespace Aeternal.FX
         readonly SpriteRenderer[] tileFills = new SpriteRenderer[4];
         readonly SpriteRenderer[] tileGlows = new SpriteRenderer[4];
         readonly bool[] attacked = new bool[4];
+        readonly Transform[] damageBadges = new Transform[4];
+        readonly TextMeshPro[] damageTexts = new TextMeshPro[4];
+        Aeternal.Player.PlayerPositioningComponent playerPos;
         // Per character: its sprite, and the shadow and backlight that follow it.
         readonly System.Collections.Generic.List<(SpriteRenderer body, SpriteRenderer shadow, SpriteRenderer light)> characters =
             new System.Collections.Generic.List<(SpriteRenderer, SpriteRenderer, SpriteRenderer)>();
@@ -78,6 +87,7 @@ namespace Aeternal.FX
             enemy = combat.enemy;
 
             var playerHealth = combat.playerHealth;
+            playerPos = playerHealth != null ? playerHealth.GetComponent<Aeternal.Player.PlayerPositioningComponent>() : null;
             var vis = combat.playerVisualPositioner;
             Transform playerVisual = vis != null && vis.playerObject != null ? vis.playerObject.transform
                 : playerHealth != null ? playerHealth.transform : null;
@@ -114,6 +124,8 @@ namespace Aeternal.FX
             var enemyBody = enemy != null ? enemy.GetComponentInChildren<SpriteRenderer>() : null;
             AddDepth(playerBody);
             AddDepth(enemyBody);
+            var current = RunManager.Instance != null && RunManager.Instance.HasActiveRun ? RunManager.Instance.CurrentEncounter : null;
+            if (current != null && current.isElite) SetAura(enemyBody, style.eliteAuraColor);
 
             // After scaling, so the animators keep the enlarged size as their rest pose.
             if (playerBody != null && playerHealth != null)
@@ -227,10 +239,14 @@ namespace Aeternal.FX
             }
 
             float pulse = 0.5f + 0.5f * Mathf.Sin(Time.time * style.attackPulseSpeed * Mathf.PI * 2f);
+            int standing = playerPos != null ? playerPos.facingIndex : -1;
+            bool inDanger = standing >= 0 && standing < 4 && attacked[standing];
             for (int i = 0; i < 4; i++)
             {
                 if (tileBorders[i] == null) continue;
-                tileBorders[i].color = attacked[i] ? style.attackBorderColor : style.tileBorderColor;
+                var safe = Color.Lerp(style.tileBorderColor, style.safeBorderColor, Mathf.Lerp(0.3f, 0.75f, pulse));
+                tileBorders[i].color = attacked[i] ? style.attackBorderColor : inDanger ? safe : style.tileBorderColor;
+                UpdateDamageBadge(i, i == standing, pulse);
                 tileFills[i].color = attacked[i] ? style.attackFillColor : style.tileFillColor;
                 tileGlows[i].enabled = attacked[i];
                 if (attacked[i])
@@ -297,12 +313,73 @@ namespace Aeternal.FX
                     tileFills[i] = StyleTile(border, style.tileFillColor);
                     tileGlows[i] = AddLayer(border, "Tile Glow", border.sprite, style.attackGlowScale, TileGlowOrder, style.attackGlowColor);
                     tileGlows[i].enabled = false;
+                    MakeDamageBadge(i, border);
                 }
             }
 
             var center = GameObject.Find(CenterTileName);
             var centerBorder = center != null ? center.GetComponent<SpriteRenderer>() : null;
             if (centerBorder != null) StyleTile(centerBorder, style.centerTileFillColor);
+        }
+
+        /// <summary>
+        /// A red disc with a gold rim at the tile's top-right corner, showing how much damage the
+        /// enemy's attack deals there. Hidden until the tile is attacked.
+        /// </summary>
+        void MakeDamageBadge(int direction, SpriteRenderer tile)
+        {
+            var bounds = tile.bounds;
+            float size = bounds.size.x * style.damageBadgeSize;
+            var badge = new GameObject("Damage Badge").transform;
+            badge.SetParent(transform, false);
+            badge.position = new Vector3(bounds.max.x - size * 0.3f, bounds.max.y - size * 0.3f, 0f);
+
+            var rim = new GameObject("Rim", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+            rim.transform.SetParent(badge, false);
+            rim.transform.localScale = Vector3.one * size;
+            rim.sprite = ProceduralSprites.Disc();
+            rim.color = style.damageBadgeRimColor;
+            rim.sortingLayerID = tile.sortingLayerID;
+            rim.sortingOrder = BadgeOrder;
+
+            var disc = new GameObject("Disc", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+            disc.transform.SetParent(badge, false);
+            disc.transform.localScale = Vector3.one * size * 0.84f;
+            disc.sprite = ProceduralSprites.Disc();
+            disc.color = style.damageBadgeColor;
+            disc.sortingLayerID = tile.sortingLayerID;
+            disc.sortingOrder = BadgeOrder + 1;
+
+            var text = new GameObject("Damage", typeof(RectTransform)).AddComponent<TextMeshPro>();
+            text.transform.SetParent(badge, false);
+            text.rectTransform.sizeDelta = new Vector2(size * 1.5f, size);
+            text.alignment = TextAlignmentOptions.Center;
+            text.fontStyle = FontStyles.Bold;
+            text.fontSize = size * 6f;
+            text.color = Color.white;
+            text.outlineWidth = 0.2f;
+            text.outlineColor = new Color32(0, 0, 0, 255);
+            text.sortingLayerID = tile.sortingLayerID;
+            text.sortingOrder = BadgeOrder + 2;
+
+            damageBadges[direction] = badge;
+            damageTexts[direction] = text;
+            badge.gameObject.SetActive(false);
+        }
+
+        /// <summary>Shows the badge on an attacked tile; bigger on the tile the player stands on.</summary>
+        void UpdateDamageBadge(int direction, bool playerHere, float pulse)
+        {
+            var badge = damageBadges[direction];
+            if (badge == null) return;
+            bool show = attacked[direction];
+            if (badge.gameObject.activeSelf != show) badge.gameObject.SetActive(show);
+            if (!show) return;
+
+            string dmg = $"-{enemy.baseDamage}";
+            if (damageTexts[direction].text != dmg) damageTexts[direction].text = dmg;
+            float scale = playerHere ? Mathf.Lerp(1.1f, 1.3f, pulse) : 1f;
+            badge.localScale = new Vector3(scale, scale, 1f);
         }
 
         /// <summary>
@@ -371,6 +448,7 @@ namespace Aeternal.FX
         /// </summary>
         void ArrangeSceneUI()
         {
+            BattleUISkin.Apply(style);
             foreach (var ui in FindObjectsByType<EnemyStatsUI>(FindObjectsSortMode.None))
             {
                 if (ui.intentText == null) continue;
