@@ -56,6 +56,57 @@ namespace Aeternal.UI
             {
                 canvasGroup = gameObject.AddComponent<CanvasGroup>();
             }
+            StyleFace();
+        }
+
+        static readonly Color TitleColor = new Color(1f, 0.76f, 0.2f, 1f);
+        static readonly Color InkColor = new Color(0.96f, 0.84f, 0.62f, 1f);
+
+        /// <summary>
+        /// The artwork is a whole printed card, and its printed title and cost differ in
+        /// lettering from card to card. Plates in the game's pixel font cover both (the
+        /// description strip already covers the printed rules text), so every card reads the
+        /// same and always shows the card data. Safe to run twice (hover previews copy a card).
+        /// Positions are in the prefab's 220 x 308 card units, sized to cover the printed title
+        /// and cost circle on every card in Assets/Images.
+        /// </summary>
+        void StyleFace()
+        {
+            if (nameText != null)
+            {
+                var strip = nameText.transform.parent as RectTransform;
+                if (strip != null && strip != transform)
+                {
+                    strip.gameObject.SetActive(true);
+                    // Tall enough for printed titles that wrap to a second line (Skull Smash).
+                    PlaceTopLeft(strip, new Vector2(50f, -10f), new Vector2(164f, 58f));
+                }
+                Letter(nameText, TitleColor, TMPro.FontStyles.Bold | TMPro.FontStyles.UpperCase, 12f, 26f);
+            }
+            if (costText != null)
+            {
+                var badge = costText.transform.parent as RectTransform;
+                if (badge != null && badge != transform) PlaceTopLeft(badge, new Vector2(5f, -7f), new Vector2(46f, 46f));
+                Letter(costText, InkColor, TMPro.FontStyles.Bold, 14f, 26f);
+            }
+            if (descriptionText != null) Letter(descriptionText, InkColor, TMPro.FontStyles.Normal, 14f, 22f);
+        }
+
+        static void PlaceTopLeft(RectTransform rect, Vector2 position, Vector2 size)
+        {
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0f, 1f);
+            rect.anchoredPosition = position;
+            rect.sizeDelta = size;
+        }
+
+        static void Letter(TMPro.TMP_Text text, Color color, TMPro.FontStyles style, float min, float max)
+        {
+            text.color = color;
+            text.fontStyle = style;
+            text.enableAutoSizing = true;
+            text.fontSizeMin = min;
+            text.fontSizeMax = max;
+            text.alignment = TMPro.TextAlignmentOptions.Center;
         }
 
         private void Start()

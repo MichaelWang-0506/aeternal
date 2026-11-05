@@ -190,8 +190,8 @@ MonoBehaviour:
     -Divine Focus is similar to action points but are used
     for "Shifting" which will be implemented.'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -525,8 +525,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Bottom left are your resources, one icon per point:\n- <b>Action Points (AP)</b> - copper gears: spent to play cards, refilled every round\n- <b>Divine Focus (DF)</b> - blue crystals: spent to Shift, does NOT refill on its own\n\nLit icons are what you have left; dim ones are spent.\nYour Health, Shield and status effects are shown under your character."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1013,8 +1013,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Action Points: current/max'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1235,8 +1235,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Health: current/max'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1634,8 +1634,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1770,8 +1770,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: xx
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2134,8 +2134,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2714,8 +2714,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4339,8 +4339,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Effects: '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5074,8 +5074,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Played cards go to the discard pile. The number shows how many cards are in it.\nWhen your draw pile runs out, the whole discard pile is shuffled back into it. Cards like Recycle bring some back sooner.\n\n<b>Click the discard pile to look inside, then click it again to close it.</b>"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5413,8 +5413,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "These are the cards in your hand. The number in the top left is the AP cost; the text says what the card does.\n\nAttack cards deal damage. Movement cards (like Rotate, Backstab or Sword Swing) change your square.\n\n<b>Play a card now to continue.</b>"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5628,8 +5628,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Welcome to Aeternal!\nAeternal is a roguelike deck-builder: fight your way across the map with a deck of cards, and grow it after every victory.\n\nUse <b>Next</b> (or Space) to continue, <b>Back</b> to review, or <b>Skip Tutorial</b> at any time."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6538,8 +6538,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Status effects can be put on you or on the enemy. For example:\n- <b>Bleed</b>: deals damage at the end of each round\n- <b>Stun / Blackout</b>: the target skips its next action\n- <b>Dodge</b>: cancels the next attack against you\n\nYour effects show in your stats panel; the enemy's show in theirs."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6674,8 +6674,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Everything about a fighter is shown on the fighter:\n- The bar under each character is its <b>Health</b>; the blue part is <b>Shield</b>, which absorbs damage first\n- Colored labels next to the name are <b>status effects</b>, with rounds left in brackets\n\nTop right, under the enemy's name, is its <b>Intent</b>: which way it attacks and for how much. Check it every round before you play your cards."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7117,8 +7117,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Active Effects:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7395,8 +7395,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Shield: current'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7531,8 +7531,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "This is the battlefield. The enemy stands in the center; you stand on one of the four squares around it.\n\n<b>Each round the enemy marks the square(s) it will attack - they glow red. If you are standing there when your turn ends, you get hit.</b>\n\nMovement cards let you step out of the way. Dodging is the heart of every fight."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8180,8 +8180,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Intent: None'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8378,8 +8378,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Divine Focus powers <b>Shifting</b>.\nDuring your turn, press <b>Z</b> (or the Shift button) to swap your active deck for another, such as a god's deck.\n\nEach Shift costs 1 DF and can trigger special effects when you enter or leave a deck. DF does not refill on its own, so save it for the right moment."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -8589,8 +8589,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "That's everything!\nRead the enemy's intent, step out of danger, and strike back.\n\nWant to see this again later? Turn the tutorial back on in Settings.\n\nClick <b>Finish</b> to begin your story."
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9433,8 +9433,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Divine Focus: current/max'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10059,8 +10059,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Bottom right is your draw pile: the cards you have not drawn yet.\n\nWhen you are done playing cards, press <b>End Turn</b>. The enemy attacks the marked square(s), status effects tick, then a new round starts with full AP and new cards.\n\n<b>Press End Turn now and watch the enemy act.</b>"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10440,8 +10440,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10691,8 +10691,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: End Turn
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -10902,8 +10902,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: DISCARD PILE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11695,8 +11695,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Health: current/max'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
+  m_sharedMaterial: {fileID: -4630616063531408544, guid: 53d14f70e9d5840caa091b3aaea132bb, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
