@@ -240,8 +240,16 @@ namespace Aeternal.Combat
         // ------------------------------------------------------------------
 
         /// <summary>Whether Guard can be used now: the player's turn, with enough AP.</summary>
+        /// <summary>
+        /// Optional lock on Guard: while it returns true, Guard can't be used and its button is
+        /// greyed out. Null outside the tutorial, which doesn't teach Guard and holds it locked.
+        /// </summary>
+        public static System.Func<bool> GuardLock;
+
+        bool GuardLocked => GuardLock != null && GuardLock();
+
         public bool CanGuard =>
-            !isGameOver && playerResources != null && playerHealth != null
+            !GuardLocked && !isGameOver && playerResources != null && playerHealth != null
             && (turnManager == null || turnManager.currentState == TurnState.PlayerPhase)
             && playerResources.currentAP >= guardAPCost;
 
@@ -253,7 +261,7 @@ namespace Aeternal.Combat
         {
             if (!CanGuard)
             {
-                if (!isGameOver) Aeternal.UI.ActionLog.Instance?.AddMessage($"Guard needs {guardAPCost} AP on your turn");
+                if (!isGameOver && !GuardLocked) Aeternal.UI.ActionLog.Instance?.AddMessage($"Guard needs {guardAPCost} AP on your turn");
                 return false;
             }
             if (!playerResources.TryConsumeAP(guardAPCost)) return false;

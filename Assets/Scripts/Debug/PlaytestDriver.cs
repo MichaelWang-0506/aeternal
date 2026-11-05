@@ -108,6 +108,7 @@ namespace Aeternal.DevTools
             Check(Click("New Game"), "click New Game");
             yield return Wait(0.6f);
             yield return Shot("new-game-choices");
+            yield return Tutorial();
             Check(Click("Skip Prologue"), "click Skip Prologue");
 
             autoAdvance = true;
@@ -177,6 +178,29 @@ namespace Aeternal.DevTools
         }
 
         static RegionMapView MapView() => FindFirstObjectByType<RegionMapView>();
+
+        /// <summary>
+        /// Opens the tutorial's first step and checks that Guard, which the tutorial doesn't
+        /// teach, is greyed out and locked; then goes back to the New Game choices.
+        /// </summary>
+        IEnumerator Tutorial()
+        {
+            Check(Click("Play Tutorial"), "click Play Tutorial");
+            yield return Until(() => FindFirstObjectByType<TutorialManager>() != null
+                && FindFirstObjectByType<GuardButton>() != null, 20f, "tutorial loads");
+            yield return Wait(2f);
+            yield return Shot("tutorial-first-step");
+            var guard = FindFirstObjectByType<GuardButton>();
+            var combat = FindFirstObjectByType<CombatManager>();
+            Check(guard != null && !guard.GetComponent<Button>().interactable, "tutorial: the Guard button is greyed out");
+            Check(combat != null && !combat.CanGuard && !combat.Guard(), "tutorial: Guard can't be used (button or X)");
+
+            SceneManager.LoadScene("MainMenu");
+            yield return Until(() => FindFirstObjectByType<MainMenuController>() != null, 15f, "back to the main menu");
+            yield return Wait(1f);
+            Check(Click("New Game"), "click New Game again");
+            yield return Wait(0.6f);
+        }
 
         static RunMapNode Prefer(List<RunMapNode> options)
         {

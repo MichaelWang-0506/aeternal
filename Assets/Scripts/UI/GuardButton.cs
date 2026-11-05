@@ -37,6 +37,9 @@ namespace Aeternal.UI
 
             var copy = Instantiate(endTurn.gameObject, endTurn.transform.parent);
             copy.name = "Guard Button";
+            // Right after End Turn in draw order, so overlays drawn over End Turn (the
+            // tutorial's dimming) cover Guard too, instead of it landing on top as the last child.
+            copy.transform.SetSiblingIndex(endTurn.transform.GetSiblingIndex() + 1);
             DestroyImmediate(copy.GetComponent<EndTurnButton>());
             var guard = copy.AddComponent<GuardButton>();
             guard.combat = combat;

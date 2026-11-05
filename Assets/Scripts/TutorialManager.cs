@@ -96,6 +96,7 @@ public class TutorialManager : MonoBehaviour
     bool executing;
     Func<CardUI, bool> cardInterceptor;
     Func<bool> endTurnInterceptor;
+    Func<bool> guardLock;
 
     GameObject controlBar;
     GameObject inputBlocker;
@@ -407,6 +408,9 @@ public class TutorialManager : MonoBehaviour
         endTurnInterceptor = InterceptEndTurn;
         CardUI.PlayInterceptor = cardInterceptor;
         EndTurnButton.EndTurnInterceptor = endTurnInterceptor;
+        // The tutorial doesn't teach Guard: keep it locked (greyed out) until the tutorial ends.
+        guardLock = () => !finished;
+        CombatManager.GuardLock = guardLock;
     }
 
     void OnDisable()
@@ -415,6 +419,7 @@ public class TutorialManager : MonoBehaviour
         if (turnManager != null) turnManager.OnEnemyPhaseStart -= HandleEnemyPhase;
         if (CardUI.PlayInterceptor == cardInterceptor) CardUI.PlayInterceptor = null;
         if (EndTurnButton.EndTurnInterceptor == endTurnInterceptor) EndTurnButton.EndTurnInterceptor = null;
+        if (CombatManager.GuardLock == guardLock) CombatManager.GuardLock = null;
         RestorePopup();
     }
 
