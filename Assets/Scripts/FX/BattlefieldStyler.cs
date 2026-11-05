@@ -27,6 +27,7 @@ namespace Aeternal.FX
 
         // Draw order, back to front. The characters themselves are at 2 (set in the scenes).
         const int BackgroundOrder = -100;
+        const int AmbienceOrder = -95;
         const int VignetteOrder = -90;
         const int TileGlowOrder = -8;
         const int TileSideOrder = -7;
@@ -275,6 +276,11 @@ namespace Aeternal.FX
             var center = new Vector3(cam.transform.position.x, cam.transform.position.y, 0f);
             go.transform.position = center;
             go.transform.localScale = new Vector3(scale, scale, 1f);
+
+            // Smoke, embers and (in stormy encounters) clouds and lightning over the backdrop.
+            var run = RunManager.Instance;
+            bool stormy = run != null && run.HasActiveRun && run.CurrentEncounter != null && run.CurrentEncounter.stormy;
+            AmbientLayer.AddToCamera(cam, sr.sortingLayerID, AmbienceOrder, go.transform, stormy);
 
             // Darken the edges of the backdrop only; tiles and characters draw above it.
             var vignette = new GameObject("Battlefield Vignette", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();

@@ -44,6 +44,9 @@ namespace Aeternal.UI
         private Button button;
         private CanvasGroup canvasGroup;
 
+        /// <summary>Scale in briefly when shown. Off in the hand, which flies its cards in.</summary>
+        [System.NonSerialized] public bool popIn = true;
+
         private void Awake()
         {
             button = GetComponent<Button>();
@@ -118,7 +121,7 @@ namespace Aeternal.UI
             }
 
             UpdateInteractability();
-            StartCoroutine(PopIn());
+            if (popIn) StartCoroutine(PopIn());
         }
 
         // Small scale-in when the card is dealt so drawing is visible.

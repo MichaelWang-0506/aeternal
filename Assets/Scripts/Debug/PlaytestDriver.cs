@@ -13,6 +13,7 @@ using UnityEngine.UI;
 using TMPro;
 using Aeternal.Core;
 using Aeternal.Combat;
+using Aeternal.FX;
 using Aeternal.Map;
 using Aeternal.Stats;
 using Aeternal.UI;
@@ -259,6 +260,7 @@ namespace Aeternal.DevTools
                 Check(guarded && combat.playerResources.currentAP == apBefore - 1, "Guard spends 1 AP");
                 yield return Wait(0.8f);
                 yield return Shot("after-guard");
+                yield return HitEffects(combat);
 
                 yield return PlayUntilReshuffle(combat);
             }
@@ -290,6 +292,23 @@ namespace Aeternal.DevTools
         }
 
         /// <summary>
+        /// A lightning strike on the enemy, captured mid-flash (the first fight's deck has no
+        /// Thunder cards yet), and the hit-stop it triggers handing the game speed back.
+        /// </summary>
+        IEnumerator HitEffects(CombatManager combat)
+        {
+            var fx = CombatFXManager.Instance != null ? CombatFXManager.Instance.GetComponent<ImpactFX>() : null;
+            var enemySprite = combat.enemy != null ? combat.enemy.GetComponentInChildren<SpriteRenderer>() : null;
+            Check(fx != null && enemySprite != null, "hit effects are ready in the fight");
+            if (fx == null || enemySprite == null) yield break;
+            fx.Hit(enemySprite, combat.playerHealth.transform.position, Aeternal.Cards.DamageType.Lightning, 6);
+            yield return Wait(0.03f);
+            yield return Shot("hit-lightning");
+            yield return Wait(0.6f);
+            Check(Time.timeScale == 1f, "the big-hit freeze hands the game speed back");
+        }
+
+        /// <summary>
         /// Plays every card it can each turn and ends the turn, until the draw pile runs out and
         /// the discard pile is shuffled back in. Heals the player each turn so the test survives.
         /// </summary>
@@ -300,7 +319,10 @@ namespace Aeternal.DevTools
             Action<int> onReshuffle = n => reshuffled = n;
             dm.OnDiscardReshuffled += onReshuffle;
             bool emptyWithDiscard = false;
-            bool tookShot = false;
+            bool tookShot = false, tookHitShot = false, tookDrawShot = false;
+            bool drew = false;
+            Action<Aeternal.Cards.CardData> onDrawn = _ => drew = true;
+            dm.OnCardAddedToHand += onDrawn;
 
             for (int turn = 1; turn <= FirstFightTurns && !combat.IsGameOver; turn++)
             {
@@ -309,7 +331,14 @@ namespace Aeternal.DevTools
                     if (combat.IsGameOver) break;
                     if (ui == null || ui.card == null) continue;
                     if (ui.card.costAP > combat.playerResources.currentAP) continue;
+                    bool attacks = ui.card.effects.Any(e => e.effectType == Aeternal.Cards.EffectType.Damage);
                     ui.OnClickPlayCard();
+                    if (attacks && !tookHitShot)
+                    {
+                        tookHitShot = true;
+                        yield return Wait(0.06f);
+                        yield return Shot("hit-physical");
+                    }
                     yield return Wait(0.9f);
                     if (dm.drawPile.Count == 0 && dm.discardPile.Count > 0) emptyWithDiscard = true;
                     if (reshuffled > 0 && !tookShot)
@@ -327,7 +356,16 @@ namespace Aeternal.DevTools
                 var endTurn = FindFirstObjectByType<EndTurnButton>();
                 var button = endTurn != null ? endTurn.GetComponent<Button>() : null;
                 if (button == null) { Fail("End Turn button not found"); break; }
+                drew = false;
                 button.onClick.Invoke();
+                if (!tookDrawShot)
+                {
+                    // Catch the new round's cards in flight from the draw pile.
+                    yield return Until(() => drew, 6f, "a new round deals cards into the hand");
+                    tookDrawShot = true;
+                    yield return Wait(0.15f);
+                    yield return Shot("cards-drawing");
+                }
                 yield return Wait(4f);
                 if (dm.drawPile.Count == 0 && dm.discardPile.Count > 0) emptyWithDiscard = true;
                 if (reshuffled > 0 && !tookShot)
@@ -337,6 +375,7 @@ namespace Aeternal.DevTools
                 }
             }
             dm.OnDiscardReshuffled -= onReshuffle;
+            dm.OnCardAddedToHand -= onDrawn;
 
             if (reshuffled > 0)
                 Pass($"the discard pile was shuffled back in when the draw pile ran out ({reshuffled} cards)");

@@ -12,7 +12,7 @@ namespace Aeternal.FX
 {
     /// <summary>
     /// Combat "juice" layer: floating damage/heal/status numbers, hit flashes, camera shake,
-    /// enemy attack lunges, turn banners, and deck-shift flashes. Purely additive — it only
+    /// enemy attack lunges, turn banners, deck-shift flashes, and the hit effects (ImpactFX). Purely additive — it only
     /// LISTENS to existing gameplay events, never changes game logic.
     /// Bootstraps itself on game start (no scene wiring) and binds whenever a scene with a
     /// CombatManager loads.
@@ -35,6 +35,7 @@ namespace Aeternal.FX
         static readonly Color MISS_COLOR = new Color(0.8f, 0.8f, 0.8f);
 
         private Canvas fxCanvas;
+        private ImpactFX impact;
         private TextMeshProUGUI banner;
 
         // Bound combat refs
@@ -67,6 +68,7 @@ namespace Aeternal.FX
         private void Awake()
         {
             BuildCanvas();
+            impact = gameObject.AddComponent<ImpactFX>();
         }
 
         private void OnEnable()
@@ -116,12 +118,14 @@ namespace Aeternal.FX
                 playerHealth.OnHealed += OnPlayerHealed;
                 playerHealth.OnDodged += OnPlayerDodged;
                 playerHealth.OnShieldChanged += OnPlayerShieldChanged;
+                playerHealth.OnDeathLocal += OnPlayerDied;
             }
             if (enemyHealth != null)
             {
                 enemyHealth.OnDamageTaken += OnEnemyDamaged;
                 enemyHealth.OnHealed += OnEnemyHealed;
                 enemyHealth.OnShieldChanged += OnEnemyShieldChanged;
+                enemyHealth.OnDeathLocal += OnEnemyDied;
             }
             if (playerStatus != null) playerStatus.OnStatusApplied += OnPlayerStatusApplied;
             if (enemyStatus != null) enemyStatus.OnStatusApplied += OnEnemyStatusApplied;
@@ -145,12 +149,14 @@ namespace Aeternal.FX
                 playerHealth.OnHealed -= OnPlayerHealed;
                 playerHealth.OnDodged -= OnPlayerDodged;
                 playerHealth.OnShieldChanged -= OnPlayerShieldChanged;
+                playerHealth.OnDeathLocal -= OnPlayerDied;
             }
             if (enemyHealth != null)
             {
                 enemyHealth.OnDamageTaken -= OnEnemyDamaged;
                 enemyHealth.OnHealed -= OnEnemyHealed;
                 enemyHealth.OnShieldChanged -= OnEnemyShieldChanged;
+                enemyHealth.OnDeathLocal -= OnEnemyDied;
             }
             if (playerStatus != null) playerStatus.OnStatusApplied -= OnPlayerStatusApplied;
             if (enemyStatus != null) enemyStatus.OnStatusApplied -= OnEnemyStatusApplied;
@@ -177,7 +183,9 @@ namespace Aeternal.FX
             SpawnFloatAtWorld(PlayerPos(), info.isDamageOverTime ? $"-{info.amount} Bleed" : $"-{info.amount}",
                 info.isDamageOverTime ? DOT_COLOR : DAMAGE_COLOR, 34);
             Flash(playerSprite, playerBaseColor);
-            if (!info.isDamageOverTime) Shake();
+            if (info.isDamageOverTime) { impact.Bleed(playerSprite); return; }
+            impact.Hit(playerSprite, EnemyPos(), info.type, info.amount);
+            Shake(impact.IsBigHit(info.amount) ? impact.BigHitShake : SHAKE_MAG);
         }
 
         private void OnEnemyDamaged(DamageInfo info)
@@ -185,24 +193,43 @@ namespace Aeternal.FX
             SpawnFloatAtWorld(EnemyPos(), info.isDamageOverTime ? $"-{info.amount} Bleed" : $"-{info.amount}",
                 info.isDamageOverTime ? DOT_COLOR : DAMAGE_COLOR, 38);
             Flash(enemySprite, enemyController != null ? enemyController.SpriteTint : enemyBaseColor);
+            if (info.isDamageOverTime) { impact.Bleed(enemySprite); return; }
+            impact.Hit(enemySprite, PlayerPos(), info.type, info.amount);
+            if (impact.IsBigHit(info.amount)) Shake(impact.BigHitShake);
         }
 
-        private void OnPlayerHealed(int amount) => SpawnFloatAtWorld(PlayerPos(), $"+{amount}", HEAL_COLOR, 32);
-        private void OnEnemyHealed(int amount) => SpawnFloatAtWorld(EnemyPos(), $"+{amount}", HEAL_COLOR, 32);
+        private void OnPlayerHealed(int amount)
+        {
+            SpawnFloatAtWorld(PlayerPos(), $"+{amount}", HEAL_COLOR, 32);
+            impact.Heal(playerSprite);
+        }
+
+        private void OnEnemyHealed(int amount)
+        {
+            SpawnFloatAtWorld(EnemyPos(), $"+{amount}", HEAL_COLOR, 32);
+            impact.Heal(enemySprite);
+        }
+
+        private void OnPlayerDied() => impact.Death(playerSprite);
+        private void OnEnemyDied() => impact.Death(enemySprite);
         private void OnPlayerDodged() => SpawnFloatAtWorld(PlayerPos(), "DODGED!", SHIELD_COLOR, 36);
 
         private void OnPlayerShieldChanged(int total)
         {
             int diff = total - lastPlayerShield;
             lastPlayerShield = total;
-            if (diff > 0) SpawnFloatAtWorld(PlayerPos(), $"+{diff} Shield", SHIELD_COLOR, 30);
+            if (diff <= 0) return;
+            SpawnFloatAtWorld(PlayerPos(), $"+{diff} Shield", SHIELD_COLOR, 30);
+            impact.Shield(playerSprite);
         }
 
         private void OnEnemyShieldChanged(int total)
         {
             int diff = total - lastEnemyShield;
             lastEnemyShield = total;
-            if (diff > 0) SpawnFloatAtWorld(EnemyPos(), $"+{diff} Shield", SHIELD_COLOR, 30);
+            if (diff <= 0) return;
+            SpawnFloatAtWorld(EnemyPos(), $"+{diff} Shield", SHIELD_COLOR, 30);
+            impact.Shield(enemySprite);
         }
 
         private void OnPlayerStatusApplied(string text) => SpawnFloatAtWorld(PlayerPos(), text, STATUS_COLOR, 30);
@@ -287,15 +314,15 @@ namespace Aeternal.FX
             if (sr != null) sr.color = baseColor;
         }
 
-        private void Shake()
+        private void Shake(float magnitude)
         {
             var cam = Camera.main;
             if (cam == null) return;
             if (shakeRoutine != null) { StopCoroutine(shakeRoutine); cam.transform.localPosition = shakeBasePos; }
-            shakeRoutine = StartCoroutine(ShakeRoutine(cam));
+            shakeRoutine = StartCoroutine(ShakeRoutine(cam, magnitude));
         }
 
-        private IEnumerator ShakeRoutine(Camera cam)
+        private IEnumerator ShakeRoutine(Camera cam, float magnitude)
         {
             shakeBasePos = cam.transform.localPosition;
             float elapsed = 0f;
@@ -303,7 +330,7 @@ namespace Aeternal.FX
             {
                 elapsed += Time.deltaTime;
                 float damper = 1f - elapsed / SHAKE_TIME;
-                cam.transform.localPosition = shakeBasePos + (Vector3)(Random.insideUnitCircle * SHAKE_MAG * damper);
+                cam.transform.localPosition = shakeBasePos + (Vector3)(Random.insideUnitCircle * magnitude * damper);
                 yield return null;
             }
             if (cam != null) cam.transform.localPosition = shakeBasePos;

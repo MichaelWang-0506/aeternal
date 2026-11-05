@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using Aeternal.FX;
 using Aeternal.Map;
 
 namespace Aeternal.UI
@@ -68,6 +69,8 @@ namespace Aeternal.UI
             {
                 title = titleGo.transform as RectTransform;
                 if (title != null) titleRest = title.anchoredPosition;
+                // Smoke and embers over the scene's backdrop, under the title.
+                if (title != null) AmbientLayer.AddInside(title.parent as RectTransform, false);
             }
         }
 

@@ -49,6 +49,9 @@ namespace Aeternal.Encounters
         [Tooltip("Sprite size relative to the scene's enemy; elites and bosses read as bigger threats.")]
         public float spriteScale = 1f;
 
+        [Tooltip("Fight under a storm: dark clouds roll across the backdrop and lightning flashes.")]
+        public bool stormy = false;
+
         [Header("Charged attack (boss mechanic)")]
         [Tooltip("Every Nth round the enemy unleashes a charged attack (0 = never). It is announced " +
                  "the round before, then hits every square but one safe square, for extra damage.")]

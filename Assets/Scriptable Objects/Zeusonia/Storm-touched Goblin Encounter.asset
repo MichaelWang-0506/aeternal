@@ -21,7 +21,7 @@ MonoBehaviour:
   damageType: 3
   canAOE: 0
   turnsBetweenAttacks: 1
-  sprite: {fileID: 2572365745140355499, guid: b69b5a191df0427458484039d25d04eb, type: 3}
+  sprite: {fileID: 2572365745140355499, guid: 27093a47f4e545b2986ce09f9447cd47, type: 3}
   introDialogue:
   - speaker: ""
     text: "A goblin scavenges the ruins, lightning crawling over its blade. Once it would have fled at the sight of you."

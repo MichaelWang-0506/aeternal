@@ -120,6 +120,7 @@ namespace Aeternal.Map
                 artImage.sprite = style.backgroundSprite;
                 artImage.color = new Color(0.3f, 0.3f, 0.36f, 1f);
                 artImage.preserveAspect = false;
+                AmbientLayer.AddToUI(art, false, true);
             }
             var vignette = Stretch(Rect("Vignette", bg)).gameObject.AddComponent<Image>();
             vignette.sprite = ProceduralSprites.Vignette();

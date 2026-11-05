@@ -21,7 +21,7 @@ MonoBehaviour:
   damageType: 0
   canAOE: 1
   turnsBetweenAttacks: 1
-  sprite: {fileID: -2011081452543692480, guid: 05aa1440a79063844b2f72ece2cd300c, type: 3}
+  sprite: {fileID: -2011081452543692480, guid: 8ce86cc416034c1795434c58b2432705, type: 3}
   introDialogue:
   - speaker: "Bandit Champion"
     text: "Ten years, and no one has bested you. They say you can see a blade before it is even drawn."

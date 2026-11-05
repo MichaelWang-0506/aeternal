@@ -16,6 +16,7 @@ MonoBehaviour:
   displayName: Zeus
   isBoss: 1
   isElite: 0
+  stormy: 1
   stats: {fileID: 11400000, guid: cb71016ce4054d65a01d44a14f415e37, type: 2}
   baseDamage: 4
   damageType: 3

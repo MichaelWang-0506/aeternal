@@ -126,6 +126,40 @@ namespace Aeternal.FX
         public float logFontSize = 22f;
         public Color logColor = new Color(0.85f, 0.8f, 0.7f, 0.8f);
 
+        [Header("Hit effects")]
+        [Tooltip("Slash arc on a physical hit.")]
+        public Color slashColor = new Color(1f, 0.93f, 0.78f, 1f);
+        [Tooltip("Sparks thrown off a physical hit.")]
+        public Color sparkColor = new Color(1f, 0.62f, 0.22f, 1f);
+        [Tooltip("Bolt and sparks of a lightning hit (Thunder cards, storm enemies).")]
+        public Color lightningColor = new Color(0.55f, 0.85f, 1f, 1f);
+        public Color shieldFxColor = new Color(0.45f, 0.85f, 1f, 1f);
+        public Color healFxColor = new Color(0.45f, 1f, 0.5f, 1f);
+        public Color bleedFxColor = new Color(0.85f, 0.1f, 0.12f, 1f);
+        [Tooltip("A hit of at least this much damage freezes the action for a moment and shakes harder.")]
+        public int bigHitDamage = 5;
+        [Tooltip("Length of that freeze, in real seconds.")]
+        public float hitStopSeconds = 0.07f;
+        [Tooltip("Camera shake of a big hit, in world units (a normal hit on the player shakes 0.14).")]
+        public float bigHitShake = 0.24f;
+
+        [Header("Ambience (moving backgrounds)")]
+        [Tooltip("Smoke drifting across the backdrop; alpha is the densest a puff gets.")]
+        public Color smokeColor = new Color(0.55f, 0.5f, 0.45f, 0.11f);
+        public int smokeCount = 10;
+        [Tooltip("Embers rising from the city.")]
+        public Color emberColor = new Color(1f, 0.62f, 0.25f, 0.9f);
+        public int emberCount = 26;
+        [Tooltip("Dark clouds along the top in stormy encounters (EncounterData.stormy).")]
+        public Color stormCloudColor = new Color(0.1f, 0.11f, 0.18f, 0.6f);
+        public int stormCloudCount = 7;
+        [Tooltip("Colour of the sky lighting up in a storm; alpha is the brightest it gets.")]
+        public Color stormFlashColor = new Color(0.75f, 0.85f, 1f, 0.3f);
+        [Tooltip("Seconds between lightning flashes, at random between x and y.")]
+        public Vector2 stormFlashInterval = new Vector2(5f, 11f);
+        [Tooltip("How far the backdrop sways with the mouse, in UI units (1080 tall). 0 = still.")]
+        public float parallaxPixels = 14f;
+
         [Header("Enraged boss")]
         [Tooltip("Aura, badge and banner colour of an enemy that can no longer be stopped.")]
         public Color rageColor = new Color(0.9f, 0.12f, 0.1f, 1f);

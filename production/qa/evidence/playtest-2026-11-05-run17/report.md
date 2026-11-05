@@ -1,0 +1,112 @@
+# Playtest report
+
+54 passed, 0 failed, 0 errors logged.
+
+## Checks
+- PASS: main menu loads
+- PASS: fresh profile: Continue has no save to load
+- PASS: click New Game
+- PASS: click Play Tutorial
+- PASS: tutorial loads
+- PASS: tutorial: the Guard button is greyed out
+- PASS: tutorial: Guard can't be used (button or X)
+- PASS: back to the main menu
+- PASS: click New Game again
+- PASS: click Skip Prologue
+- PASS: region map loads
+- PASS: opening narration finishes
+- PASS: a run is active
+- PASS: Space opens the Shift page
+- PASS: Enemy fight starts with a hand
+- PASS: clicking the draw pile opens its contents
+- PASS: pause menu exists in the fight
+- PASS: Esc pauses the game
+- PASS: Resume unpauses
+- PASS: Guard spends 1 AP
+- PASS: hit effects are ready in the fight
+- PASS: the big-hit freeze hands the game speed back
+- PASS: a new round deals cards into the hand
+- PASS: the discard pile was shuffled back in when the draw pile ran out (4 cards)
+- PASS: the draw pile is never empty while the discard pile has cards
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: back on the map after Enemy
+- PASS: Enemy fight starts with a hand
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: back on the map after Enemy
+- PASS: Enemy fight starts with a hand
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: back on the map after Enemy
+- PASS: Elite fight starts with a hand
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: back on the map after Elite
+- PASS: merchant opens
+- PASS: buying Aether: -30 gold, +1 Aether
+- PASS: leave the merchant
+- PASS: back on the map after Shop
+- PASS: the merchant was reached before the boss
+- PASS: main menu after Main Menu
+- PASS: a save exists after leaving to the main menu
+- PASS: click Continue
+- PASS: Continue loads the map
+- PASS: Continue restores the run (before: Zeusonia node 9, HP 20, gold 60, Aether 6, deck 12, shards 0; after: Zeusonia node 9, HP 20, gold 60, Aether 6, deck 12, shards 0)
+
+## Errors logged by the game
+- none
+
+## Log
+- 2.1s Playtest started 2026-11-05 11:44, 1280x720
+- 4.0s Screenshot 01-main-menu.png
+- 4.8s Screenshot 02-new-game-choices.png
+- 6.9s Screenshot 03-tutorial-first-step.png
+- 11.3s Screenshot 04-opening-narration.png
+- 20.4s Region Zeusonia: HP -1, gold 0, Aether 0, deck 8
+- 21.0s Screenshot 05-map-start.png
+- 22.0s Screenshot 06-shift-page.png
+- 22.5s Floor 1: options Enemy, Enemy, Enemy; taking Enemy
+- 26.5s Fight vs Storm-touched Goblin: hand 4, draw 4, discard 0
+- 26.6s Screenshot 07-fight-enemy.png
+- 27.6s Screenshot 08-draw-pile-contents.png
+- 28.8s Screenshot 09-pause-in-fight.png
+- 29.3s Screenshot 10-pause-controls.png
+- 30.6s Screenshot 11-after-guard.png
+- 30.8s Screenshot 12-hit-lightning.png
+- 31.6s Screenshot 13-hit-physical.png
+- 32.5s Turn 1: draw 4, discard 1, hand 3, enemy HP 11
+- 33.9s Screenshot 14-cards-drawing.png
+- 38.8s Turn 2: draw 3, discard 2, hand 3, enemy HP 10
+- 43.7s Turn 3: draw 2, discard 3, hand 3, enemy HP 9
+- 48.7s Turn 4: draw 1, discard 4, hand 3, enemy HP 7
+- 52.8s Screenshot 15-after-reshuffle.png
+- 53.7s Turn 5: draw 4, discard 1, hand 3, enemy HP 9
+- 56.4s Screenshot 16-reward-enemy.png
+- 56.5s After the fight: gold 15, Aether 1, deck 9, shards 0, HP 20
+- 57.0s Floor 2: options Enemy; taking Enemy
+- 61.0s Fight vs Storm-touched Goblin: hand 4, draw 5, discard 0
+- 61.2s Screenshot 17-fight-enemy.png
+- 63.7s After the fight: gold 31, Aether 2, deck 10, shards 0, HP 20
+- 64.2s Floor 3: options Enemy; taking Enemy
+- 68.3s Fight vs Storm-touched Goblin: hand 4, draw 6, discard 0
+- 68.4s Screenshot 18-fight-enemy.png
+- 71.0s After the fight: gold 51, Aether 3, deck 11, shards 0, HP 20
+- 71.5s Floor 4: options Rest, Elite; taking Elite
+- 75.6s Fight vs Stormcaller: hand 4, draw 7, discard 0
+- 75.7s Screenshot 19-fight-elite.png
+- 78.3s Screenshot 20-reward-elite.png
+- 78.4s After the fight: gold 90, Aether 5, deck 12, shards 0, HP 20
+- 78.9s Floor 5: options Shop; taking Shop
+- 79.8s Screenshot 21-merchant.png
+- 80.4s Screenshot 22-merchant-after-buy.png
+- 81.0s Reached the boss floor; stopping before the boss.
+- 81.0s No event node was taken on this map.
+- 81.1s Screenshot 23-map-before-boss.png
+- 81.8s Screenshot 24-pause-on-map.png
+- 83.2s Screenshot 25-main-menu-with-save.png
+- 84.8s Screenshot 26-continued-map.png
