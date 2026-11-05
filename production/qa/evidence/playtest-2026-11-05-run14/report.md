@@ -1,0 +1,100 @@
+# Playtest report
+
+47 passed, 0 failed, 0 errors logged.
+
+## Checks
+- PASS: main menu loads
+- PASS: fresh profile: Continue has no save to load
+- PASS: click New Game
+- PASS: click Play Tutorial
+- PASS: tutorial loads
+- PASS: tutorial: the Guard button is greyed out
+- PASS: tutorial: Guard can't be used (button or X)
+- PASS: back to the main menu
+- PASS: click New Game again
+- PASS: click Skip Prologue
+- PASS: region map loads
+- PASS: opening narration finishes
+- PASS: a run is active
+- PASS: Space opens the Shift page
+- PASS: Enemy fight starts with a hand
+- PASS: clicking the draw pile opens its contents
+- PASS: pause menu exists in the fight
+- PASS: Esc pauses the game
+- PASS: Resume unpauses
+- PASS: Guard spends 1 AP
+- PASS: the discard pile was shuffled back in when the draw pile ran out (4 cards)
+- PASS: the draw pile is never empty while the discard pile has cards
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: back on the map after Enemy
+- PASS: Enemy fight starts with a hand
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: back on the map after Enemy
+- PASS: back on the map after Rest
+- PASS: Elite fight starts with a hand
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: back on the map after Elite
+- PASS: merchant opens
+- PASS: buying Aether: -30 gold, +1 Aether
+- PASS: leave the merchant
+- PASS: back on the map after Shop
+- PASS: the merchant was reached before the boss
+- PASS: main menu after Main Menu
+- PASS: a save exists after leaving to the main menu
+- PASS: click Continue
+- PASS: Continue loads the map
+- PASS: Continue restores the run (before: Zeusonia node 11, HP 20, gold 47, Aether 5, deck 11, shards 0; after: Zeusonia node 11, HP 20, gold 47, Aether 5, deck 11, shards 0)
+
+## Errors logged by the game
+- none
+
+## Log
+- 2.1s Playtest started 2026-11-05 11:18, 1280x720
+- 4.1s Screenshot 01-main-menu.png
+- 4.8s Screenshot 02-new-game-choices.png
+- 7.0s Screenshot 03-tutorial-first-step.png
+- 11.3s Screenshot 04-opening-narration.png
+- 20.4s Region Zeusonia: HP -1, gold 0, Aether 0, deck 8
+- 21.1s Screenshot 05-map-start.png
+- 22.0s Screenshot 06-shift-page.png
+- 22.5s Floor 1: options Enemy, Enemy, Enemy; taking Enemy
+- 26.5s Fight vs Storm-touched Goblin: hand 4, draw 4, discard 0
+- 26.7s Screenshot 07-fight-enemy.png
+- 27.6s Screenshot 08-draw-pile-contents.png
+- 28.8s Screenshot 09-pause-in-fight.png
+- 29.3s Screenshot 10-pause-controls.png
+- 30.7s Screenshot 11-after-guard.png
+- 31.6s Turn 1: draw 4, discard 1, hand 3, enemy HP 9
+- 36.5s Turn 2: draw 3, discard 2, hand 3, enemy HP 9
+- 41.5s Turn 3: draw 2, discard 3, hand 3, enemy HP 10
+- 46.4s Turn 4: draw 1, discard 4, hand 3, enemy HP 9
+- 50.5s Screenshot 12-after-reshuffle.png
+- 51.5s Turn 5: draw 4, discard 1, hand 3, enemy HP 10
+- 54.1s Screenshot 13-reward-enemy.png
+- 54.2s After the fight: gold 21, Aether 1, deck 9, shards 0, HP 17
+- 54.7s Floor 2: options Enemy; taking Enemy
+- 58.7s Fight vs Storm-touched Goblin: hand 4, draw 5, discard 0
+- 58.9s Screenshot 14-fight-enemy.png
+- 61.4s After the fight: gold 42, Aether 2, deck 10, shards 0, HP 17
+- 62.0s Floor 3: options Rest; taking Rest
+- 63.6s Screenshot 15-rest.png
+- 64.1s Floor 4: options Rest, Elite; taking Elite
+- 68.2s Fight vs Stormcaller: hand 4, draw 6, discard 0
+- 68.3s Screenshot 16-fight-elite.png
+- 70.9s Screenshot 17-reward-elite.png
+- 70.9s After the fight: gold 77, Aether 4, deck 11, shards 0, HP 20
+- 71.5s Floor 5: options Shop; taking Shop
+- 72.4s Screenshot 18-merchant.png
+- 73.0s Screenshot 19-merchant-after-buy.png
+- 73.5s Reached the boss floor; stopping before the boss.
+- 73.5s No event node was taken on this map.
+- 73.7s Screenshot 20-map-before-boss.png
+- 74.4s Screenshot 21-pause-on-map.png
+- 75.8s Screenshot 22-main-menu-with-save.png
+- 77.4s Screenshot 23-continued-map.png

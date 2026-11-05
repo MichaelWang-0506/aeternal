@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Linq;
 using Aeternal.Stats;
 using Aeternal.Enemies;
@@ -8,22 +7,14 @@ using TMPro;
 namespace Aeternal.UI
 {
     /// <summary>
-    /// UI component that displays enemy stats (Health, Shield, Name) in the game window.
-    /// Attach this to a GameObject with Text/TextMeshPro components for each stat.
-    /// Subscribes directly to the enemy's HealthComponent for accurate updates.
+    /// The enemy's name and intent in the top-right corner. Health, shield and status effects
+    /// are shown by the CharacterHUD under the enemy instead.
     /// </summary>
     public class EnemyStatsUI : MonoBehaviour
     {
         [Header("Enemy Reference")]
         [Tooltip("The enemy GameObject with HealthComponent and EnemyController")]
         public GameObject enemyObject;
-
-        [Header("Health Display")]
-        public TMP_Text healthText;
-        public Slider healthSlider;
-
-        [Header("Shield Display")]
-        public TMP_Text shieldText;
 
         [Header("Enemy Name Display")]
         public TMP_Text enemyNameText;
@@ -32,13 +23,8 @@ namespace Aeternal.UI
         [Tooltip("Shows the enemy's attack direction/intent")]
         public TMP_Text intentText;
 
-        [Header("Status Effect Display (Optional)")]
-        [Tooltip("Shows the enemy's active status effects")]
-        public TMP_Text activeStatusEffectText;
-
         private HealthComponent enemyHealth;
         private EnemyController enemyController;
-        private Aeternal.Status.StatusManager statusManager;
 
         private void Start()
         {
@@ -62,7 +48,6 @@ namespace Aeternal.UI
             // Get components
             enemyHealth = enemyObject.GetComponent<HealthComponent>();
             enemyController = enemyObject.GetComponent<EnemyController>();
-            statusManager = enemyObject.GetComponent<Aeternal.Status.StatusManager>();
 
             if (enemyHealth == null)
             {
@@ -70,9 +55,9 @@ namespace Aeternal.UI
                 return;
             }
 
-            // Subscribe to health component events
-            enemyHealth.OnHealthChanged += UpdateHealthUI;
-            enemyHealth.OnShieldChanged += UpdateShieldUI;
+            // ApplyEncounter (run mode) changes the enemy identity and fires a health change,
+            // but the name is not otherwise event-driven.
+            enemyHealth.OnHealthChanged += OnHealthChanged;
 
             // Subscribe to enemy controller events if available
             if (enemyController != null)
@@ -80,65 +65,25 @@ namespace Aeternal.UI
                 enemyController.OnIntentChanged += UpdateIntentUI;
             }
 
-            // Subscribe to status manager events if available and status text is enabled
-            if (statusManager != null && activeStatusEffectText != null)
-            {
-                statusManager.OnStatusChanged += UpdateStatusEffectsUI;
-            }
-
             // Initial update
-            UpdateHealthUI(enemyHealth.getHealth, enemyHealth.GetMaxHealth());
-            UpdateShieldUI(enemyHealth.GetTotalShield());
             UpdateEnemyName();
             UpdateIntentUI();
-            UpdateStatusEffectsUI();
         }
 
         private void UnsubscribeFromEvents()
         {
             if (enemyHealth != null)
             {
-                enemyHealth.OnHealthChanged -= UpdateHealthUI;
-                enemyHealth.OnShieldChanged -= UpdateShieldUI;
+                enemyHealth.OnHealthChanged -= OnHealthChanged;
             }
 
             if (enemyController != null)
             {
                 enemyController.OnIntentChanged -= UpdateIntentUI;
             }
-
-            if (statusManager != null)
-            {
-                statusManager.OnStatusChanged -= UpdateStatusEffectsUI;
-            }
         }
 
-        private void UpdateHealthUI(int current, int max)
-        {
-            string healthString = $"Health: {current}/{max}";
-
-            if (healthText != null)
-                healthText.text = healthString;
-
-            // Keep the name in sync: ApplyEncounter (run mode) changes the enemy identity and
-            // fires a health change, but the name is not otherwise event-driven.
-            UpdateEnemyName();
-
-
-            if (healthSlider != null)
-            {
-                healthSlider.maxValue = max;
-                healthSlider.value = current;
-            }
-        }
-
-        private void UpdateShieldUI(int totalShield)
-        {
-            string shieldString = $"+ Shield: {totalShield}";
-
-            if (shieldText != null)
-                shieldText.text = shieldString;
-        }
+        private void OnHealthChanged(int current, int max) => UpdateEnemyName();
 
         private void UpdateEnemyName()
         {
@@ -202,26 +147,13 @@ namespace Aeternal.UI
 
         }
 
-        private void UpdateStatusEffectsUI()
-        {
-            if (activeStatusEffectText == null || statusManager == null) return;
-            
-            activeStatusEffectText.text = statusManager.GetStatusEffectsString();
-        }
-
         /// <summary>
         /// Manually refresh all UI elements (useful for initialization or debugging)
         /// </summary>
         public void RefreshUI()
         {
-            if (enemyHealth != null)
-            {
-                UpdateHealthUI(enemyHealth.getHealth, enemyHealth.GetMaxHealth());
-                UpdateShieldUI(enemyHealth.GetTotalShield());
-            }
             UpdateEnemyName();
             UpdateIntentUI();
-            UpdateStatusEffectsUI();
         }
     }
 }

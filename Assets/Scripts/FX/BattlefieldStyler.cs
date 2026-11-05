@@ -17,15 +17,13 @@ namespace Aeternal.FX
     /// shadow and backlight; raised, bordered tiles with a pulsing glow on the tiles the enemy
     /// will attack, each with a badge showing the damage it takes (and, while the player stands
     /// on one, the safe tiles outlined green); a battle UI restyled to match the main menu
-    /// (BattleUISkin); and a CharacterHUD on the player and the enemy. Health, shield, statuses
-    /// and intent move onto those HUDs, so the matching lines of the old corner stats panels
-    /// are hidden (the enemy name stays), and AP and DF become rows of icons (ResourcePips).
+    /// (BattleUISkin); a CharacterHUD with health, shield and statuses on the player and the
+    /// enemy; and AP and DF as rows of icons (ResourcePips).
     /// Purely visual: it never changes game state, and needs no scene wiring.
     /// </summary>
     public class BattlefieldStyler : MonoBehaviour
     {
         const string CenterTileName = "Center Square Background";
-        const string OldInnerTileName = "Block Square";
 
         // Draw order, back to front. The characters themselves are at 2 (set in the scenes).
         const int BackgroundOrder = -100;
@@ -96,7 +94,6 @@ namespace Aeternal.FX
             ScaleCharacter(playerVisual);
             ScaleCharacter(enemy != null ? enemy.transform : null);
             StyleTiles();
-            HideOldStatLines();
             ShowResourceIcons(combat.playerResources);
             ArrangeSceneUI();
 
@@ -390,14 +387,6 @@ namespace Aeternal.FX
         {
             border.color = style.tileBorderColor;
             border.sortingOrder = TileBorderOrder;
-            // The scene's grey inner squares would sit on top of the new face.
-            if (border.transform.parent != null)
-            {
-                foreach (Transform sibling in border.transform.parent)
-                {
-                    if (sibling.name == OldInnerTileName) sibling.gameObject.SetActive(false);
-                }
-            }
 
             var side = AddLayer(border, "Tile Side", border.sprite, 1f, TileSideOrder, style.tileSideColor);
             float scaleY = Mathf.Max(0.0001f, Mathf.Abs(border.transform.lossyScale.y));
@@ -420,24 +409,6 @@ namespace Aeternal.FX
             sr.sortingOrder = order;
             sr.color = color;
             return sr;
-        }
-
-        static void HideOldStatLines()
-        {
-            foreach (var ui in FindObjectsByType<PlayerStatsUI>(FindObjectsSortMode.None))
-            {
-                Hide(ui.healthSlider);
-                Hide(ui.healthText);
-                Hide(ui.shieldText);
-                HideWithGroup(ui.activeStatusEffectText, ui.transform);
-            }
-            foreach (var ui in FindObjectsByType<EnemyStatsUI>(FindObjectsSortMode.None))
-            {
-                Hide(ui.healthSlider);
-                Hide(ui.healthText);
-                Hide(ui.shieldText);
-                HideWithGroup(ui.activeStatusEffectText, ui.transform);
-            }
         }
 
         /// <summary>
@@ -531,20 +502,6 @@ namespace Aeternal.FX
                     if (run != null && run.HasActiveRun && combat != null && !combat.CanShift) df.SetSealed("SEALED");
                 }
             }
-        }
-
-        static void Hide(Component c)
-        {
-            if (c != null) c.gameObject.SetActive(false);
-        }
-
-        /// <summary>Hides a line and, if it sits in its own group (with a label), that group too.</summary>
-        static void HideWithGroup(Component c, Transform panel)
-        {
-            if (c == null) return;
-            c.gameObject.SetActive(false);
-            var parent = c.transform.parent;
-            if (parent != null && parent != panel) parent.gameObject.SetActive(false);
         }
     }
 }

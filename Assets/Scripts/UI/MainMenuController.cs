@@ -11,15 +11,12 @@ namespace Aeternal.UI
 {
     /// <summary>
     /// The title-screen menu: New Game, Continue (the saved run; disabled when there is none),
-    /// Settings, Credits and Quit. Replaces the scene's old dev buttons, credits box and key
-    /// hints (only the title is kept) and drives the scene's RunStarter. Attaches itself to
-    /// any scene with a RunStarter; needs no scene wiring. Settings are saved on this machine.
+    /// Settings, Credits and Quit, under the scene's title. Drives the scene's RunStarter.
+    /// Attaches itself to any scene with a RunStarter; needs no scene wiring. Settings are saved on this machine.
     /// </summary>
     public class MainMenuController : MonoBehaviour
     {
-        const string OldMenuPanelName = "Panel";
         const string KeptTitleName = "Title";
-        const string OldRunButtonCanvasName = "RunStarterCanvas";
         const float TitleFloat = 8f;        // canvas units
         const float EntryStagger = 0.08f;   // seconds between menu entries fading in
         const float EntryFade = 0.35f;
@@ -65,7 +62,6 @@ namespace Aeternal.UI
 
         void Start()
         {
-            HideOldMenu();
             BuildCanvas();
             var titleGo = GameObject.Find(KeptTitleName);
             if (titleGo != null)
@@ -110,20 +106,6 @@ namespace Aeternal.UI
                 yield return null;
             }
             if (group != null) group.alpha = 1f;
-        }
-
-        static void HideOldMenu()
-        {
-            var panel = GameObject.Find(OldMenuPanelName);
-            if (panel != null)
-            {
-                foreach (Transform child in panel.transform)
-                {
-                    if (child.name != KeptTitleName) child.gameObject.SetActive(false);
-                }
-            }
-            var oldRunButton = GameObject.Find(OldRunButtonCanvasName);
-            if (oldRunButton != null) oldRunButton.SetActive(false);
         }
 
         void BuildCanvas()
