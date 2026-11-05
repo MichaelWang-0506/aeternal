@@ -201,9 +201,17 @@ namespace Aeternal.UI
             yield return null;
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        /// <summary>Set by the playtest driver to press "continue" (cleared once used).</summary>
+        internal static bool PlaytestAdvance;
+#endif
+
         static bool AdvancePressed()
         {
             if (PauseMenu.IsPaused) return false;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if (PlaytestAdvance) { PlaytestAdvance = false; return true; }
+#endif
             return Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return);
         }
 
