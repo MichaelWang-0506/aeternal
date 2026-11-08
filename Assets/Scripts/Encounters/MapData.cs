@@ -94,6 +94,12 @@ namespace Aeternal.Encounters
     {
         [Header("Identity")]
         public string regionName = "Steampunk City";
+        [Tooltip("What the sealed god deck's cards are called in this region (rewards, shop, map).")]
+        public string shardName = "Storm Shard";
+        [Tooltip("Tint of the backdrop art in this region's fights and map. Alpha 0: the style's own tint.")]
+        public Color backgroundTint = new Color(0f, 0f, 0f, 0f);
+        [Tooltip("Moving backdrop: smoke and embers over a city, or haze and bubbles under the sea.")]
+        public RegionAmbience ambience = RegionAmbience.City;
 
         [Header("Starting Deck")]
         [Tooltip("The deck the player begins this region with. Its cards are copied into the mutable run deck.")]
@@ -183,5 +189,45 @@ namespace Aeternal.Encounters
         [Tooltip("When the run arrives here from the previous region, keep the deck, health, gold " +
                  "and awakened decks. Off: start over from this region's starting deck (the time loop).")]
         public bool keepsProgress = false;
+
+        [Header("Rewards: grow the deck you choose")]
+        [Tooltip("After a fight, the player picks one of their decks and takes 1 of 3 from its pool, then " +
+                 "1 of sealedChoices cards for the sealed god deck. The merchant removes or replaces a card " +
+                 "in a chosen deck. Off: 1 of 3 for the starting deck, one choice being a shard.")]
+        public bool deckChoiceRewards = false;
+        [Tooltip("Reward pools of the decks awakened by blessings, by deck id (the starting deck uses " +
+                 "cardRewardPool, the sealed god deck stormShardPool).")]
+        public List<DeckRewardPool> deckRewardPools = new List<DeckRewardPool>();
+        [Tooltip("How many sealed god-deck cards the reward offers to choose from (the pick can be skipped).")]
+        public int sealedChoices = 2;
+        [Tooltip("Merchant: gold to replace a card with 1 of 3 of the same rarity from its deck's pool.")]
+        public int replacePrice = 60;
+
+        /// <summary>The reward pool of a deck the player owns: the starting deck's, or an awakened deck's.</summary>
+        public List<CardData> RewardPoolFor(DeckData deck)
+        {
+            if (deck == null || (startingDeck != null && deck.deckId == startingDeck.deckId)) return cardRewardPool;
+            foreach (var pool in deckRewardPools)
+                if (pool != null && pool.deckId == deck.deckId) return pool.cards;
+            return new List<CardData>();
+        }
+
+        /// <summary>The shard name, or "Storm Shard" when left blank.</summary>
+        public string ShardName => string.IsNullOrEmpty(shardName) ? "Storm Shard" : shardName;
+    }
+
+    /// <summary>Cards a deck can be rewarded with in a region.</summary>
+    [System.Serializable]
+    public class DeckRewardPool
+    {
+        public string deckId;
+        public List<CardData> cards = new List<CardData>();
+    }
+
+    /// <summary>The moving backdrop of a region (see AmbientLayer).</summary>
+    public enum RegionAmbience
+    {
+        City,
+        Underwater
     }
 }

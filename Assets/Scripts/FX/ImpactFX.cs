@@ -6,7 +6,7 @@ namespace Aeternal.FX
 {
     /// <summary>
     /// Pixel-style hit effects drawn in the world over the characters: a slash arc and sparks
-    /// for physical hits, a bolt from the sky for lightning, a ring for shields, rising plus
+    /// for physical hits, a bolt from the sky for lightning, a splash for water, a ring for shields, rising plus
     /// signs for heals, drops for Bleed and a burst on death; plus a short hit-stop on big
     /// hits. Purely visual. Lives on the CombatFXManager, which calls it from combat events;
     /// colours and thresholds come from BattlefieldStyle.
@@ -32,6 +32,12 @@ namespace Aeternal.FX
         {
             if (target == null) return;
             Vector3 at = target.bounds.center;
+            if (type == DamageType.Water)
+            {
+                Splash(at, amount, target.sortingLayerID);
+                if (amount >= style.bigHitDamage) HitStop();
+                return;
+            }
             if (type == DamageType.Lightning) StartCoroutine(Bolt(at, target.sortingLayerID));
             else StartCoroutine(Slash(at, from, target.sortingLayerID));
             Color sparks = type == DamageType.Lightning ? style.lightningColor : style.sparkColor;
@@ -169,6 +175,20 @@ namespace Aeternal.FX
                 yield return null;
             }
             Destroy(root.gameObject);
+        }
+
+        /// <summary>Water bursting off the body: a ring of spray and drops thrown up that fall back.</summary>
+        void Splash(Vector3 at, int amount, int layer)
+        {
+            StartCoroutine(Ring(at, style.waterColor, layer));
+            int drops = 8 + Mathf.Min(amount, 8);
+            for (int i = 0; i < drops; i++)
+            {
+                float a = Mathf.Lerp(0.15f, 0.85f, Random.value) * Mathf.PI;   // mostly upward
+                var v = new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * Random.Range(2.5f, 5f);
+                StartCoroutine(Particle(at, v, ProceduralSprites.Drop(), Random.Range(0.12f, 0.2f), style.waterColor,
+                    Random.Range(0.45f, 0.7f), true, layer));
+            }
         }
 
         IEnumerator Ring(Vector3 at, Color color, int layer)

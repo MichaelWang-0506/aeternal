@@ -92,8 +92,9 @@ namespace Aeternal.UI
                 var shards = run.CurrentMap.stormShardPool.Where(c => c != null).Distinct()
                     .OrderBy(_ => UnityEngine.Random.value).Take(Mathf.Max(1, ev.shardChoices)).ToList();
                 string deck = run.CurrentMap.blessingDeck.deckId;
-                Choice(column, $"Take a Storm Shard\n<size=70%>Choose one for the sealed {deck} deck</size>", () =>
-                    PickCard($"Choose a Storm Shard for the {deck} deck", shards, card =>
+                string shardName = run.CurrentMap.ShardName;
+                Choice(column, $"Take a {shardName}\n<size=70%>Choose one for the sealed {deck} deck</size>", () =>
+                    PickCard($"Choose a {shardName} for the {deck} deck", shards, card =>
                     {
                         run.AddStormShard(card);
                         Finish();
@@ -101,19 +102,29 @@ namespace Aeternal.UI
             }
         }
 
-        /// <summary>The whole deck as card faces (it can be long, so a scrolling grid); pick one to remove.</summary>
+        /// <summary>
+        /// Every deck the player owns as card faces (the starting deck, then each deck awakened by a
+        /// blessing; it can be long, so a scrolling grid); pick a card from any of them to remove.
+        /// </summary>
         void OfferCard()
         {
-            var deck = new CardGridPanel.Section
+            var sections = new List<CardGridPanel.Section>();
+            foreach (var deck in run.OwnedDecks())
             {
-                title = $"Your deck  ({run.RunDeck.Count} cards)",
-                cards = run.RunDeck.OrderBy(c => c.costAP).ThenBy(c => c.name).ToList(),
-            };
-            CardGridPanel.Show("Offer a card to the storm", new List<CardGridPanel.Section> { deck }, card =>
-            {
-                run.RemoveCardFromDeck(card);
-                Finish();
-            }, null, sortingOrder: 260);
+                var d = deck;
+                var cards = run.CardsIn(d);
+                sections.Add(new CardGridPanel.Section
+                {
+                    title = run.UnlockedDecks.Count == 0 ? $"Your deck  ({cards.Count} cards)" : $"{run.OwnedDeckName(d)} deck  ({cards.Count} cards)",
+                    cards = cards.OrderBy(c => c.costAP).ThenBy(c => c.DisplayName).ToList(),
+                    onPick = card =>
+                    {
+                        run.RemoveCardFrom(d, card);
+                        Finish();
+                    },
+                });
+            }
+            CardGridPanel.Show($"Offer a card at the {run.CurrentMap.regionEvent.title}", sections, null, null, sortingOrder: 260);
         }
 
         /// <summary>A few cards side by side as card faces; click one to take it.</summary>

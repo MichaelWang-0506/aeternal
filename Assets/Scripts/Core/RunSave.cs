@@ -113,6 +113,7 @@ namespace Aeternal.Core
             if (map.shiftDecks != null) foreach (var deck in map.shiftDecks) AddDeck(deck);
             AddCards(map.cardRewardPool);
             AddCards(map.stormShardPool);
+            if (map.deckRewardPools != null) foreach (var pool in map.deckRewardPools) if (pool != null) AddCards(pool.cards);
             AddEncounters(map.encounters);
             AddEncounters(map.normalEncounters);
             AddEncounters(map.eliteEncounters);

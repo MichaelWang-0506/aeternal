@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48684741d3f20674fb0731f745997a0f, type: 3}
+  m_Name: Atlantis BackflipKick
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Cards.CardData
+  id: backflipKick
+  title: BackflipKick
+  description: 'Move across
+
+    Draw 2 cards'
+  artwork: {fileID: 8399063547182681082, guid: 21ab7d92c2b16d84b977a6769655d0cb, type: 3}
+  costAP: 3
+  rarity: 1
+  effects:
+  - effectType: 7
+    magnitude: 2
+    durationRounds: 0
+    target: 1
+    damageType: 0
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0
+  - effectType: 5
+    magnitude: 2
+    durationRounds: 0
+    target: 2
+    damageType: 6
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0

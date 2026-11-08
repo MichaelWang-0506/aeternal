@@ -191,7 +191,7 @@ namespace Aeternal.UI
             // always exactly what the card does.
             if (data != null)
             {
-                if (nameText != null) nameText.text = data.name;
+                if (nameText != null) nameText.text = data.DisplayName;
                 if (costText != null) costText.text = $"{data.costAP} AP";
                 if (descriptionText != null) descriptionText.text = data.description;
             }

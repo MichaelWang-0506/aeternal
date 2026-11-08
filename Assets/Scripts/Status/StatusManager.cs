@@ -15,6 +15,8 @@ namespace Aeternal.Status
             public int stacks;
             public int remainingRounds;
             public StatusEffectData behaviorData; // Store behavior information
+            /// <summary>Round ends this status has been through (a cage hits harder the longer it holds).</summary>
+            public int roundsActive;
 
             public StatusInstance(string id, int stacks, int rounds, StatusEffectData behaviorData = null)
             {
@@ -108,6 +110,7 @@ namespace Aeternal.Status
                 case StatusEffectBehavior.Bleeding: return $"+{Mathf.Max(1, stacks)} Bleed";
                 case StatusEffectBehavior.Blackout: return "STUNNED!";
                 case StatusEffectBehavior.Dodge: return "Dodge ready";
+                case StatusEffectBehavior.Caged: return "CAGED!";
                 default: return $"+{(string.IsNullOrEmpty(id) ? "Status" : id)}";
             }
         }
@@ -178,11 +181,24 @@ namespace Aeternal.Status
                                 Aeternal.UI.ActionLog.Instance?.AddMessage($"{gameObject.name} took {bleedDamage} bleeding damage");
                             }
                             break;
+                        case StatusEffectBehavior.Caged:
+                            // The water cage closes in: harder each round it holds.
+                            if (hc != null)
+                            {
+                                int cageDamage = Mathf.Max(0, s.behaviorData.behaviorValue + s.behaviorData.growthPerRound * s.roundsActive);
+                                if (cageDamage > 0)
+                                {
+                                    hc.TakeDamage(new DamageInfo(cageDamage, DamageType.Water, null, false, isDamageOverTime: true));
+                                    Aeternal.UI.ActionLog.Instance?.AddMessage($"{gameObject.name} took {cageDamage} damage in the water cage");
+                                }
+                            }
+                            break;
                         // Other behaviors are handled elsewhere (Dodge in TakeDamage, Blackout in CanAct)
                     }
                 }
 
                 // Decrement duration
+                s.roundsActive++;
                 s.remainingRounds--;
                 if (s.remainingRounds <= 0)
                 {

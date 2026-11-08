@@ -30,8 +30,17 @@ namespace Aeternal.Cards
         public DamageType damageType = DamageType.Physical;
 
         [Header("Status Effect Settings")]
-        [Tooltip("Status effect data (only used if effectType is ApplyStatus)")]
+        [Tooltip("Status effect data (ApplyStatus; for RaiseTerrain, the cage formed when terrain collapses; " +
+                 "for ExtendStatus and ConsumeStatus, which status)")]
         public StatusEffectData statusEffectData;
+
+        [Header("Terrain")]
+        [Tooltip("Where RaiseTerrain puts its terrain")]
+        public TerrainPlacement terrainPlacement = TerrainPlacement.BehindEnemy;
+
+        [Header("Condition")]
+        [Tooltip("Skip this effect unless the condition holds when it resolves")]
+        public EffectCondition condition = EffectCondition.Always;
     }
 
     /// <summary>

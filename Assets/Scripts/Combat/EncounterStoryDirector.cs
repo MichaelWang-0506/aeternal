@@ -14,7 +14,8 @@ namespace Aeternal.Combat
     /// <summary>
     /// Runs an encounter's story beats in combat, from its EncounterData: the region's opening
     /// narration (MapData, first fight of a run only), the intro dialogue before the first
-    /// turn and, for a scripted-death fight, the death itself:
+    /// turn, a boss's charged attack, an enemy raising walls (terrainEvery) and, for a
+    /// scripted-death fight, the death itself:
     ///  - the enemy can't drop below 1 HP;
     ///  - on scriptedDeathRound, or once the enemy is down to scriptedDeathHealthFraction, it
     ///    telegraphs a blow on all four squares and its line is shown;
@@ -68,7 +69,7 @@ namespace Aeternal.Combat
             if (FindFirstObjectByType<EncounterStoryDirector>() != null) return;
             var encounter = CurrentEncounter();
             if (encounter == null) return;
-            bool hasStory = encounter.scriptedDeath || encounter.chargedAttackEvery > 0 || HandlesVictory
+            bool hasStory = encounter.scriptedDeath || encounter.chargedAttackEvery > 0 || encounter.terrainEvery > 0 || HandlesVictory
                             || HasLines(encounter.introDialogue) || HasLines(OpeningNarrative());
             if (!hasStory) return;
             new GameObject("Encounter Story").AddComponent<EncounterStoryDirector>();
@@ -141,7 +142,7 @@ namespace Aeternal.Combat
                 enemyHealth.OnHealthChanged += OnEnemyHealthChanged;
                 turnManager.OnEnemyPhaseStart += OnEnemyPhaseStart;
             }
-            if (turnManager != null && (data.scriptedDeath || data.chargedAttackEvery > 0))
+            if (turnManager != null && (data.scriptedDeath || data.chargedAttackEvery > 0 || data.terrainEvery > 0))
             {
                 turnManager.OnRoundStart += OnRoundStart;
                 turnManager.OnRoundEnd += OnRoundEnd;
@@ -182,6 +183,41 @@ namespace Aeternal.Combat
                 else if (round >= data.scriptedDeathRound) ArmDeath();
             }
             if (data.chargedAttackEvery > 0 && !deathArmed) ChargedAttackRound();
+            if (data.terrainEvery > 0 && !deathArmed && round % data.terrainEvery == 0) RaiseWall();
+        }
+
+        /// <summary>
+        /// The enemy raises a wall on a square next to the player, to cut off an escape. Never on
+        /// the player's square, and never on the last square this round's attack leaves safe.
+        /// </summary>
+        void RaiseWall()
+        {
+            var terrain = combat != null ? combat.Terrain : null;
+            var positioning = playerHealth != null ? playerHealth.GetComponent<Aeternal.Player.PlayerPositioningComponent>() : null;
+            if (terrain == null || positioning == null || enemy == null || !enemy.IsAlive) return;
+            int standing = positioning.facingIndex;
+            var attacked = enemy.GetAttackDirections();
+
+            int safeOpen = 0;
+            for (int d = 0; d < 4; d++)
+                if (d != standing && !attacked.Contains(d) && !terrain.IsBlocked(d)) safeOpen++;
+
+            var candidates = new System.Collections.Generic.List<int>();
+            foreach (int d in new[] { (standing + 1) % 4, (standing + 3) % 4 })
+            {
+                if (terrain.IsBlocked(d)) continue;
+                bool safe = !attacked.Contains(d);
+                if (safe && safeOpen <= 1) continue; // it would leave nowhere safe to go
+                candidates.Add(d);
+            }
+            if (candidates.Count == 0) return;
+            int square = candidates[Random.Range(0, candidates.Count)];
+            if (!terrain.Raise(square, Mathf.Max(1, data.terrainRounds), false, standing)) return;
+
+            var style = BattlefieldStyle.Load();
+            StartCoroutine(overlay.ShowWarning(data.terrainName, data.terrainWarning, style.terrainColor, 1.8f));
+            string[] names = { "Up", "Right", "Down", "Left" };
+            ActionLog.Instance?.AddMessage($"{data.displayName} raised a {data.terrainName.ToLowerInvariant()} {names[square]}");
         }
 
         void OnRoundEnd()
@@ -209,7 +245,15 @@ namespace Aeternal.Combat
             {
                 var positioning = playerHealth != null ? playerHealth.GetComponent<Aeternal.Player.PlayerPositioningComponent>() : null;
                 int standing = positioning != null ? positioning.facingIndex : 0;
-                int safe = (standing + Random.Range(1, 4)) % 4;
+                // The safe square is one the player can stand on: not theirs, and free of terrain.
+                var terrain = combat != null ? combat.Terrain : null;
+                var open = new System.Collections.Generic.List<int>();
+                for (int d = 1; d < 4; d++)
+                {
+                    int square = (standing + d) % 4;
+                    if (terrain == null || !terrain.IsBlocked(square)) open.Add(square);
+                }
+                int safe = open.Count > 0 ? open[Random.Range(0, open.Count)] : (standing + Random.Range(1, 4)) % 4;
                 var hit = new System.Collections.Generic.List<int>();
                 for (int d = 0; d < 4; d++) if (d != safe) hit.Add(d);
 
@@ -223,7 +267,8 @@ namespace Aeternal.Combat
             else if ((round + 1) % every == 0)
             {
                 if (hud != null) hud.SetExtraBadge("CHARGING", style.stunColor);
-                StartCoroutine(overlay.ShowWarning("STORM GATHERING", data.chargeWarning, style.stunColor, 2.2f));
+                StartCoroutine(overlay.ShowWarning(string.IsNullOrEmpty(data.chargeTitle) ? "STORM GATHERING" : data.chargeTitle,
+                    data.chargeWarning, style.stunColor, 2.2f));
             }
         }
 
@@ -260,8 +305,10 @@ namespace Aeternal.Combat
                 foreach (var entry in deck.defaultCards) cards += Mathf.Max(1, entry.count);
                 lines.Add(new DialogueLine
                 {
-                    text = $"The {deck.deckId} deck awakens: {cards} cards, {shards} of them Storm Shards you gathered. " +
-                           "Divine Shift is unlocked: spend Divine Focus to change decks mid-battle."
+                    text = $"The {deck.deckId} deck awakens: {cards} cards, {shards} of them {map.ShardName}s you gathered. " +
+                           (run.UnlockedDecks.Count > 1
+                               ? $"Divine Shift can now reach the {deck.deckId} deck too."
+                               : "Divine Shift is unlocked: spend Divine Focus to change decks mid-battle.")
                 });
             }
             yield return overlay.PlayNarration(lines);

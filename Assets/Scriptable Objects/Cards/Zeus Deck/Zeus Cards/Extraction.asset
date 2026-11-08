@@ -16,6 +16,7 @@ MonoBehaviour:
   description: Draw 2 cards and gain 1 Divine Focus.
   artwork: {fileID: -1522683365619553712, guid: 8edaa743b8dc5b046b30a35c7cfe3248, type: 3}
   costAP: 2
+  rarity: 2
   effects:
   - effectType: 5
     magnitude: 2

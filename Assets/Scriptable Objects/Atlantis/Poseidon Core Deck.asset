@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9859ce49cdfde9c4abbc1bc7701a1830, type: 3}
+  m_Name: Poseidon Core Deck
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Decks.DeckData
+  deckId: Poseidon
+  description: "Core of Poseidon's blessing; the Tide Pearls gathered in Atlantis are added when it awakens."
+  artwork: {fileID: 0}
+  defaultCards:
+  - card: {fileID: 11400000, guid: 42720ee6a19a590dbc0609ef2f597775, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 52859b142be85cd9bae2cac7d96d151a, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: ec57b99b9e005dbb8ffff2690f8574d8, type: 2}
+    count: 2
+  - card: {fileID: 11400000, guid: 123b73c640a35ccf9f6ac2009578722e, type: 2}
+    count: 1
+  - card: {fileID: 11400000, guid: 812b4e305a075338ae3a9e2c150897da, type: 2}
+    count: 1
+  onShiftIn:
+  - effectType: 2
+    magnitude: 4
+    durationRounds: 0
+    target: 0
+    damageType: 0
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0
+      growthPerRound: 0
+    terrainPlacement: 0
+    condition: 0
+  onShiftOut: []
+  shiftUpgradeCosts:
+  - 2
+  - 3
+  - 4
+  shiftUpgradeBonus: 2

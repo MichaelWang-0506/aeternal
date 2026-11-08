@@ -1,0 +1,218 @@
+# Playtest report
+
+108 passed, 0 failed, 0 errors logged.
+
+## Checks
+- PASS: main menu loads
+- PASS: fresh profile: Continue has no save to load
+- PASS: click New Game
+- PASS: click Play Tutorial
+- PASS: tutorial loads
+- PASS: tutorial: the Guard button is greyed out
+- PASS: tutorial: Guard can't be used (button or X)
+- PASS: back to the main menu
+- PASS: click New Game again
+- PASS: click Skip Prologue
+- PASS: region map loads
+- PASS: opening narration finishes
+- PASS: a run is active
+- PASS: Space opens the Shift page
+- PASS: Enemy fight starts with a hand
+- PASS: clicking the draw pile opens its contents
+- PASS: pause menu exists in the fight
+- PASS: Esc pauses the game
+- PASS: Resume unpauses
+- PASS: Guard spends 1 AP
+- PASS: hit effects are ready in the fight
+- PASS: the big-hit freeze hands the game speed back
+- PASS: a new round deals cards into the hand
+- PASS: only the newly drawn cards are dealt from the pile (1 animating, 1 drawn, 3 kept)
+- PASS: the discard pile was shuffled back in when the draw pile ran out (4 cards)
+- PASS: the draw pile is never empty while the discard pile has cards
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: each picked reward is added to its deck (2 picked: 8 -> 10 cards)
+- PASS: back on the map after Enemy
+- PASS: Enemy fight starts with a hand
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: each picked reward is added to its deck (2 picked: 10 -> 12 cards)
+- PASS: back on the map after Enemy
+- PASS: back on the map after Rest
+- PASS: Elite fight starts with a hand
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: each picked reward is added to its deck (2 picked: 12 -> 14 cards)
+- PASS: back on the map after Elite
+- PASS: merchant opens
+- PASS: buying Aether: -30 gold, +1 Aether
+- PASS: leave the merchant
+- PASS: back on the map after Shop
+- PASS: the merchant was reached before the boss
+- PASS: main menu after Main Menu
+- PASS: a save exists after leaving to the main menu
+- PASS: click Continue
+- PASS: Continue loads the map
+- PASS: Continue restores the run (before: Zeusonia node 12, HP 20, gold 45, Aether 5, deck 11, shards 3; after: Zeusonia node 12, HP 20, gold 45, Aether 5, deck 11, shards 3)
+- PASS: the Zeus node is reachable
+- PASS: Zeus fight starts
+- PASS: the boss is Zeus (got Zeus)
+- PASS: THUNDERBOLT: the safe square is open and not the one you stand on
+- PASS: Zeus telegraphs THUNDERBOLT by round 3
+- PASS: after Zeus's blessing, Atlantis loads
+- PASS: Atlantis opening narration finishes
+- PASS: the Zeus deck is awakened in Atlantis
+- PASS: the deck carries over into Atlantis (11 cards)
+- PASS: View Deck shows the starting deck and the awakened Zeus deck
+- PASS: Enemy fight starts with a hand
+- PASS: Shift is available in Atlantis (the Zeus deck)
+- PASS: Shifting to the Zeus deck works (active: Zeus)
+- PASS: Hidden Wave: 5 damage and terrain behind the enemy
+- PASS: Wave Push stuns the enemy when terrain stands behind it
+- PASS: terrain on the far side blocks Trident Strike's leap
+- PASS: Ocean Block moves you clockwise
+- PASS: two terrains collapse into a water cage around the enemy
+- PASS: Suffocation doubles the cage (rounds: 2)
+- PASS: Breakout ends the cage for 6 damage per round left (12)
+- PASS: the water cage deals 5 damage at round end (5)
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: each picked reward is added to its deck (2 picked: 20 -> 22 cards)
+- PASS: back on the map after Enemy
+- PASS: event opens
+- PASS: the event has a choice
+- PASS: back on the map after Event
+- PASS: event opens
+- PASS: the event has a choice
+- PASS: back on the map after Event
+- PASS: Elite fight starts with a hand
+- PASS: reward screen appears
+- PASS: the reward offers a card to pick
+- PASS: map returns after the reward
+- PASS: each picked reward is added to its deck (2 picked: 22 -> 24 cards)
+- PASS: back on the map after Elite
+- PASS: merchant opens
+- PASS: buying Aether: -30 gold, +1 Aether
+- PASS: Replace lists the cards of your decks
+- PASS: Replace offers same-rarity cards
+- PASS: Replace swaps one card for 60 gold (gold 77 -> 17, cards 24 -> 24)
+- PASS: leave the merchant
+- PASS: back on the map after Shop
+- PASS: the merchant was reached before the boss
+- PASS: the Poseidon node is reachable
+- PASS: Poseidon fight starts
+- PASS: the boss is Poseidon (got Poseidon)
+- PASS: a coral wall never stands on the player's square
+- PASS: TIDAL WAVE: the safe square is open and not the one you stand on
+- PASS: Poseidon telegraphs TIDAL WAVE by round 3
+- PASS: Poseidon raises coral walls
+- PASS: after Poseidon's blessing, the run ends on the main menu (to be continued)
+
+## Errors logged by the game
+- none
+
+## Log
+- 2.2s Playtest started 2026-11-05 20:53, 1280x720
+- 4.1s Screenshot 01-main-menu.png
+- 4.8s Screenshot 02-new-game-choices.png
+- 7.0s Screenshot 03-tutorial-first-step.png
+- 11.3s Screenshot 04-opening-narration.png
+- 20.5s Region Zeusonia: HP -1, gold 0, Aether 0, deck 8
+- 21.1s Screenshot 05-map-start.png
+- 22.0s Screenshot 06-shift-page.png
+- 22.5s Floor 1: options Enemy, Enemy, Enemy; taking Enemy
+- 26.6s Fight vs Storm-touched Goblin: hand 4, draw 4, discard 0
+- 26.7s Screenshot 07-fight-enemy.png
+- 27.6s Screenshot 08-draw-pile-contents.png
+- 28.9s Screenshot 09-pause-in-fight.png
+- 29.4s Screenshot 10-pause-controls.png
+- 30.7s Screenshot 11-after-guard.png
+- 30.9s Screenshot 12-hit-lightning.png
+- 32.4s Turn 1: draw 4, discard 1, hand 3, enemy HP 12
+- 33.7s Screenshot 13-cards-drawing.png
+- 38.6s Turn 2: draw 3, discard 2, hand 3, enemy HP 12
+- 42.8s Screenshot 14-hit-physical.png
+- 43.7s Turn 3: draw 2, discard 3, hand 3, enemy HP 10
+- 48.6s Turn 4: draw 1, discard 4, hand 3, enemy HP 12
+- 52.7s Screenshot 15-after-reshuffle.png
+- 53.6s Turn 5: draw 4, discard 1, hand 3, enemy HP 8
+- 56.3s Screenshot 16-reward-enemy-1.png
+- 56.3s Reward step 1: 2 AP
+- 57.8s Screenshot 17-reward-enemy-2.png
+- 57.8s Reward step 2: 1 AP
+- 59.2s After the fight: gold 21, Aether 1, deck 9, shards 1, HP 17
+- 59.7s Floor 2: options Enemy, Enemy; taking Enemy
+- 63.8s Fight vs Storm-touched Goblin: hand 4, draw 5, discard 0
+- 63.9s Screenshot 18-fight-enemy.png
+- 66.4s Reward step 1: 3 AP
+- 67.8s Reward step 2: 1 AP
+- 69.3s After the fight: gold 40, Aether 2, deck 10, shards 2, HP 17
+- 69.8s Floor 3: options Rest; taking Rest
+- 71.4s Screenshot 19-rest.png
+- 71.9s Floor 4: options Elite; taking Elite
+- 76.0s Fight vs Stormcaller: hand 4, draw 6, discard 0
+- 76.1s Screenshot 20-fight-elite.png
+- 78.7s Screenshot 21-reward-elite-1.png
+- 78.7s Reward step 1: 2 AP
+- 80.2s Screenshot 22-reward-elite-2.png
+- 80.2s Reward step 2: 1 AP
+- 81.7s After the fight: gold 75, Aether 4, deck 11, shards 3, HP 20
+- 82.2s Floor 5: options Shop; taking Shop
+- 83.1s Screenshot 23-merchant.png
+- 83.7s Screenshot 24-merchant-after-buy.png
+- 83.7s Replace not tried: 45 gold, needs 60
+- 84.3s Reached the boss floor.
+- 84.3s No event node was taken on this map.
+- 84.4s Screenshot 25-map-before-boss.png
+- 85.1s Screenshot 26-pause-on-map.png
+- 86.4s Screenshot 27-main-menu-with-save.png
+- 88.1s Screenshot 28-continued-map.png
+- 97.2s Screenshot 29-fight-zeus.png
+- 106.8s Screenshot 30-thunderbolt.png
+- 109.9s Screenshot 31-blessing-zeus.png
+- 123.0s Screenshot 32-atlantis-narration.png
+- 133.6s Region Atlantis: Atlantis node -1, HP 16, gold 45, Aether 8, deck 11, shards 0, Zeus deck 9 cards
+- 134.2s Screenshot 33-atlantis-map.png
+- 135.2s Screenshot 34-atlantis-view-deck.png
+- 135.7s Floor 1: options Enemy, Enemy, Enemy; taking Enemy
+- 139.7s Fight vs Reef Lurker: hand 4, draw 7, discard 0
+- 139.8s Screenshot 35-fight-enemy.png
+- 140.9s Screenshot 36-atlantis-shifted.png
+- 141.7s Screenshot 37-poseidon-terrain.png
+- 142.4s Screenshot 38-water-cage.png
+- 148.4s Reward step 1: STEAMPUNK 11 cards
+- 149.9s Reward step 2: 2 AP
+- 151.3s Reward step 3: 1 AP
+- 152.7s After the fight: gold 69, Aether 9, deck 12, shards 1, HP 17
+- 153.2s Floor 2: options Event, Enemy; taking Event
+- 154.5s Screenshot 39-event.png
+- 154.5s Event choice: Pray Restore 8 health
+- 155.9s Screenshot 40-event-result.png
+- 156.4s Floor 3: options Event; taking Event
+- 157.7s Screenshot 41-event.png
+- 157.7s Event choice: Pray Restore 8 health
+- 159.1s Screenshot 42-event-result.png
+- 159.6s Floor 4: options Elite; taking Elite
+- 163.6s Fight vs Tidecaller: hand 4, draw 8, discard 0
+- 163.7s Screenshot 43-fight-elite.png
+- 166.4s Screenshot 44-reward-elite-1.png
+- 166.4s Reward step 1: STEAMPUNK 12 cards
+- 167.9s Screenshot 45-reward-elite-2.png
+- 167.9s Reward step 2: 3 AP
+- 169.4s Screenshot 46-reward-elite-3.png
+- 169.4s Reward step 3: 2 AP
+- 170.8s After the fight: gold 107, Aether 11, deck 13, shards 2, HP 20
+- 171.3s Floor 5: options Shop; taking Shop
+- 172.2s Screenshot 47-merchant.png
+- 172.8s Screenshot 48-merchant-after-buy.png
+- 173.7s Replacing: 1 AP
+- 174.6s Screenshot 49-merchant-replace-offers.png
+- 175.7s Reached the boss floor.
+- 175.8s Screenshot 50-atlantis-before-boss.png
+- 184.9s Screenshot 51-fight-poseidon.png
+- 194.5s Screenshot 52-tidal-wave.png
+- 197.6s Screenshot 53-blessing-poseidon.png

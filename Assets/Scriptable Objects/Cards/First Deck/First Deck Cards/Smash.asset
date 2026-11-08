@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 'Deal 8 damage.'
   artwork: {fileID: 4205024740364508292, guid: 5a2eead50948d8645895aab9863b9571, type: 3}
   costAP: 2
+  rarity: 2
   effects:
   - effectType: 0
     magnitude: 8

@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00f922e1bb0064b03ae880384cb54fef, type: 3}
+  m_Name: Atlantis
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Encounters.MapData
+  regionName: Atlantis
+  shardName: Tide Pearl
+  backgroundTint: {r: 0.16, g: 0.34, b: 0.4, a: 1}
+  ambience: 1
+  startingDeck: {fileID: 11400000, guid: 21085a2bfd26475c801f12e228e9cb98, type: 2}
+  shiftDecks: []
+  encounters:
+  - {fileID: 11400000, guid: 068ab7c3d1655c48b14968548dc1ccfa, type: 2}
+  - {fileID: 11400000, guid: e790500e11fe511082ef3596e1d57ba3, type: 2}
+  - {fileID: 11400000, guid: b24ff0736fc5581f9b832e2b3b569426, type: 2}
+  - {fileID: 11400000, guid: 6e6daa3fa7e55fb78abc2361073335ca, type: 2}
+  cardRewardPool:
+  - {fileID: 11400000, guid: d6045478448957638eb32c72f156022d, type: 2}
+  - {fileID: 11400000, guid: fe07c77a9ea250d3b8f131ed1fdcbf64, type: 2}
+  - {fileID: 11400000, guid: dc2cfc26df73526a8227e653c8c6f336, type: 2}
+  - {fileID: 11400000, guid: e39d0b94e1955e3d8911de99027bc193, type: 2}
+  - {fileID: 11400000, guid: 4c2c6c8f450a5e74b4ab5f8648783fe0, type: 2}
+  - {fileID: 11400000, guid: 5cbff8a70e2252ec9675a54d9a0c47c8, type: 2}
+  - {fileID: 11400000, guid: b1e972ef75615b688fa432fce42b4b1a, type: 2}
+  onRegionClearedScene: MainMenu
+  showMap: 1
+  nextMap: {fileID: 0}
+  keepsProgress: 1
+  openingNarrative:
+  - speaker: ""
+    text: "The storm broke, and the ruler fell with the rain, down through the clouds and into the sea."
+  - speaker: ""
+    text: "Beneath the waves lay a city he knew: his own harbour capital, sunk long ago, now Atlantis, the realm of Poseidon."
+  - speaker: ""
+    text: "Zeus's thunder answers him now. When the fight turns, Shift to the Zeus deck (Z, or the button by your Divine Focus)."
+  - speaker: ""
+    text: "Poseidon waits at the heart of the city. Gather the Tide Pearls on the way; his blessing will wake them."
+  blessingDeck: {fileID: 11400000, guid: 4a33bc1b92bc588d8609640863b69bc1, type: 2}
+  stormShardPool:
+  - {fileID: 11400000, guid: 62dcb6a16ee7540a9f8b7e544f7f9781, type: 2}
+  - {fileID: 11400000, guid: 0a213ea7fa255158baff0b01a9bf0fce, type: 2}
+  - {fileID: 11400000, guid: 4a2f03e5e1235364b6de4b2bb597923b, type: 2}
+  - {fileID: 11400000, guid: c80388c301e150f7a3c59891e25ecc8c, type: 2}
+  - {fileID: 11400000, guid: f59999f0dc705212ac91001bae5f95ef, type: 2}
+  - {fileID: 11400000, guid: 42720ee6a19a590dbc0609ef2f597775, type: 2}
+  blessingNarrative:
+  - speaker: "Poseidon"
+    text: "You hold your breath well, mortal. Very well. Even the sea must give way to some things."
+  - speaker: "Poseidon"
+    text: "Take my blessing, and the tide with it. Build your walls; drown your enemies in them."
+  - speaker: ""
+    text: "The Tide Pearls the ruler had gathered glow, and the sea answers him."
+  blessingTitle: Blessing of Poseidon
+  regionEvent:
+    enabled: 1
+    afterEncounter: 1
+    title: Drowned Shrine
+    text: "A shrine to Poseidon stands half-buried in sand, its offering bowl still full of pearls. The water around it is warm."
+    healAmount: 8
+    shardChoices: 3
+  branchingMap: 1
+  normalEncounters:
+  - {fileID: 11400000, guid: e790500e11fe511082ef3596e1d57ba3, type: 2}
+  - {fileID: 11400000, guid: 068ab7c3d1655c48b14968548dc1ccfa, type: 2}
+  eliteEncounters:
+  - {fileID: 11400000, guid: b24ff0736fc5581f9b832e2b3b569426, type: 2}
+  - {fileID: 11400000, guid: e8bd390eedad53d18082e1eb39d8dbde, type: 2}
+  bossEncounter: {fileID: 11400000, guid: 6e6daa3fa7e55fb78abc2361073335ca, type: 2}
+  restHeal: 10
+  goldReward: {x: 16, y: 24}
+  eliteGoldReward: {x: 34, y: 44}
+  deckChoiceRewards: 1
+  deckRewardPools:
+  - deckId: Zeus
+    cards:
+    - {fileID: 11400000, guid: 742571c50069555787c9ccd5769e4557, type: 2}
+    - {fileID: 11400000, guid: 625fc26e832954e4bb13be2c9534da02, type: 2}
+    - {fileID: 11400000, guid: 4d2f8a319ae45f00b599c9f9e11532ee, type: 2}
+    - {fileID: 11400000, guid: 7c6c70aabccd55f884ddc661de603e1b, type: 2}
+    - {fileID: 11400000, guid: 73c773ed4aa55601bb5c52f5de7c6f65, type: 2}
+    - {fileID: 11400000, guid: e49f6a4fb47b5099b38f508b589557ce, type: 2}
+    - {fileID: 11400000, guid: 01401e2f1e8652c68bc55a6f25cd36ce, type: 2}
+    - {fileID: 11400000, guid: cc9edcd80d5c5ad69c9dbeacb0b1a778, type: 2}
+  sealedChoices: 2
+  replacePrice: 60

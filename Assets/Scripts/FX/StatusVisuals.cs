@@ -9,7 +9,8 @@ namespace Aeternal.FX
 {
     /// <summary>
     /// Shows a character's status effects on the character itself: Bleed drips blood, faster
-    /// the more stacks it has; Stun spins stars around the head and makes the character reel.
+    /// the more stacks it has; Stun spins stars around the head and makes the character reel;
+    /// a water cage closes a pulsing ring of water around the body.
     /// Effects are placed in world space from the sprite's visible extent, so the character's
     /// own sway and topple don't drag them around. Created by BattlefieldStyler.
     /// </summary>
@@ -33,6 +34,7 @@ namespace Aeternal.FX
         Sprite extentSprite;
 
         readonly List<SpriteRenderer> stars = new List<SpriteRenderer>();
+        SpriteRenderer cage;
         float dripTimer;
 
         public static StatusVisuals Attach(Transform parent, SpriteRenderer body, StatusManager status,
@@ -56,6 +58,13 @@ namespace Aeternal.FX
                 star.enabled = false;
                 fx.stars.Add(star);
             }
+            fx.cage = new GameObject("Water Cage", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+            fx.cage.transform.SetParent(go.transform, false);
+            fx.cage.sprite = ProceduralSprites.CageRing();
+            fx.cage.color = style.cageColor;
+            fx.cage.sortingLayerID = body.sortingLayerID;
+            fx.cage.sortingOrder = body.sortingOrder + 2;
+            fx.cage.enabled = false;
             return fx;
         }
 
@@ -64,20 +73,35 @@ namespace Aeternal.FX
             if (body == null || status == null) return;
 
             int bleedStacks = 0;
-            bool stunned = false;
+            bool stunned = false, caged = false;
             foreach (var s in status.activeStatuses)
             {
                 if (s.remainingRounds <= 0 || s.behaviorData == null) continue;
                 if (s.behaviorData.behavior == StatusEffectBehavior.Bleeding) bleedStacks += Mathf.Max(1, s.stacks);
                 if (s.behaviorData.behavior == StatusEffectBehavior.Blackout) stunned = true;
+                if (s.behaviorData.behavior == StatusEffectBehavior.Caged) caged = true;
             }
             bool visible = body.enabled && body.gameObject.activeInHierarchy;
-            if (!visible) { bleedStacks = 0; stunned = false; }
+            if (!visible) { bleedStacks = 0; stunned = false; caged = false; }
 
             if (animator != null) animator.Dizzy = stunned;
             var (min, max) = VisibleExtent();
             UpdateStars(stunned, min, max);
             UpdateDrips(bleedStacks, min, max);
+            UpdateCage(caged, min, max);
+        }
+
+        void UpdateCage(bool caged, Vector3 min, Vector3 max)
+        {
+            cage.enabled = caged;
+            if (!caged) return;
+            float pulse = 0.5f + 0.5f * Mathf.Sin(Time.time * 3f);
+            cage.transform.position = (min + max) * 0.5f;
+            float size = Mathf.Max(max.x - min.x, max.y - min.y) * Mathf.Lerp(1.05f, 1.15f, pulse);
+            cage.transform.localScale = new Vector3(size, size, 1f);
+            var c = style.cageColor;
+            c.a *= Mathf.Lerp(0.6f, 1f, pulse);
+            cage.color = c;
         }
 
         /// <summary>World-space corners of the sprite's opaque part (position and scale only).</summary>

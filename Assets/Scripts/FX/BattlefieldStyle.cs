@@ -136,6 +136,8 @@ namespace Aeternal.FX
         public Color shieldFxColor = new Color(0.45f, 0.85f, 1f, 1f);
         public Color healFxColor = new Color(0.45f, 1f, 0.5f, 1f);
         public Color bleedFxColor = new Color(0.85f, 0.1f, 0.12f, 1f);
+        [Tooltip("Splash of a water hit (Atlantis enemies, Poseidon's cards) and the water cage.")]
+        public Color waterColor = new Color(0.35f, 0.75f, 1f, 1f);
         [Tooltip("A hit of at least this much damage freezes the action for a moment and shakes harder.")]
         public int bigHitDamage = 5;
         [Tooltip("Length of that freeze, in real seconds.")]
@@ -157,8 +159,25 @@ namespace Aeternal.FX
         public Color stormFlashColor = new Color(0.75f, 0.85f, 1f, 0.3f);
         [Tooltip("Seconds between lightning flashes, at random between x and y.")]
         public Vector2 stormFlashInterval = new Vector2(5f, 11f);
+        [Tooltip("Underwater regions (MapData.ambience): murky haze drifting across the backdrop.")]
+        public Color underwaterHazeColor = new Color(0.2f, 0.45f, 0.5f, 0.12f);
+        [Tooltip("Underwater regions: sea-green wash over the backdrop art, so any art reads as underwater.")]
+        public Color underwaterWashColor = new Color(0.02f, 0.32f, 0.4f, 0.45f);
+        [Tooltip("Underwater regions: bubbles rising from the sea floor.")]
+        public Color bubbleColor = new Color(0.7f, 0.95f, 1f, 0.55f);
+        public int bubbleCount = 22;
         [Tooltip("How far the backdrop sways with the mouse, in UI units (1080 tall). 0 = still.")]
         public float parallaxPixels = 14f;
+
+        [Header("Terrain (coral walls, Poseidon's terrain)")]
+        [Tooltip("Coral on a blocked square, its rounds-left number, and the banner when a wall rises.")]
+        public Color terrainColor = new Color(0.35f, 0.85f, 0.75f, 1f);
+        [Tooltip("Second coral colour, for the tips of the branches.")]
+        public Color terrainTipColor = new Color(1f, 0.55f, 0.5f, 1f);
+        [Tooltip("Fill of a blocked tile.")]
+        public Color blockedTileColor = new Color(0.08f, 0.2f, 0.22f, 0.95f);
+        [Tooltip("Water cage around a caged enemy.")]
+        public Color cageColor = new Color(0.4f, 0.8f, 1f, 0.7f);
 
         [Header("Enraged boss")]
         [Tooltip("Aura, badge and banner colour of an enemy that can no longer be stopped.")]

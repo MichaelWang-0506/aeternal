@@ -16,6 +16,7 @@ MonoBehaviour:
   description: Gain 6 shield.
   artwork: {fileID: -8203469496671543608, guid: e15e9f62914e8144f88031c51b6e62ed, type: 3}
   costAP: 1
+  rarity: 1
   effects:
   - effectType: 2
     magnitude: 6

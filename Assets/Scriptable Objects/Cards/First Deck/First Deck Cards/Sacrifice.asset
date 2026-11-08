@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 'Lose 5 HP to gain 2 Action Points.'
   artwork: {fileID: -6206642496353310498, guid: 69a780d4cb5d4e34f93ef31492f03115, type: 3}
   costAP: 0
+  rarity: 1
   effects:
   - effectType: 0
     magnitude: 5

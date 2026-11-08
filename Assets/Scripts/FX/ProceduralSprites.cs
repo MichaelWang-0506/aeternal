@@ -17,6 +17,66 @@ namespace Aeternal.FX
         static Sprite drop;
         static Sprite star;
         static Sprite disc;
+        static Sprite coral, coralTips, cageRing;
+
+        // Coral on a blocked square, 16 x 16 pixels: '#' branch, 'o' branch tip.
+        static readonly string[] CoralPattern =
+        {
+            "................",
+            "...o.......o....",
+            "...#..o...o#....",
+            "..o#..#...#.....",
+            "...##.#..##..o..",
+            "....#.##.#...#..",
+            ".o..###..#..##..",
+            ".#...#...####...",
+            ".##..#..##.#....",
+            "..####.##..#..o.",
+            "....#####.##.##.",
+            ".....######.##..",
+            "......#######...",
+            ".....#########..",
+            "....###########.",
+            "................",
+        };
+
+        /// <summary>Coral branches (white; tint them), point-filtered pixel art.</summary>
+        public static Sprite Coral() => coral != null ? coral : coral = Pattern(CoralPattern, '#');
+
+        /// <summary>The tips of the coral's branches, to tint in a second colour over Coral().</summary>
+        public static Sprite CoralTips() => coralTips != null ? coralTips : coralTips = Pattern(CoralPattern, 'o');
+
+        /// <summary>A soft ring, for the water cage around a caged enemy.</summary>
+        public static Sprite CageRing()
+        {
+            if (cageRing != null) return cageRing;
+            const int size = 96;
+            var tex = NewTexture(size, size);
+            for (int y = 0; y < size; y++)
+            for (int x = 0; x < size; x++)
+            {
+                float dx = (x + 0.5f) / size * 2f - 1f;
+                float dy = (y + 0.5f) / size * 2f - 1f;
+                float r = Mathf.Sqrt(dx * dx + dy * dy);
+                float a = Mathf.Clamp01(1f - Mathf.Abs(r - 0.86f) / 0.1f);
+                a = Mathf.Max(a, Mathf.Clamp01(0.86f - r) * 0.25f); // a faint fill of water inside
+                tex.SetPixel(x, y, new Color(1f, 1f, 1f, a));
+            }
+            tex.Apply();
+            return cageRing = ToSprite(tex);
+        }
+
+        static Sprite Pattern(string[] rows, char on)
+        {
+            int h = rows.Length, w = rows[0].Length;
+            var tex = NewTexture(w, h);
+            tex.filterMode = FilterMode.Point;
+            for (int y = 0; y < h; y++)
+            for (int x = 0; x < w; x++)
+                tex.SetPixel(x, h - 1 - y, rows[y][x] == on ? Color.white : Color.clear);
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f), w);
+        }
 
         /// <summary>Crisp disc, slightly lit from the top; tint it for map nodes.</summary>
         public static Sprite Disc()

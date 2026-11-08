@@ -37,7 +37,7 @@
 2. Automated tests: rewards, merchant gold and Aether, map connectivity and the guaranteed merchant, Shift bonus, save round-trip (`/test-setup` first)
 3. Shift page, GDD remainder: reorder the Shift sequence (drag), deck-pair bonuses (e.g. Zeus → original deck: extra damage or stun for a few rounds)
 4. Divine Focus recharge rules (GDD §9: does not refill each round, only under certain conditions)
-5. Level 2: the next god's region, deck and blessing; then terrain-blocking enemies
+5. Level 2: the next god's region, deck and blessing; then terrain-blocking enemies (Atlantis built 2026-11-05 on `feat/level-2-atlantis`, untested by players: docs/level2-atlantis.md)
 6. Chronus's bonus chart (GDD §5, "the roguelike portion"): bonuses between attempts, unlocked with currency from enemies
 7. Art without printed card text; 8-bit music and sound (placeholder chiptune music and effects generated in code since 2026-11-04: Assets/Scripts/Audio; swap in real tracks)
 
@@ -46,6 +46,8 @@
 - Regions: GDD "3 enemies & 1 boss, an event after every two" → a 5-floor branching map with an event floor midway (docs/level1-zeusonia.md).
 - Shift upgrade "materials" → **Aether**: 1 per fight, 2 per elite, 3 per boss, 30 gold at the merchant; each Shift level adds +2 to the deck's damage, shield and heal Shift effects (costs 2 / 3 / 4). Kept per deck, so a sealed god deck can be upgraded in advance.
 - GDD §9 "use an action point to create a shield" → **Guard**: 1 AP for 2 shield until the end of the round (X).
+- Level 2 is **Atlantis** (Poseidon), after Zeus: coral walls block squares (GDD §5), Poseidon's sealed deck builds terrain and a water cage; collected as Tide Pearls (docs/level2-atlantis.md).
+- Rewards (decided 2026-11-05, both levels): pick one of your decks and take 1 of 3 from its pool, plus 1 of 2 sealed god-deck cards (skippable); treasure gives a normal card. The merchant removes a card from a chosen deck or replaces it with 1 of 3 of the same rarity. Cards have a rarity (Common / Uncommon / Rare).
 - Growth stays flat, not exponential (pillar 2): no stat multipliers; growth comes from options, AP and Shift effects (Final Doc).
 
 ---

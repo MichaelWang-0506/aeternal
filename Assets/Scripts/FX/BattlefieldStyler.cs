@@ -16,7 +16,8 @@ namespace Aeternal.FX
     /// BattlefieldStyle asset: a darkened, vignetted backdrop; larger characters with a ground
     /// shadow and backlight; raised, bordered tiles with a pulsing glow on the tiles the enemy
     /// will attack, each with a badge showing the damage it takes (and, while the player stands
-    /// on one, the safe tiles outlined green); a battle UI restyled to match the main menu
+    /// on one, the safe tiles outlined green); coral rising on squares blocked by terrain, with
+    /// the rounds it still stands; a battle UI restyled to match the main menu
     /// (BattleUISkin); a CharacterHUD with health, shield and statuses on the player and the
     /// enemy; and AP and DF as rows of icons (ResourcePips).
     /// Purely visual: it never changes game state, and needs no scene wiring.
@@ -37,6 +38,9 @@ namespace Aeternal.FX
         // Above the characters (2) and their HUDs (hudSortingOrder), so a badge under the
         // player is never hidden.
         const int BadgeOrder = 20;
+        // Coral sits on its tile, under the characters.
+        const int CoralOrder = -4;
+        const float CoralRise = 0.25f;   // seconds for coral to grow out of the tile
 
         BattlefieldStyle style;
         EnemyController enemy;
@@ -47,6 +51,11 @@ namespace Aeternal.FX
         readonly bool[] attacked = new bool[4];
         readonly Transform[] damageBadges = new Transform[4];
         readonly TextMeshPro[] damageTexts = new TextMeshPro[4];
+        readonly SpriteRenderer[] corals = new SpriteRenderer[4];
+        readonly SpriteRenderer[] coralTips = new SpriteRenderer[4];
+        readonly TextMeshPro[] coralRounds = new TextMeshPro[4];
+        readonly float[] coralShown = new float[4];   // when the coral appeared (-1: hidden)
+        BattlefieldTerrain terrain;
         Aeternal.Player.PlayerPositioningComponent playerPos;
         // Per character: its sprite, and the shadow and backlight that follow it.
         readonly System.Collections.Generic.List<(SpriteRenderer body, SpriteRenderer shadow, SpriteRenderer light)> characters =
@@ -84,6 +93,7 @@ namespace Aeternal.FX
             if (combat == null) yield break;
             style = BattlefieldStyle.Load();
             enemy = combat.enemy;
+            terrain = combat.Terrain;
 
             var playerHealth = combat.playerHealth;
             playerPos = playerHealth != null ? playerHealth.GetComponent<Aeternal.Player.PlayerPositioningComponent>() : null;
@@ -242,10 +252,15 @@ namespace Aeternal.FX
             for (int i = 0; i < 4; i++)
             {
                 if (tileBorders[i] == null) continue;
+                bool blocked = terrain != null && terrain.IsBlocked(i);
                 var safe = Color.Lerp(style.tileBorderColor, style.safeBorderColor, Mathf.Lerp(0.3f, 0.75f, pulse));
-                tileBorders[i].color = attacked[i] ? style.attackBorderColor : inDanger ? safe : style.tileBorderColor;
+                // A blocked tile is never a place to go: no safe outline on it.
+                tileBorders[i].color = attacked[i] ? style.attackBorderColor
+                    : blocked ? style.terrainColor
+                    : inDanger ? safe : style.tileBorderColor;
                 UpdateDamageBadge(i, i == standing, pulse);
-                tileFills[i].color = attacked[i] ? style.attackFillColor : style.tileFillColor;
+                UpdateCoral(i, blocked);
+                tileFills[i].color = attacked[i] ? style.attackFillColor : blocked ? style.blockedTileColor : style.tileFillColor;
                 tileGlows[i].enabled = attacked[i];
                 if (attacked[i])
                 {
@@ -265,7 +280,8 @@ namespace Aeternal.FX
             go.transform.SetParent(transform, false);
             var sr = go.GetComponent<SpriteRenderer>();
             sr.sprite = style.backgroundSprite;
-            sr.color = style.backgroundTint;
+            var map = RunManager.Instance != null && RunManager.Instance.HasActiveRun ? RunManager.Instance.CurrentMap : null;
+            sr.color = map != null && map.backgroundTint.a > 0f ? map.backgroundTint : style.backgroundTint;
             sr.sortingOrder = BackgroundOrder;
 
             // Cover the whole camera view, cropping whichever side overflows.
@@ -280,7 +296,8 @@ namespace Aeternal.FX
             // Smoke, embers and (in stormy encounters) clouds and lightning over the backdrop.
             var run = RunManager.Instance;
             bool stormy = run != null && run.HasActiveRun && run.CurrentEncounter != null && run.CurrentEncounter.stormy;
-            AmbientLayer.AddToCamera(cam, sr.sortingLayerID, AmbienceOrder, go.transform, stormy);
+            bool underwater = map != null && map.ambience == Aeternal.Encounters.RegionAmbience.Underwater;
+            AmbientLayer.AddToCamera(cam, sr.sortingLayerID, AmbienceOrder, go.transform, stormy, underwater);
 
             // Darken the edges of the backdrop only; tiles and characters draw above it.
             var vignette = new GameObject("Battlefield Vignette", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
@@ -317,12 +334,74 @@ namespace Aeternal.FX
                     tileGlows[i] = AddLayer(border, "Tile Glow", border.sprite, style.attackGlowScale, TileGlowOrder, style.attackGlowColor);
                     tileGlows[i].enabled = false;
                     MakeDamageBadge(i, border);
+                    MakeCoral(i, border);
                 }
             }
 
             var center = GameObject.Find(CenterTileName);
             var centerBorder = center != null ? center.GetComponent<SpriteRenderer>() : null;
             if (centerBorder != null) StyleTile(centerBorder, style.centerTileFillColor);
+        }
+
+        /// <summary>Coral (branches and tips) on a tile and its rounds-left number; hidden until terrain rises there.</summary>
+        void MakeCoral(int direction, SpriteRenderer tile)
+        {
+            var bounds = tile.bounds;
+            float size = bounds.size.x * 0.82f;
+            var branches = new GameObject("Coral", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+            branches.transform.SetParent(transform, false);
+            branches.transform.position = bounds.center;
+            branches.sprite = ProceduralSprites.Coral();
+            branches.color = style.terrainColor;
+            branches.sortingLayerID = tile.sortingLayerID;
+            branches.sortingOrder = CoralOrder;
+
+            var tips = new GameObject("Coral Tips", typeof(SpriteRenderer)).GetComponent<SpriteRenderer>();
+            tips.transform.SetParent(branches.transform, false);
+            tips.sprite = ProceduralSprites.CoralTips();
+            tips.color = style.terrainTipColor;
+            tips.sortingLayerID = tile.sortingLayerID;
+            tips.sortingOrder = CoralOrder + 1;
+
+            var text = new GameObject("Coral Rounds", typeof(RectTransform)).AddComponent<TextMeshPro>();
+            text.transform.SetParent(transform, false);
+            text.transform.position = new Vector3(bounds.min.x + size * 0.18f, bounds.max.y - size * 0.18f, 0f);
+            text.rectTransform.sizeDelta = new Vector2(size * 0.5f, size * 0.4f);
+            text.alignment = TextAlignmentOptions.Center;
+            text.fontStyle = FontStyles.Bold;
+            text.fontSize = size * 3.2f;
+            text.color = style.terrainColor;
+            text.outlineWidth = 0.25f;
+            text.outlineColor = new Color32(0, 0, 0, 255);
+            text.sortingLayerID = tile.sortingLayerID;
+            text.sortingOrder = BadgeOrder;
+
+            branches.transform.localScale = Vector3.one * size;
+            corals[direction] = branches;
+            coralTips[direction] = tips;
+            coralRounds[direction] = text;
+            coralShown[direction] = -1f;
+            branches.gameObject.SetActive(false);
+            text.gameObject.SetActive(false);
+        }
+
+        /// <summary>Shows the coral on a blocked tile, growing out of it when the terrain first rises.</summary>
+        void UpdateCoral(int direction, bool blocked)
+        {
+            var coral = corals[direction];
+            if (coral == null) return;
+            if (coral.gameObject.activeSelf != blocked) coral.gameObject.SetActive(blocked);
+            if (coralRounds[direction].gameObject.activeSelf != blocked) coralRounds[direction].gameObject.SetActive(blocked);
+            if (!blocked) { coralShown[direction] = -1f; return; }
+            if (coralShown[direction] < 0f) coralShown[direction] = Time.time;
+            float k = Mathf.Clamp01((Time.time - coralShown[direction]) / CoralRise);
+            float grow = 1f - (1f - k) * (1f - k);
+            var tile = tileBorders[direction];
+            float size = tile != null ? tile.bounds.size.x * 0.82f : 1f;
+            coral.transform.localScale = new Vector3(size, size * grow, 1f);
+            if (tile != null) coral.transform.position = tile.bounds.center + Vector3.down * (size * 0.5f * (1f - grow));
+            int left = terrain != null ? terrain.RoundsLeft(direction) : 0;
+            coralRounds[direction].text = left.ToString();
         }
 
         /// <summary>

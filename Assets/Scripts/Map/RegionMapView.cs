@@ -118,9 +118,10 @@ namespace Aeternal.Map
                 var art = Stretch(Rect("Art", bg));
                 var artImage = art.gameObject.AddComponent<Image>();
                 artImage.sprite = style.backgroundSprite;
-                artImage.color = new Color(0.3f, 0.3f, 0.36f, 1f);
+                var map = run.CurrentMap;
+                artImage.color = map.backgroundTint.a > 0f ? map.backgroundTint : new Color(0.3f, 0.3f, 0.36f, 1f);
                 artImage.preserveAspect = false;
-                AmbientLayer.AddToUI(art, false, true);
+                AmbientLayer.AddToUI(art, false, true, map.ambience == Aeternal.Encounters.RegionAmbience.Underwater);
             }
             var vignette = Stretch(Rect("Vignette", bg)).gameObject.AddComponent<Image>();
             vignette.sprite = ProceduralSprites.Vignette();
@@ -194,10 +195,10 @@ namespace Aeternal.Map
             int hp = run.CarriedHealth;
             string health = hp < 0 ? "full" : run.PlayerMaxHealth > 0 ? $"{hp}/{run.PlayerMaxHealth}" : hp.ToString();
             string shards = run.CollectsStormShards || run.StormShards.Count > 0
-                ? $"\nStorm Shards: <color=#FFD24D>{run.StormShards.Count}</color> <size=75%>(sealed until the boss's blessing)</size>"
+                ? $"\n{run.CurrentMap.ShardName}s: <color=#FFD24D>{run.StormShards.Count}</color> <size=75%>(sealed until the boss's blessing)</size>"
                 : "";
             infoText.text = $"Health: {health}\nGold: <color=#FFD24D>{run.Gold}</color>   Aether: <color=#9FE3FF>{run.Aether}</color>\n" +
-                            $"Deck: {run.RunDeck.Count} cards{shards}";
+                            $"Deck: {run.RunDeck.Count} cards{GodDecks()}{shards}";
         }
 
         Vector2 Position(RunMapNode node)
@@ -359,11 +360,14 @@ namespace Aeternal.Map
             }
         }
 
-        /// <summary>A Storm Shard while the god's deck is sealed, otherwise a card for the deck.</summary>
+        /// <summary>
+        /// A Storm Shard while the god's deck is sealed, otherwise a card for the deck. With
+        /// deck-choice rewards every fight already offers a sealed card, so treasure is a card.
+        /// </summary>
         string OpenTreasure()
         {
             var map = run.CurrentMap;
-            if (run.CollectsStormShards)
+            if (run.CollectsStormShards && !map.deckChoiceRewards)
             {
                 var shard = map.stormShardPool.Where(c => c != null).OrderBy(_ => Random.value).First();
                 run.AddStormShard(shard);
@@ -408,25 +412,39 @@ namespace Aeternal.Map
             });
         }
 
-        /// <summary>The deck as card faces, with the sealed Storm Shards in their own section.</summary>
+        /// <summary>The awakened god decks for the summary line, e.g. "  ·  Zeus: 9".</summary>
+        string GodDecks()
+        {
+            var parts = run.UnlockedDecks.Select(d => $"{d.deckId}: {run.CardsIn(d).Count}").ToList();
+            return parts.Count > 0 ? $"  ·  {string.Join("  ·  ", parts)}" : "";
+        }
+
+        /// <summary>
+        /// Every deck the player owns as card faces (the starting deck, then each deck awakened by a
+        /// blessing), with the sealed Storm Shards in their own section.
+        /// </summary>
         void ShowDeck()
         {
             if (busy) return;
             busy = true;
-            var sections = new List<CardGridPanel.Section>
+            var sections = new List<CardGridPanel.Section>();
+            foreach (var deck in run.OwnedDecks())
             {
-                new CardGridPanel.Section
+                var cards = run.CardsIn(deck);
+                sections.Add(new CardGridPanel.Section
                 {
-                    title = $"Deck  ({run.RunDeck.Count} cards)",
-                    cards = run.RunDeck.OrderBy(c => c.costAP).ThenBy(c => c.name).ToList(),
-                },
-            };
+                    title = deck == null && run.UnlockedDecks.Count == 0
+                        ? $"Deck  ({cards.Count} cards)"
+                        : $"{run.OwnedDeckName(deck)} deck  ({cards.Count} cards){(deck == null ? "" : "  <size=70%><color=#9FE3FF>Shift to it in battle</color></size>")}",
+                    cards = cards.OrderBy(c => c.costAP).ThenBy(c => c.DisplayName).ToList(),
+                });
+            }
             if (run.CollectsStormShards || run.StormShards.Count > 0)
             {
                 string deck = run.CurrentMap.blessingDeck != null ? run.CurrentMap.blessingDeck.deckId : "god's";
                 sections.Add(new CardGridPanel.Section
                 {
-                    title = $"Storm Shards  ({run.StormShards.Count})  <size=70%><color=#FFD24D>sealed in the {deck} deck until its blessing</color></size>",
+                    title = $"{run.CurrentMap.ShardName}s  ({run.StormShards.Count})  <size=70%><color=#FFD24D>sealed in the {deck} deck until its blessing</color></size>",
                     cards = run.StormShards.ToList(),
                     dimmed = true,
                 });

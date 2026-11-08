@@ -16,6 +16,7 @@ MonoBehaviour:
   description: 'Gain Dodge - negate the next enemy attack.'
   artwork: {fileID: -3138956713025092319, guid: a774460cea57f2644ae0243414c08f84, type: 3}
   costAP: 3
+  rarity: 1
   effects:
   - effectType: 8
     magnitude: 1

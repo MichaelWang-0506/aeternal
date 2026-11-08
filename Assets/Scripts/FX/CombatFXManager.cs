@@ -180,7 +180,7 @@ namespace Aeternal.FX
         // ------------------------------------------------------------------
         private void OnPlayerDamaged(DamageInfo info)
         {
-            SpawnFloatAtWorld(PlayerPos(), info.isDamageOverTime ? $"-{info.amount} Bleed" : $"-{info.amount}",
+            SpawnFloatAtWorld(PlayerPos(), info.isDamageOverTime ? $"-{info.amount} {DotName(info)}" : $"-{info.amount}",
                 info.isDamageOverTime ? DOT_COLOR : DAMAGE_COLOR, 34);
             Flash(playerSprite, playerBaseColor);
             if (info.isDamageOverTime) { impact.Bleed(playerSprite); return; }
@@ -190,13 +190,21 @@ namespace Aeternal.FX
 
         private void OnEnemyDamaged(DamageInfo info)
         {
-            SpawnFloatAtWorld(EnemyPos(), info.isDamageOverTime ? $"-{info.amount} Bleed" : $"-{info.amount}",
+            SpawnFloatAtWorld(EnemyPos(), info.isDamageOverTime ? $"-{info.amount} {DotName(info)}" : $"-{info.amount}",
                 info.isDamageOverTime ? DOT_COLOR : DAMAGE_COLOR, 38);
             Flash(enemySprite, enemyController != null ? enemyController.SpriteTint : enemyBaseColor);
-            if (info.isDamageOverTime) { impact.Bleed(enemySprite); return; }
+            if (info.isDamageOverTime)
+            {
+                if (info.type == Aeternal.Cards.DamageType.Water) impact.Hit(enemySprite, EnemyPos() + Vector3.up, info.type, info.amount);
+                else impact.Bleed(enemySprite);
+                return;
+            }
             impact.Hit(enemySprite, PlayerPos(), info.type, info.amount);
             if (impact.IsBigHit(info.amount)) Shake(impact.BigHitShake);
         }
+
+        /// <summary>Label of damage over time: the water cage's is water, everything else is Bleed.</summary>
+        private static string DotName(DamageInfo info) => info.type == Aeternal.Cards.DamageType.Water ? "Cage" : "Bleed";
 
         private void OnPlayerHealed(int amount)
         {

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18f6374be14b4ccd9db12d67257ed96, type: 3}
+  m_Name: Drowned Captain Encounter
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Encounters.EncounterData
+  encounterId: drowned_captain
+  displayName: Drowned Captain
+  isBoss: 0
+  isElite: 1
+  stormy: 0
+  stats: {fileID: 11400000, guid: 035bd7913b2354ef9135f85359cf8f9c, type: 2}
+  baseDamage: 4
+  damageType: 0
+  canAOE: 0
+  turnsBetweenAttacks: 1
+  sprite: {fileID: -2011081452543692480, guid: 38c0c49ce2355dfaa187a1ebc67511d3, type: 3}
+  spriteTint: {r: 1, g: 1, b: 1, a: 1}
+  spriteScale: 1.15
+  terrainEvery: 2
+  terrainRounds: 2
+  terrainName: CORAL WALL
+  terrainWarning: "Coral bursts from the sea floor beside you. You can't step there."
+  chargedAttackEvery: 0
+  introDialogue:
+  - speaker: "Drowned Captain"
+    text: "Poseidon gave me the reef to guard. Every wall of it answers to me."
+  - speaker: "Drowned Captain"
+    text: "Run if you like. The coral will close the way."

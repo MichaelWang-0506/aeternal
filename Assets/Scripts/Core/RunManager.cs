@@ -206,6 +206,66 @@ namespace Aeternal.Core
             return deck;
         }
 
+        // ---- Owned decks: the run deck (starting deck) and each deck awakened by a blessing ----
+        // A null DeckData below means the run deck.
+
+        /// <summary>The decks the player owns and can grow: null (the run deck), then each awakened deck.</summary>
+        public List<Aeternal.Decks.DeckData> OwnedDecks()
+        {
+            var decks = new List<Aeternal.Decks.DeckData> { null };
+            decks.AddRange(UnlockedDecks);
+            return decks;
+        }
+
+        /// <summary>Name of an owned deck: the run deck goes by its starting deck's id.</summary>
+        public string OwnedDeckName(Aeternal.Decks.DeckData deck)
+        {
+            if (deck != null) return deck.deckId;
+            return CurrentMap != null && CurrentMap.startingDeck != null ? CurrentMap.startingDeck.deckId : "Your";
+        }
+
+        /// <summary>The cards of an owned deck, one entry per copy.</summary>
+        public List<CardData> CardsIn(Aeternal.Decks.DeckData deck)
+        {
+            if (deck == null) return new List<CardData>(RunDeck);
+            var cards = new List<CardData>();
+            foreach (var entry in deck.defaultCards)
+                if (entry.card != null) for (int i = 0; i < Mathf.Max(1, entry.count); i++) cards.Add(entry.card);
+            return cards;
+        }
+
+        /// <summary>Adds a card to an owned deck.</summary>
+        public void AddCardTo(Aeternal.Decks.DeckData deck, CardData card)
+        {
+            if (card == null) return;
+            if (deck == null) { RunDeck.Add(card); return; }
+            for (int i = 0; i < deck.defaultCards.Count; i++)
+            {
+                if (deck.defaultCards[i].card != card) continue;
+                var entry = deck.defaultCards[i];
+                entry.count = Mathf.Max(1, entry.count) + 1;
+                deck.defaultCards[i] = entry;
+                return;
+            }
+            deck.defaultCards.Add(new Aeternal.Decks.CardEntry { card = card, count = 1 });
+        }
+
+        /// <summary>Removes one copy of a card from an owned deck; returns whether it was there.</summary>
+        public bool RemoveCardFrom(Aeternal.Decks.DeckData deck, CardData card)
+        {
+            if (card == null) return false;
+            if (deck == null) return RunDeck.Remove(card);
+            for (int i = 0; i < deck.defaultCards.Count; i++)
+            {
+                if (deck.defaultCards[i].card != card) continue;
+                var entry = deck.defaultCards[i];
+                if (entry.count > 1) { entry.count--; deck.defaultCards[i] = entry; }
+                else deck.defaultCards.RemoveAt(i);
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>Remove one copy of a card from the run deck (e.g. at a region event).</summary>
         public void RemoveCardFromDeck(CardData card)
         {

@@ -78,6 +78,9 @@ namespace Aeternal.Combat
         private bool isEnemyDead = false;
 
         public bool IsGameOver => isGameOver;
+
+        /// <summary>Terrain on the squares around the enemy this fight.</summary>
+        public BattlefieldTerrain Terrain { get; private set; }
         public bool IsPlayerDead => isPlayerDead;
         public bool IsEnemyDead => isEnemyDead;
 
@@ -91,6 +94,10 @@ namespace Aeternal.Combat
             if (playerHealth == null || playerResources == null || deckManager == null) return;
 
             EventBus.RaiseLog("Combat initialized");
+
+            // Squares can be blocked by terrain (coral walls, Poseidon's cards).
+            Terrain = GetComponent<BattlefieldTerrain>();
+            if (Terrain == null) Terrain = gameObject.AddComponent<BattlefieldTerrain>();
 
             // Reset game state
             isGameOver = false;
@@ -222,6 +229,9 @@ namespace Aeternal.Combat
                     enemyHealth.OnRoundEnd();
                 }
             }
+
+            // Terrain crumbles a round at a time.
+            if (Terrain != null) Terrain.Tick();
         }
 
         // ------------------------------------------------------------------

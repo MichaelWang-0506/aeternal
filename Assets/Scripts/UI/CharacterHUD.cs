@@ -373,6 +373,10 @@ namespace Aeternal.UI
                             list.Add(new Badge { key = "dodge", icon = ProceduralSprites.Crystal(), color = style.dodgeColor,
                                 value = s.remainingRounds.ToString(), detail = "DODGE" });
                             break;
+                        case StatusEffectBehavior.Caged:
+                            list.Add(new Badge { key = "cage", icon = ProceduralSprites.Drop(), color = style.cageColor,
+                                value = s.remainingRounds.ToString(), detail = "CAGE" });
+                            break;
                         default:
                             string id = !string.IsNullOrEmpty(s.id) ? s.id : behavior.ToString();
                             list.Add(new Badge { key = id, color = style.otherStatusColor,

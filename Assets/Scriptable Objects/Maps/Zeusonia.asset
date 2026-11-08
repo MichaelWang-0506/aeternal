@@ -30,7 +30,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2ec0b8e920c2be1418f2859b8cfb4de4, type: 2}
   onRegionClearedScene: MainMenu
   showMap: 1
-  nextMap: {fileID: 11400000, guid: 429725eec0bd4258961bbc012021873b, type: 2}
+  nextMap: {fileID: 11400000, guid: 0dbfd7f6cbf857ca9031b5ba963a508c, type: 2}
   openingNarrative:
   - speaker: ""
     text: "Darkness. Then dusty air, heavy and familiar. The ruler awoke in a ruined temple, alive again, decades after his death."
@@ -70,3 +70,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f705310a45a143d98b0a281c320aee44, type: 2}
   bossEncounter: {fileID: 11400000, guid: 8cef6a08760848088151aa58a8020c57, type: 2}
   restHeal: 10
+  deckChoiceRewards: 1

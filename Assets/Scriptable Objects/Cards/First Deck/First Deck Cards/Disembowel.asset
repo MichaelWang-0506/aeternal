@@ -20,6 +20,7 @@ MonoBehaviour:
     (2 dmg at each round end).'
   artwork: {fileID: 2995835011165631073, guid: cabdf3382f90574439bf9c8011aa04bb, type: 3}
   costAP: 2
+  rarity: 2
   effects:
   - effectType: 0
     magnitude: 4

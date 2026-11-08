@@ -19,6 +19,9 @@ namespace Aeternal.Cards
 
         [Tooltip("Additional data for the behavior (e.g., damage amount for bleeding)")]
         public int behaviorValue;
+
+        [Tooltip("Caged: extra damage per round the status has already lasted (the longer, the harder it hits)")]
+        public int growthPerRound;
     }
 
     /// <summary>
@@ -30,6 +33,7 @@ namespace Aeternal.Cards
         Bleeding,       // Lose health equal to behaviorValue at round end
         Dodge,          // Dodge the next attack
         Blackout,       // Unable to act for a turn
+        Caged,          // Water cage: behaviorValue damage at round end, plus growthPerRound for each round already caged
         // Add more behaviors as needed
     }
 }

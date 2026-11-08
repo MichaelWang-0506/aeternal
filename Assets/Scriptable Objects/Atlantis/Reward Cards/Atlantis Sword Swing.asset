@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48684741d3f20674fb0731f745997a0f, type: 3}
+  m_Name: Atlantis Sword Swing
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Cards.CardData
+  id: swordswing
+  title: Sword Swing
+  description: 'Deal 3 damage, then move 1 space clockwise.'
+  artwork: {fileID: 7464635385722817273, guid: e92b24cd1e8253c4fa115f7dc0095e2a, type: 3}
+  costAP: 2
+  effects:
+  - effectType: 0
+    magnitude: 3
+    durationRounds: 0
+    target: 1
+    damageType: 0
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0
+  - effectType: 7
+    magnitude: 1
+    durationRounds: 0
+    target: 1
+    damageType: 0
+    statusEffectData:
+      statusId: 
+      behavior: 0
+      behaviorValue: 0

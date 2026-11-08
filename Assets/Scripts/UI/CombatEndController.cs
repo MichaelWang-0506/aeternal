@@ -113,6 +113,11 @@ namespace Aeternal.UI
                 var range = run.IsCurrentEncounterElite ? map.eliteGoldReward : map.goldReward;
                 int gold = Random.Range(range.x, range.y + 1);
                 run.AddGold(gold);
+                if (map.deckChoiceRewards)
+                {
+                    ShowDeckChoiceReward(run, gold);
+                    return;
+                }
                 var choices = BuildChoices(pool, rewardChoiceCount)
                     .Select(c => new RewardScreen.Choice { card = c.card, isShard = c.isShard }).ToList();
                 string shardDeck = map.blessingDeck != null ? map.blessingDeck.deckId : "";
@@ -200,8 +205,40 @@ namespace Aeternal.UI
             string text = string.IsNullOrEmpty(card.description) ? label : $"{label}\n<size=70%>{card.description}</size>";
             if (!isShard) return text;
             string deck = run != null && run.CurrentMap.blessingDeck != null ? run.CurrentMap.blessingDeck.deckId : "god's";
-            return $"<color=#FFD24D><size=60%>STORM SHARD</size></color>\n{text}\n" +
+            string shard = run != null && run.CurrentMap != null ? run.CurrentMap.ShardName : "Storm Shard";
+            return $"<color=#FFD24D><size=60%>{shard.ToUpperInvariant()}</size></color>\n{text}\n" +
                    $"<size=55%><color=#FFD24D>Sealed in the {deck} deck until its blessing</color></size>";
+        }
+
+        /// <summary>
+        /// Deck-choice reward: the player picks one of their decks and takes 1 of 3 from that
+        /// deck's pool, then 1 of the sealed god deck's cards (one more to choose from after an
+        /// elite). Either pick can be skipped.
+        /// </summary>
+        private void ShowDeckChoiceReward(RunManager run, int gold)
+        {
+            var map = run.CurrentMap;
+            var offers = new List<RewardScreen.DeckOffer>();
+            foreach (var deck in run.OwnedDecks())
+            {
+                var cards = map.RewardPoolFor(deck).Where(c => c != null).Distinct()
+                    .OrderBy(_ => Random.value).Take(Mathf.Max(1, rewardChoiceCount)).ToList();
+                offers.Add(new RewardScreen.DeckOffer
+                {
+                    name = run.OwnedDeckName(deck), size = run.CardsIn(deck).Count, cards = cards, deck = deck,
+                });
+            }
+            var sealedCards = new List<CardData>();
+            if (run.CollectsStormShards)
+            {
+                int count = Mathf.Max(1, map.sealedChoices) + (run.IsCurrentEncounterElite ? 1 : 0);
+                sealedCards = map.stormShardPool.Where(c => c != null).Distinct().OrderBy(_ => Random.value).Take(count).ToList();
+            }
+            string sealedDeck = map.blessingDeck != null ? map.blessingDeck.deckId : "";
+            RewardScreen.ShowDeckChoice(gold, run.LastAetherEarned, offers, sealedCards, sealedDeck,
+                (offer, card) => run.AddCardTo(offer.deck as Aeternal.Decks.DeckData, card),
+                card => run.AddStormShard(card),
+                Advance);
         }
 
         private void ChooseReward(CardData card, bool isShard)

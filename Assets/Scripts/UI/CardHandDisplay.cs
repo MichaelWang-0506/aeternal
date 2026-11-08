@@ -42,6 +42,8 @@ namespace Aeternal.UI
         public Color cardBackEdgeColor = new Color(1f, 0.8f, 0.35f, 0.8f);
 
         private List<GameObject> activeCards = new List<GameObject>();
+        // Where the cards were before RefreshHand cleared them, so cards kept in hand aren't dealt again.
+        private Dictionary<CardData, Queue<Vector2>> keptPositions;
         private bool isInitialized = false;
 
         private void Awake()
@@ -218,7 +220,8 @@ namespace Aeternal.UI
             if (needsRebuild)
             {
                 // Clear and rebuild to match hand exactly
-                var previous = isDiscardPileDisplay ? null : SnapshotPositions();
+                var previous = isDiscardPileDisplay ? null : keptPositions ?? SnapshotPositions();
+                keptPositions = null;
                 ClearAllCards();
                 
                 if (!isDiscardPileDisplay)
@@ -358,7 +361,8 @@ namespace Aeternal.UI
                 deckManager.OnCardRemovedFromHand -= OnCardRemovedFromHand;
             }
 
-            // Clear old visual cards
+            // Clear old visual cards, remembering where the ones that stay in hand were.
+            keptPositions = SnapshotPositions();
             ClearAllCards();
 
             // Draw from deck (this won't trigger events since we unsubscribed)
@@ -373,6 +377,7 @@ namespace Aeternal.UI
 
             // Sync the display once (this will instantiate all cards)
             SyncHandDisplay();
+            keptPositions = null;
         }
 
         /// <summary>

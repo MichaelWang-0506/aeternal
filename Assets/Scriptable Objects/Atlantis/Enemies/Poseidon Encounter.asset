@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18f6374be14b4ccd9db12d67257ed96, type: 3}
+  m_Name: Poseidon Encounter
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Encounters.EncounterData
+  encounterId: poseidon
+  displayName: Poseidon
+  isBoss: 1
+  isElite: 0
+  stormy: 0
+  stats: {fileID: 11400000, guid: 3f205bbd30ee51bfac7bb188eebf1607, type: 2}
+  baseDamage: 4
+  damageType: 4
+  canAOE: 1
+  turnsBetweenAttacks: 1
+  sprite: {fileID: -6298424602537201719, guid: 4d7b6744c68a52c29b168cf27d4c04a2, type: 3}
+  spriteTint: {r: 1, g: 1, b: 1, a: 1}
+  spriteScale: 1.0
+  terrainEvery: 2
+  terrainRounds: 2
+  terrainName: CORAL WALL
+  terrainWarning: "Coral bursts from the sea floor beside you. You can't step there."
+  chargedAttackEvery: 3
+  chargedAttackMultiplier: 2
+  chargedAttackName: TIDAL WAVE
+  chargeTitle: THE TIDE RISES
+  chargeWarning: "The sea pulls back. Next round a wave crashes over every square but one!"
+  chargeRelease: "Only one square is safe from the wave. Move!"
+  introDialogue:
+  - speaker: ""
+    text: "At the heart of the sunken city, a throne of coral. The lord of the sea rises from it."
+  - speaker: "Poseidon"
+    text: "My brother let you climb his mountain. The sea is not so forgiving."
+  - speaker: "The Ruler"
+    text: "I took his thunder. I will take your tide."
+  - speaker: "Poseidon"
+    text: "Then drown trying."

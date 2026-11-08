@@ -52,6 +52,16 @@ namespace Aeternal.Encounters
         [Tooltip("Fight under a storm: dark clouds roll across the backdrop and lightning flashes.")]
         public bool stormy = false;
 
+        [Header("Terrain (GDD: special enemies create terrain that blocks certain areas)")]
+        [Tooltip("Every Nth round the enemy raises a wall on a square next to the player (0 = never). " +
+                 "Walls never go on the player's square, nor on the last square an attack leaves safe.")]
+        public int terrainEvery = 0;
+        [Tooltip("Rounds a wall stands before it crumbles.")]
+        public int terrainRounds = 2;
+        public string terrainName = "CORAL WALL";
+        [Tooltip("Banner when a wall rises.")]
+        public string terrainWarning = "A wall of coral bursts from the sea floor. You can't step there.";
+
         [Header("Charged attack (boss mechanic)")]
         [Tooltip("Every Nth round the enemy unleashes a charged attack (0 = never). It is announced " +
                  "the round before, then hits every square but one safe square, for extra damage.")]
@@ -59,6 +69,8 @@ namespace Aeternal.Encounters
         [Tooltip("Damage of the charged attack, as a multiple of baseDamage.")]
         public float chargedAttackMultiplier = 2f;
         public string chargedAttackName = "THUNDERBOLT";
+        [Tooltip("Title of the banner the round before the charged attack.")]
+        public string chargeTitle = "STORM GATHERING";
         [Tooltip("Banner the round before the charged attack.")]
         public string chargeWarning = "The storm gathers. Next round: find the safe square!";
         [Tooltip("Banner when the charged attack is telegraphed.")]

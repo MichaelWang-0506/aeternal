@@ -16,6 +16,7 @@ MonoBehaviour:
   description: Deal 5 lightning damage, then move 1 space.
   artwork: {fileID: 5402286756031623576, guid: 43f7bca4b5613194fb993b7d67e86b60, type: 3}
   costAP: 2
+  rarity: 1
   effects:
   - effectType: 0
     magnitude: 5

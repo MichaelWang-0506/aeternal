@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48684741d3f20674fb0731f745997a0f, type: 3}
+  m_Name: Atlantis Disembowel
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.Cards.CardData
+  id: disembowel
+  title: Disembowel
+  description: 'Deal 4 damage.
+
+    Apply 2 Bleed for 3 rounds
+
+    (2 dmg at each round end).'
+  artwork: {fileID: 2995835011165631073, guid: cabdf3382f90574439bf9c8011aa04bb, type: 3}
+  costAP: 2
+  rarity: 2
+  effects:
+  - effectType: 0
+    magnitude: 4
+    durationRounds: 0
+    target: 1
+    damageType: 0
+    statusEffectData:
+      statusId:
+      behavior: 0
+      behaviorValue: 0
+  - effectType: 8
+    magnitude: 2
+    durationRounds: 3
+    target: 1
+    damageType: 0
+    statusEffectData:
+      statusId: Bleeding
+      behavior: 1
+      behaviorValue: 1

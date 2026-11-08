@@ -16,6 +16,7 @@ MonoBehaviour:
   description: Deal 6 lightning damage.
   artwork: {fileID: 8266440362671418988, guid: a1bc53f46d4ea394ba4b9abe9a32b4bb, type: 3}
   costAP: 2
+  rarity: 1
   effects:
   - effectType: 0
     magnitude: 6

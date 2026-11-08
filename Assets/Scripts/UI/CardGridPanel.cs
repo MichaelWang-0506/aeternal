@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -25,6 +26,8 @@ namespace Aeternal.UI
             public List<CardData> cards = new List<CardData>();
             public List<string> captions;
             public bool dimmed;
+            /// <summary>Picking a card of this section calls this instead of the panel's onPick.</summary>
+            public Action<CardData> onPick;
         }
 
         Action<CardData> onPick;
@@ -61,7 +64,8 @@ namespace Aeternal.UI
         {
             var dim = Rect("Dim", transform);
             Fill(dim);
-            dim.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.88f);
+            // Opaque: whatever opened the panel (an event, the merchant, the map) mustn't read through the cards.
+            dim.gameObject.AddComponent<Image>().color = new Color(0.02f, 0.02f, 0.03f, 1f);
 
             var heading = Text(dim, title, 52f, Gold);
             heading.fontStyle = FontStyles.Bold;
@@ -127,21 +131,23 @@ namespace Aeternal.UI
                 {
                     var card = section.cards[i];
                     string caption = hasCaptions && i < section.captions.Count ? section.captions[i] : null;
-                    Action click = onPick != null && !section.dimmed ? () => Pick(card) : (Action)null;
+                    var sectionPick = section.onPick;
+                    Action click = (onPick != null || sectionPick != null) && !section.dimmed ? () => Pick(card, sectionPick) : (Action)null;
                     var view = CardView.Spawn(gridGo.transform, card, CardWidth, click, caption, Gold);
                     if (section.dimmed) CardView.SetDarkness(view, 0.45f);
                 }
             }
 
-            var close = MakeButton(dim, onPick != null ? "Cancel" : "Close", Close);
+            bool picking = onPick != null || sections.Any(s => s.onPick != null);
+            var close = MakeButton(dim, picking ? "Cancel" : "Close", Close);
             close.anchorMin = close.anchorMax = close.pivot = new Vector2(0.5f, 0f);
             close.anchoredPosition = new Vector2(0f, 30f);
             close.sizeDelta = new Vector2(320f, 70f);
         }
 
-        void Pick(CardData card)
+        void Pick(CardData card, Action<CardData> sectionPick = null)
         {
-            var pick = onPick;
+            var pick = sectionPick ?? onPick;
             onPick = null;
             pick?.Invoke(card);
             Close();

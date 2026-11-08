@@ -51,7 +51,7 @@ namespace Aeternal.UI
                 face = new GameObject("Card Face", typeof(RectTransform), typeof(Image));
                 face.transform.SetParent(slotRect, false);
                 face.GetComponent<Image>().color = new Color(0.25f, 0.2f, 0.15f, 1f);
-                var label = Text(face.transform, card != null ? $"{card.name}\n{card.costAP} AP\n\n{card.description}" : "", 22f, Color.white);
+                var label = Text(face.transform, card != null ? $"{card.DisplayName}\n{card.costAP} AP\n\n{card.description}" : "", 22f, Color.white);
                 Fill(label.rectTransform);
             }
 

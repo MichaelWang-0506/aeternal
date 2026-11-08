@@ -18,6 +18,7 @@ MonoBehaviour:
     Draw 2 cards'
   artwork: {fileID: 8399063547182681082, guid: 21ab7d92c2b16d84b977a6769655d0cb, type: 3}
   costAP: 3
+  rarity: 1
   effects:
   - effectType: 7
     magnitude: 2

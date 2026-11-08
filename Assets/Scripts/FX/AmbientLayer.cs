@@ -5,7 +5,7 @@ namespace Aeternal.FX
 {
     /// <summary>
     /// Brings a still background to life: smoke drifting across the city and embers rising
-    /// from it, and in stormy encounters dark clouds rolling along the top and lightning
+    /// from it (under the sea: murky haze and rising bubbles), and in stormy encounters dark clouds rolling along the top and lightning
     /// flashing now and then. Can also sway the background a little with the mouse. Sits just
     /// above the background art and below everything else; ignores clicks. Purely visual;
     /// every value comes from BattlefieldStyle ("Ambience").
@@ -21,7 +21,7 @@ namespace Aeternal.FX
         }
 
         BattlefieldStyle style;
-        bool storm;
+        bool storm, underwater;
         RectTransform area;
         Mote[] smoke, embers, clouds;
         Image flash;
@@ -37,7 +37,7 @@ namespace Aeternal.FX
         /// siblings so it draws over the art and under whatever follows. The art sways with the
         /// mouse when <paramref name="parallax"/> is true.
         /// </summary>
-        public static AmbientLayer AddToUI(RectTransform art, bool stormy, bool parallax)
+        public static AmbientLayer AddToUI(RectTransform art, bool stormy, bool parallax, bool underwater = false)
         {
             if (art == null || art.parent == null) return null;
             var go = new GameObject("Ambience", typeof(RectTransform));
@@ -47,7 +47,7 @@ namespace Aeternal.FX
             rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
             rect.offsetMin = rect.offsetMax = Vector2.zero;
             var layer = go.AddComponent<AmbientLayer>();
-            layer.Init(stormy, parallax ? art : null, layer.style.parallaxPixels);
+            layer.Init(stormy, underwater, parallax ? art : null, layer.style.parallaxPixels);
             return layer;
         }
 
@@ -65,7 +65,7 @@ namespace Aeternal.FX
             rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
             rect.offsetMin = rect.offsetMax = Vector2.zero;
             var layer = go.AddComponent<AmbientLayer>();
-            layer.Init(stormy, null, 0f);
+            layer.Init(stormy, false, null, 0f);
             return layer;
         }
 
@@ -74,7 +74,8 @@ namespace Aeternal.FX
         /// at <paramref name="sortingOrder"/> (between the background sprite and the rest).
         /// <paramref name="background"/> sways with the mouse when given.
         /// </summary>
-        public static AmbientLayer AddToCamera(Camera cam, int sortingLayerId, int sortingOrder, Transform background, bool stormy)
+        public static AmbientLayer AddToCamera(Camera cam, int sortingLayerId, int sortingOrder, Transform background, bool stormy,
+            bool underwater = false)
         {
             if (cam == null) return null;
             var go = new GameObject("Ambience", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
@@ -91,7 +92,7 @@ namespace Aeternal.FX
             var layer = go.AddComponent<AmbientLayer>();
             // Pixels to world units, so the backdrop sways as far as a UI one would.
             float worldPerPixel = cam.orthographic ? cam.orthographicSize * 2f / 1080f : 0.01f;
-            layer.Init(stormy, background, layer.style.parallaxPixels * worldPerPixel);
+            layer.Init(stormy, underwater, background, layer.style.parallaxPixels * worldPerPixel);
             return layer;
         }
 
@@ -101,11 +102,24 @@ namespace Aeternal.FX
             area = (RectTransform)transform;
         }
 
-        void Init(bool stormy, Transform swayTarget, float swayAmount)
+        void Init(bool stormy, bool sea, Transform swayTarget, float swayAmount)
         {
             storm = stormy;
-            smoke = Spawn("Smoke", style.smokeCount, ProceduralSprites.SoftEllipse());
-            embers = Spawn("Ember", style.emberCount, null);
+            underwater = sea;
+            if (underwater)
+            {
+                // First, so the haze and bubbles draw over it.
+                var wash = new GameObject("Sea Wash", typeof(RectTransform), typeof(Image)).GetComponent<Image>();
+                wash.rectTransform.SetParent(area, false);
+                wash.rectTransform.anchorMin = Vector2.zero; wash.rectTransform.anchorMax = Vector2.one;
+                wash.rectTransform.offsetMin = wash.rectTransform.offsetMax = Vector2.zero;
+                wash.color = style.underwaterWashColor;
+                wash.raycastTarget = false;
+            }
+            smoke = Spawn(underwater ? "Haze" : "Smoke", style.smokeCount, ProceduralSprites.SoftEllipse());
+            embers = underwater
+                ? Spawn("Bubble", style.bubbleCount, ProceduralSprites.CageRing())
+                : Spawn("Ember", style.emberCount, null);
             if (storm)
             {
                 clouds = Spawn("Storm Cloud", style.stormCloudCount, ProceduralSprites.SoftEllipse());
@@ -207,15 +221,17 @@ namespace Aeternal.FX
             m.age = 0f;
             m.life = Random.Range(14f, 24f);
             m.size = Random.Range(260f, 560f);
-            m.maxAlpha = Random.Range(0.5f, 1f) * style.smokeColor.a;
+            var smokeColor = underwater ? style.underwaterHazeColor : style.smokeColor;
+            m.maxAlpha = Random.Range(0.5f, 1f) * smokeColor.a;
             m.velocity = new Vector2(Random.Range(12f, 32f), Random.Range(3f, 12f));
             m.wobble = 0f;
             m.rect.anchoredPosition = new Vector2(Random.Range(-0.6f, 0.45f) * size.x, Random.Range(-0.45f, 0.25f) * size.y);
-            m.image.color = new Color(style.smokeColor.r, style.smokeColor.g, style.smokeColor.b, 0f);
+            m.image.color = new Color(smokeColor.r, smokeColor.g, smokeColor.b, 0f);
         }
 
         void NewEmber(ref Mote m, Vector2 size)
         {
+            if (underwater) { NewBubble(ref m, size); return; }
             m.age = 0f;
             m.life = Random.Range(4f, 9f);
             m.size = Random.Range(3f, 6f);
@@ -224,6 +240,18 @@ namespace Aeternal.FX
             m.wobble = Random.Range(10f, 30f);
             m.rect.anchoredPosition = new Vector2(Random.Range(-0.5f, 0.5f) * size.x, Random.Range(-0.55f, -0.1f) * size.y);
             m.image.color = new Color(style.emberColor.r, style.emberColor.g, style.emberColor.b, 0f);
+        }
+
+        void NewBubble(ref Mote m, Vector2 size)
+        {
+            m.age = 0f;
+            m.life = Random.Range(5f, 10f);
+            m.size = Random.Range(8f, 22f);
+            m.maxAlpha = Random.Range(0.5f, 1f) * style.bubbleColor.a;
+            m.velocity = new Vector2(Random.Range(-4f, 4f), Random.Range(45f, 95f));
+            m.wobble = Random.Range(15f, 35f);
+            m.rect.anchoredPosition = new Vector2(Random.Range(-0.5f, 0.5f) * size.x, Random.Range(-0.6f, -0.2f) * size.y);
+            m.image.color = new Color(style.bubbleColor.r, style.bubbleColor.g, style.bubbleColor.b, 0f);
         }
 
         void NewCloud(ref Mote m, Vector2 size)

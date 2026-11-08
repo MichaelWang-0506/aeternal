@@ -12,7 +12,9 @@ namespace Aeternal.UI
     /// <summary>
     /// Hermus, the divine merchant (a map node): cards for gold, a Storm Shard while the
     /// region's god deck is sealed, Aether for Shift upgrades (GDD: "trade/purchase upgrading
-    /// materials"), and a once-per-visit card removal. Prices and stock size come from MapData.
+    /// materials"), and a once-per-visit card removal. In a region with deck-choice rewards the
+    /// deck service works on any owned deck, and is remove or replace (1 of 3 cards of the same
+    /// rarity from that deck's pool), once per visit. Prices and stock size come from MapData.
     /// Built at runtime; calls onDone when the player leaves.
     /// </summary>
     public class ShopPanel : MonoBehaviour
@@ -27,6 +29,11 @@ namespace Aeternal.UI
         Button removalButton;
         bool removalUsed;
         int removalPrice;
+        // Deck-choice regions: remove from, or replace in, any owned deck (one service per visit).
+        TMP_Text replaceLabel;
+        Button replaceButton;
+        int replacePrice;
+        string serviceDone;
         TMP_Text aetherLabel;
         Button aetherButton;
         int aetherPrice;
@@ -54,6 +61,7 @@ namespace Aeternal.UI
         {
             var map = run.CurrentMap;
             removalPrice = map.removalPrice;
+            replacePrice = map.replacePrice;
             aetherPrice = map.aetherPrice;
             aetherLeft = Mathf.Max(0, map.shopAetherStock);
 
@@ -97,7 +105,7 @@ namespace Aeternal.UI
             {
                 int price = (shard ? map.shardPrice : map.cardPrice) + rng.Next(-map.priceSpread, map.priceSpread + 1);
                 int index = stock.Count;
-                string caption = shard ? $"{price} gold  ·  STORM SHARD" : $"{price} gold";
+                string caption = shard ? $"{price} gold  ·  {map.ShardName.ToUpperInvariant()}" : $"{price} gold";
                 var view = CardView.Spawn(row, card, CardWidth, () => Buy(index, card, shard), caption, Gold);
                 stock.Add((view, price, false));
             }
@@ -109,8 +117,13 @@ namespace Aeternal.UI
             serviceRow.spacing = 40f;
             serviceRow.childAlignment = TextAnchor.MiddleCenter;
             serviceRow.childControlWidth = serviceRow.childControlHeight = false;
-            removalButton = MakeButton(services, "", 480f, OpenRemoval);
+            removalButton = MakeButton(services, "", map.deckChoiceRewards ? 440f : 480f, OpenRemoval);
             removalLabel = removalButton.GetComponentInChildren<TMP_Text>();
+            if (map.deckChoiceRewards)
+            {
+                replaceButton = MakeButton(services, "", 440f, OpenReplace);
+                replaceLabel = replaceButton.GetComponentInChildren<TMP_Text>();
+            }
             if (aetherLeft > 0)
             {
                 aetherButton = MakeButton(services, "", 460f, BuyAether);
@@ -138,8 +151,67 @@ namespace Aeternal.UI
             Refresh();
         }
 
+        /// <summary>One section per owned deck; picking a card calls onPick with its deck.</summary>
+        List<CardGridPanel.Section> DeckSections(Action<Aeternal.Decks.DeckData, CardData> onPick, Func<Aeternal.Decks.DeckData, CardData, string> caption = null)
+        {
+            var sections = new List<CardGridPanel.Section>();
+            foreach (var deck in run.OwnedDecks())
+            {
+                var d = deck;
+                var cards = run.CardsIn(d).OrderBy(c => c.costAP).ThenBy(c => c.DisplayName).ToList();
+                sections.Add(new CardGridPanel.Section
+                {
+                    title = $"{run.OwnedDeckName(d)} deck  ({cards.Count})",
+                    cards = cards,
+                    captions = caption != null ? cards.Select(c => caption(d, c)).ToList() : null,
+                    onPick = card => onPick(d, card),
+                });
+            }
+            return sections;
+        }
+
+        /// <summary>Same-rarity cards from the deck's pool that could replace a card (other than itself).</summary>
+        List<CardData> Replacements(Aeternal.Decks.DeckData deck, CardData card)
+        {
+            return run.CurrentMap.RewardPoolFor(deck).Where(c => c != null && c != card && c.rarity == card.rarity)
+                .Distinct().ToList();
+        }
+
+        void OpenReplace()
+        {
+            if (serviceDone != null || run.Gold < replacePrice) return;
+            var sections = DeckSections((deck, card) =>
+            {
+                var offers = Replacements(deck, card).OrderBy(_ => UnityEngine.Random.value).Take(3).ToList();
+                if (offers.Count == 0) return;
+                var offer = new CardGridPanel.Section { title = $"Replace {card.DisplayName} ({card.rarity}) with", cards = offers };
+                CardGridPanel.Show($"Replace a card ({replacePrice} gold)", new List<CardGridPanel.Section> { offer }, chosen =>
+                {
+                    if (!run.SpendGold(replacePrice)) return;
+                    run.RemoveCardFrom(deck, card);
+                    run.AddCardTo(deck, chosen);
+                    serviceDone = $"Replaced {card.DisplayName}";
+                    Refresh();
+                }, null, sortingOrder: 260);
+            }, (deck, card) => Replacements(deck, card).Count > 0 ? card.rarity.ToString() : "no swap");
+            CardGridPanel.Show($"Replace a card ({replacePrice} gold): pick one to swap for 1 of 3 of the same rarity",
+                sections, null, null, sortingOrder: 250);
+        }
+
         void OpenRemoval()
         {
+            if (run.CurrentMap.deckChoiceRewards)
+            {
+                if (serviceDone != null || run.Gold < removalPrice) return;
+                CardGridPanel.Show($"Remove a card ({removalPrice} gold)", DeckSections((deck, card) =>
+                {
+                    if (!run.SpendGold(removalPrice)) return;
+                    run.RemoveCardFrom(deck, card);
+                    serviceDone = $"Removed {card.DisplayName}";
+                    Refresh();
+                }), null, null, sortingOrder: 250);
+                return;
+            }
             if (removalUsed || run.Gold < removalPrice) return;
             var deck = new CardGridPanel.Section { title = "Your deck", cards = run.RunDeck.OrderBy(c => c.costAP).ThenBy(c => c.name).ToList() };
             CardGridPanel.Show($"Remove a card ({removalPrice} gold)", new List<CardGridPanel.Section> { deck }, card =>
@@ -168,9 +240,20 @@ namespace Aeternal.UI
                     if (caption != null) caption.text = "SOLD";
                 }
             }
-            bool canRemove = !removalUsed && run.Gold >= removalPrice;
-            removalButton.interactable = canRemove;
-            removalLabel.text = removalUsed ? "Card removed" : $"Remove a card  ·  {removalPrice} gold";
+            if (replaceButton != null)
+            {
+                // One deck service per visit: remove or replace.
+                removalButton.interactable = serviceDone == null && run.Gold >= removalPrice;
+                replaceButton.interactable = serviceDone == null && run.Gold >= replacePrice;
+                removalLabel.text = serviceDone ?? $"Remove a card  ·  {removalPrice} gold";
+                replaceLabel.text = serviceDone != null ? "Deck service used" : $"Replace a card  ·  {replacePrice} gold";
+            }
+            else
+            {
+                bool canRemove = !removalUsed && run.Gold >= removalPrice;
+                removalButton.interactable = canRemove;
+                removalLabel.text = removalUsed ? "Card removed" : $"Remove a card  ·  {removalPrice} gold";
+            }
             if (aetherButton != null)
             {
                 aetherButton.interactable = aetherLeft > 0 && run.Gold >= aetherPrice;
