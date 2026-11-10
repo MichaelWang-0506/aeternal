@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Aeternal.FX.BattlefieldStyle
   backgroundSprite: {fileID: 9126978527012861193, guid: a3d45cfcedc9a8b4599c799699d45789, type: 3}
   cardPrefab: {fileID: 2574808178843471998, guid: 6e4b7e51916eeea49b5013deda085a18, type: 3}
+  playerFrames: {fileID: 11400000, guid: 852d8a50653d5414b9169f253ade3763, type: 2}

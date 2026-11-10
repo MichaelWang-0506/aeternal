@@ -9,11 +9,12 @@ using Aeternal.Stats;
 namespace Aeternal.FX
 {
     /// <summary>
-    /// Procedural animation for a combat character drawn as a single sprite: an idle breath and
-    /// sway, plus one-shot reactions (hit, attack, hop, brace, death) driven by gameplay events.
-    /// It only touches the sprite's scale and rotation, so it layers on top of the position
-    /// tweens (movement slide, enemy lunge) and colour flashes the other systems use.
-    /// Created by BattlefieldStyler; stands in until the art has real animation frames.
+    /// Animation for a combat character, driven by gameplay events (hit, attack, move, brace,
+    /// death). With a SpriteFrameSet (the hero) the events play frame-by-frame animations
+    /// through a SpriteFrameAnimator; without one (the enemies, drawn as a single sprite) they
+    /// play procedural squash, tilt and an idle breath instead. Either way it only touches the
+    /// sprite, its scale and rotation, so it layers on top of the position tweens (movement
+    /// slide, enemy lunge) and colour flashes the other systems use. Created by BattlefieldStyler.
     /// </summary>
     public class CharacterAnimator : MonoBehaviour
     {
@@ -35,6 +36,7 @@ namespace Aeternal.FX
         float tilt;
         bool dead;
         Coroutine current;
+        SpriteFrameAnimator frames; // set when the character has frame animations
 
         // Event sources, kept to unsubscribe.
         HealthComponent health;
@@ -43,11 +45,16 @@ namespace Aeternal.FX
         EnemyController enemy;
         Transform opponent;
 
-        /// <summary>Animates the player: hit, death, hop on moving, attack/brace on playing cards.</summary>
+        /// <summary>
+        /// Animates the player: hit, death, hop on moving, attack/brace on playing cards.
+        /// frameSet: the hero's frame animations; null keeps the procedural animation.
+        /// </summary>
         public static CharacterAnimator ForPlayer(SpriteRenderer body, HealthComponent health,
-            PlayerPositioningComponent positioning, DeckManager deck, Transform opponent)
+            PlayerPositioningComponent positioning, DeckManager deck, Transform opponent,
+            SpriteFrameSet frameSet = null)
         {
             var anim = Attach(body, health);
+            if (frameSet != null && frameSet.IsUsable) anim.frames = SpriteFrameAnimator.Attach(body, frameSet);
             anim.positioning = positioning;
             anim.deck = deck;
             anim.opponent = opponent;
@@ -99,7 +106,9 @@ namespace Aeternal.FX
         void LateUpdate()
         {
             float breath = 0f, sway = 0f;
-            if (!dead)
+            // The frames already breathe; only the stunned reel is added on top of them.
+            if (frames != null) { if (!dead && Dizzy) sway = Mathf.Sin(Time.time * DizzySpeed) * DizzySway; }
+            else if (!dead)
             {
                 float t = Time.time * IdleSpeed * Mathf.PI * 2f + phase;
                 breath = Mathf.Sin(t) * IdleBreath;
@@ -121,12 +130,23 @@ namespace Aeternal.FX
 
         void OnDamaged(DamageInfo info)
         {
-            if (info != null && info.amount > 0) Play(Hit());
+            if (info == null || info.amount <= 0) return;
+            if (frames != null) { if (!dead) frames.Play(SpriteFrameAnimator.State.Hit); }
+            else Play(Hit());
         }
 
-        void OnDied() => Play(Die(), force: true);
+        void OnDied()
+        {
+            // The frames stop on the last recoil pose, which then topples.
+            if (frames != null) frames.HoldLastFrame(SpriteFrameAnimator.State.Hit);
+            Play(Die(), force: true);
+        }
 
-        void OnMoved(int facing) => Play(Hop());
+        void OnMoved(int facing)
+        {
+            if (frames != null) { if (!dead) frames.Play(SpriteFrameAnimator.State.Move); }
+            else Play(Hop());
+        }
 
         void OnCardPlayed(CardData card)
         {
@@ -136,6 +156,14 @@ namespace Aeternal.FX
             {
                 if (effect.effectType == EffectType.Damage) attacks = true;
                 if (effect.effectType == EffectType.AddShield || effect.effectType == EffectType.Heal) supports = true;
+            }
+            if (frames != null)
+            {
+                if (dead) return;
+                // Punch toward the enemy: the frames are mirrored when it stands to the right.
+                if (attacks) frames.Play(SpriteFrameAnimator.State.Attack, DirectionTo(opponent) > 0f);
+                else if (supports) frames.Play(SpriteFrameAnimator.State.Guard);
+                return;
             }
             if (attacks) Play(Strike(DirectionTo(opponent)));
             else if (supports) Play(Brace());

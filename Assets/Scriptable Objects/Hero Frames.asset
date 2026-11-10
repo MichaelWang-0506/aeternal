@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f0c2a9e7b3d4e1f8a6c9d2b4e7f1a3c, type: 3}
+  m_Name: Hero Frames
+  m_EditorClassIdentifier: Assembly-CSharp::Aeternal.FX.SpriteFrameSet
+  idleFramesPerSecond: 5
+  actionFramesPerSecond: 18
+  artFacesLeft: 1
+  idle:
+  - {fileID: -92681107443296449, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -508932759685651500, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -2534064063530925259, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -1995050880197903939, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  move:
+  - {fileID: -454725768343934698, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -447758760863638364, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -4201347842752316744, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -977181925543423174, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -3501454216823482004, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -1952387714325442111, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  attack:
+  - {fileID: -1912598697028771632, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -4540684852360321150, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -1830510629993330608, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -1915819611105411127, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -1471721441782585549, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  hit:
+  - {fileID: -3441104966599457197, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -4593188550697069519, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -468781717017637099, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  guard:
+  - {fileID: -3387768724624872164, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -3796418200288075411, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}
+  - {fileID: -1143056451455216895, guid: 0582347d7696564fa2b1a2a7c0f41d91, type: 3}

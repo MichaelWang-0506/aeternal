@@ -24,6 +24,9 @@ namespace Aeternal.FX
         public Color vignetteColor = new Color(0f, 0f, 0f, 0.8f);
 
         [Header("Characters")]
+        [Tooltip("The hero's frame-by-frame animations (idle, move, attack, hit, guard). Empty " +
+                 "keeps the procedural squash-and-tilt animation.")]
+        public SpriteFrameSet playerFrames;
         [Tooltip("Multiplier on the player and enemy sprite size. Tiles are 2 units apart and the " +
                  "characters are already taller than a tile, so much above 1.1 makes them overlap.")]
         public float characterScale = 1.1f;

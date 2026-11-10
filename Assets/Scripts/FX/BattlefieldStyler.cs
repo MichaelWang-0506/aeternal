@@ -140,7 +140,7 @@ namespace Aeternal.FX
             {
                 var playerAnim = CharacterAnimator.ForPlayer(playerBody, playerHealth,
                     playerHealth.GetComponent<Aeternal.Player.PlayerPositioningComponent>(),
-                    combat.deckManager, enemyBody != null ? enemyBody.transform : null);
+                    combat.deckManager, enemyBody != null ? enemyBody.transform : null, style.playerFrames);
                 StatusVisuals.Attach(transform, playerBody, playerHealth.GetComponent<StatusManager>(), playerAnim, style);
             }
             if (enemyBody != null)
