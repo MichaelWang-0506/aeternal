@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aeternal</title>
+<meta name="description" content="Aeternal: a turn-based deck-builder roguelike built in Unity (C#), set in a world of Greek gods.">
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --text:#e6edf3; --muted:#8b949e; --accent:#d4a72c; --accent2:#58a6ff; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  a { color:var(--accent2); text-decoration:none; } a:hover { text-decoration:underline; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+  header.hero { padding: 88px 0 56px; border-bottom:1px solid var(--line); background: radial-gradient(900px 300px at 50% -10%, rgba(212,167,44,.18), transparent 70%); }
+  h1 { font-size: clamp(44px, 8vw, 72px); margin: 0 0 8px; letter-spacing: .02em; }
+  .tagline { color: var(--muted); font-size: 19px; max-width: 640px; margin: 0 0 24px; }
+  .badges span { display:inline-block; border:1px solid var(--line); border-radius:999px; padding:4px 12px; margin:0 6px 8px 0; font-size:13px; color:var(--muted); background:var(--panel); }
+  .cta { display:inline-block; margin-top:8px; padding:10px 18px; border-radius:8px; background:var(--accent); color:#111; font-weight:600; }
+  .cta:hover { text-decoration:none; filter:brightness(1.08); }
+  section { padding: 44px 0; border-bottom:1px solid var(--line); }
+  h2 { font-size: 26px; margin: 0 0 14px; }
+  h3 { font-size: 18px; margin: 0 0 6px; color: var(--accent); }
+  p, li { color: #c9d1d9; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:16px; margin-top:12px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px; }
+  .card p { margin:0; color: var(--muted); font-size: 15px; }
+  .board { display:grid; grid-template-columns: repeat(3, 72px); gap:6px; justify-content:start; margin: 10px 0 4px; }
+  .board div { height:72px; border-radius:8px; background:#21262d; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:22px; }
+  .board .enemy { background:rgba(248,81,73,.18); border-color:#f85149; }
+  .board .threat { background:rgba(212,167,44,.18); border-color:var(--accent); }
+  ol.levels { padding-left: 20px; } ol.levels li { margin-bottom: 8px; }
+  .note { border-left:3px solid var(--accent); padding: 8px 14px; background: rgba(212,167,44,.07); color:#c9d1d9; border-radius:6px; }
+  footer { padding: 28px 0 48px; color: var(--muted); font-size: 14px; }
+  code { background:#21262d; padding:2px 6px; border-radius:6px; font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Aeternal</h1>
+    <p class="tagline">A turn-based deck-builder roguelike set in a world of Greek gods. A mortal ruler mocks Death, and pays for it.</p>
+    <div class="badges"><span>Unity</span><span>C#</span><span>Deck-builder</span><span>Roguelike</span><span>Game design</span></div>
+    <a class="cta" href="https://github.com/MichaelWang-0506/aeternal">View the source on GitHub</a>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>How combat works</h2>
+    <p>Combat is positional. The enemy stands in the center of a 3×3 grid, and you stand on one of the four squares around it. Each round the enemy marks the square(s) it will attack, so you have to move out of the way with movement cards and then strike back.</p>
+    <div class="board" aria-label="Example 3 by 3 board">
+      <div></div><div class="threat">!</div><div></div>
+      <div class="threat">!</div><div class="enemy">E</div><div></div>
+      <div></div><div>@</div><div></div>
+    </div>
+    <p style="color:var(--muted);font-size:14px">Illustration: the enemy (E) threatens the squares marked “!”. The player (@) is outside the threat area.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Systems</h2>
+    <div class="grid">
+      <div class="card"><h3>Telegraphed intents</h3><p>Enemies announce their next attack direction and damage before it happens.</p></div>
+      <div class="card"><h3>Action Points and Divine Focus</h3><p>AP is spent to play cards each round. Divine Focus is spent to shift to another deck with its own effects.</p></div>
+      <div class="card"><h3>Status effects</h3><p>Bleed deals damage at the end of a round and stacks. Stun and Blackout skip an action. Dodge cancels the next attack.</p></div>
+      <div class="card"><h3>Run structure</h3><p>Each fight rewards a new card. Health carries over between fights, and losing ends the run.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Level 1: The Fall</h2>
+    <p>The prologue of the game, set during the empire's tenth-year feast.</p>
+    <ol class="levels">
+      <li><strong>Opening narrative</strong>: the birth of Time and Death, and the mortal Chronus blessed.</li>
+      <li><strong>Goblin</strong>: a feast-day challenger.</li>
+      <li><strong>Bandit Champion</strong> (elite): tougher, and attacks three squares at once.</li>
+      <li><strong>Thanatos</strong>: a scripted boss. He cannot be brought below 1 HP, and enrages on round 3 or at half health.</li>
+    </ol>
+    <p class="note">The level is still in progress. The epilogue and later regions are not implemented yet.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Under the hood</h2>
+    <div class="grid">
+      <div class="card"><h3>Data-driven encounters</h3><p>Each fight is defined in a ScriptableObject (<code>EncounterData</code>), so one scene can host many enemies.</p></div>
+      <div class="card"><h3>Event-driven combat</h3><p>Combat, UI and status updates communicate through an event bus instead of direct references.</p></div>
+      <div class="card"><h3>Scale</h3><p>About 9,700 lines of C# in the game scripts, plus editor setup tools for building the scenes.</p></div>
+      <div class="card"><h3>Design documents</h3><p>The Game Design Document, Level Design Document and character notes are in <code>Assets/Design Documents</code>.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>About this project</h2>
+    <p>Aeternal is a personal project. I designed the game, its levels and its systems, and I developed the Unity prototype with AI-assisted coding. Reading the source is the best way to see what is implemented.</p>
+    <p><a href="https://github.com/MichaelWang-0506/aeternal">github.com/MichaelWang-0506/aeternal</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">Built with Unity. Source code and documentation are in the repository linked above.</div>
+</footer>
+
+</body>
+</html>
